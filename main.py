@@ -22,10 +22,11 @@ def hello():
     par = Parsatore()
     dbm = DBMan()
     cal = CalendarGenerator()
-    #
+
     # dbm.del_all(Issue.query())
     # dbm.del_all(Serie.query())
-    # dbm.save_to_DB(par.parser())
+    if Issue.query().count(limit=None) == 0:
+        dbm.save_to_DB(par.parser())
     series = dbm.get_series(Serie.query())
     str = ""
     for serie in series:
@@ -42,10 +43,7 @@ def hello():
                    Issue.serie == ndb.Key(Serie, 'Marvel Miniserie')
                    ),
             Issue.data >= today - timedelta(days=20))).order(Issue.data)
-    # issues = Issue.query()
-    # cal.exportCalendar(cal.create_calendar(issues))
     return par.print_items(issues)
-    # return str
 
 
 @app.errorhandler(404)
