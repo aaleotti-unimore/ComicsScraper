@@ -1,9 +1,11 @@
 from __future__ import unicode_literals
-import urllib2, logging
-from bs4 import BeautifulSoup
-from db_entities import Issue
-from datetime import datetime
+
+import logging
 import sys
+import urllib2
+from datetime import datetime
+
+from bs4 import BeautifulSoup
 
 reload(sys)
 sys.setdefaultencoding('utf8')
@@ -69,28 +71,11 @@ class Parsatore():
             if item.subtitle:
                 s += item.subtitle + "<br>"
             if item.serie:
-                s += item.serie + "<br>"
+                s += str(item.serie.get().title) + "<br>"
             if item.ristampa:
                 s += item.ristampa + "<br>"
             s += str(item.data) + "<br>"
             s += item.prezzo + "<br>"
-            s += "<img src=\"" + item.image + "\"><br><br>"
+            s += "<img src=\"" + item.image + "\" width=300><br><br>"
             s += "</blockquote>"
         return s
-
-    def saveToDB(self, items):
-        for item in items:
-            issue = Issue()
-            # existing_tilte= issue.key('title')
-            issue.title = item['title']
-            if 'subtitle' in item:
-                issue.subtitle = item['subtitle']
-            if 'serie' in item:
-                issue.serie = item['serie']
-            if 'ristampa' in item:
-                issue.ristampa = item['ristampa']
-            issue.data = item['data']
-            issue.prezzo = item['prezzo']
-            issue.image = item['image']
-            issue.put()
-            print "issue " + issue.title + " saved"

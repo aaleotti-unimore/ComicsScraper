@@ -1,11 +1,17 @@
 """`main` is the top level module for your Flask application."""
-from marvel import Parsatore
-from db_entities import DBMan
-from db_entities import Issue
-from google.appengine.ext import ndb
-# Import the Flask Framework
+from datetime import datetime, timedelta
+
 from flask import Flask
+from google.appengine.ext import ndb
+
+from CalendarGenerator import CalendarGenerator
+from db_entities import DBMan
+from db_entities import Issue, Serie
+from marvel import Parsatore
+
 app = Flask(__name__)
+
+
 # Note: We don't need to call run() since our application is embedded within
 # the App Engine WSGI application server.
 
@@ -15,15 +21,32 @@ def hello():
     """Return a friendly HTTP greeting."""
     par = Parsatore()
     dbm = DBMan()
-    # par.saveToDB(par.parser())
-    from datetime import date
-    issues = Issue.query(ndb.AND(Issue.data > date(2017, 1, 1), Issue.data < date(2017, 1, 31))).order(-Issue.data)
-    # dbm.del_all(issues)
+    cal = CalendarGenerator()
+    #
+    # dbm.del_all(Issue.query())
+    # dbm.del_all(Serie.query())
+    # dbm.save_to_DB(par.parser())
+    series = dbm.get_series(Serie.query())
+    str = ""
+    for serie in series:
+        str += "<br>" + serie
 
-    # response  = '<html><body>'
-    # self.response.out.write(par.print_items(issues))
-    # self.response.out.write('</body></html>')
+    today = datetime.today()
+    issues = Issue.query(
+        ndb.AND(
+            ndb.OR(Issue.serie == ndb.Key(Serie, 'Avengers'),
+                   Issue.serie == ndb.Key(Serie, 'Iron Man'),
+                   Issue.serie == ndb.Key(Serie, 'Devil e i Cavalieri Marvel'),
+                   Issue.serie == ndb.Key(Serie, 'Incredibili Inumani'),
+                   Issue.serie == ndb.Key(Serie, 'Marvel Crossover'),
+                   Issue.serie == ndb.Key(Serie, 'Marvel Miniserie')
+                   ),
+            Issue.data >= today - timedelta(days=20))).order(Issue.data)
+    # issues = Issue.query()
+    # cal.exportCalendar(cal.create_calendar(issues))
     return par.print_items(issues)
+    # return str
+
 
 @app.errorhandler(404)
 def page_not_found(e):
