@@ -5,10 +5,13 @@ from flask import Flask, render_template, redirect
 from google.appengine.ext import ndb
 from parser import parsatore
 from db_manager import db_manager
+from werkzeug import debug
+
 
 from db_entities import Issue, Serie
 
 app = Flask(__name__)
+app.wsgi_app = debug.DebuggedApplication(app.wsgi_app, True)
 
 
 # Note: We don't need to call run() since our application is embedded within
