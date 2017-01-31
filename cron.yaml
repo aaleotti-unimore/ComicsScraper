@@ -1,0 +1,4 @@
+cron:
+- description: weekly DB update
+  url: /tasks/weekly_update
+  schedule: every monday 7:00

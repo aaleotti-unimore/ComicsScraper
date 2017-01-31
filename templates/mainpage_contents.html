@@ -1,0 +1,70 @@
+{% extends "index.html" %}
+{% block container %}
+    <h3>Questa Settimana</h3>
+    {% if issues_count > 0 %}
+        <div class="panel panel-default">
+            <div class="panel-body">
+                <div class="col">
+                    {% for item in issues %}
+                        <div class="media">
+                            <div class="media-left">
+                                <a href="#">
+                                    <img class="media-object" src="{{ item.image }}" width="150">
+                                </a>
+                            </div>
+                            <div class="media-body">
+                                <h4 class="media-heading">{{ item.title }}</h4>
+                                {% if item.ristampa %}
+                                    <h6 class="text-muted">{{ item.ristampa }}</h6>
+                                {% endif %}
+                                {% if item.serie %}
+                                    <h6 class="text-muted">{{ item.serie.get().title }}</h6>
+                                {% endif %}
+                                <p>{{ item.data.strftime("%a %d %b %y") }}</p>
+                            </div>
+                        </div>
+                    {% endfor %}
+
+                </div>
+            </div>
+        </div>
+    {% else %}
+        <div class="jumbotron">
+            <h2>No Issues</h2>
+        </div>
+    {% endif %}
+
+    <h3>Prossime Settimane</h3>
+    {% if future_issues_count > 0 %}
+        <div class="panel panel-default">
+            <div class="panel-body">
+                <div class="col">
+                    {% for item in future_issues %}
+                        <div class="media">
+                            <div class="media-left">
+                                <a href="#">
+                                    <img class="media-object" src="{{ item.image }}" width="150">
+                                </a>
+                            </div>
+                            <div class="media-body">
+                                <h4 class="media-heading">{{ item.title }}</h4>
+                                {% if item.ristampa %}
+                                    <h6 class="text-muted">{{ item.ristampa }}</h6>
+                                {% endif %}
+                                {% if item.serie %}
+                                    <h6 class="text-muted">{{ item.serie.get().title }}</h6>
+                                {% endif %}
+                                <p>{{ item.data.strftime("%a %d %b %y") }}</p>
+                            </div>
+                        </div>
+                    {% endfor %}
+
+                </div>
+            </div>
+        </div>
+    {% else %}
+        <div class="jumbotron">
+            <h2>No Future Issues</h2>
+        </div>
+    {% endif %}
+{% endblock %}

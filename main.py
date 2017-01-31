@@ -1,13 +1,12 @@
 """`main` is the top level module for your Flask application."""
 from datetime import datetime, timedelta
 
-from flask import Flask
+from flask import Flask, render_template, redirect
 from google.appengine.ext import ndb
+from parser import parsatore
+from db_manager import db_manager
 
-from CalendarGenerator import CalendarGenerator
-from db_entities import DBMan
 from db_entities import Issue, Serie
-from marvel import Parsatore
 
 app = Flask(__name__)
 
@@ -17,33 +16,33 @@ app = Flask(__name__)
 
 
 @app.route('/')
-def hello():
-    """Return a friendly HTTP greeting."""
-    par = Parsatore()
-    dbm = DBMan()
-    cal = CalendarGenerator()
-
-    # dbm.del_all(Issue.query())
-    # dbm.del_all(Serie.query())
-    if Issue.query().count(limit=None) == 0:
-        dbm.save_to_DB(par.parser())
-    series = dbm.get_series(Serie.query())
-    str = ""
-    for serie in series:
-        str += "<br>" + serie
-
+@app.route('/index.html')
+def main():
     today = datetime.today()
+    start_week = today - timedelta(today.weekday())
+    end_week = start_week + timedelta(7)
+
     issues = Issue.query(
         ndb.AND(
-            ndb.OR(Issue.serie == ndb.Key(Serie, 'Avengers'),
-                   Issue.serie == ndb.Key(Serie, 'Iron Man'),
-                   Issue.serie == ndb.Key(Serie, 'Devil e i Cavalieri Marvel'),
-                   Issue.serie == ndb.Key(Serie, 'Incredibili Inumani'),
-                   Issue.serie == ndb.Key(Serie, 'Marvel Crossover'),
-                   Issue.serie == ndb.Key(Serie, 'Marvel Miniserie')
-                   ),
-            Issue.data >= today - timedelta(days=20))).order(Issue.data)
-    return par.print_items(issues)
+            ndb.OR(
+                Issue.serie == ndb.Key(Serie, 'Avengers'),
+                Issue.serie == ndb.Key(Serie, 'Iron Man'),
+                Issue.serie == ndb.Key(Serie, 'Devil e i Cavalieri Marvel'),
+                Issue.serie == ndb.Key(Serie, 'Incredibili Inumani'),
+                Issue.serie == ndb.Key(Serie, 'Marvel Crossover'),
+                Issue.serie == ndb.Key(Serie, 'Marvel Miniserie')
+            )
+        )
+    ).order(Issue.data)
+
+    if issues.count(limit=None) == 0:
+        cronjob()
+
+    week_issues = issues.filter(ndb.AND(Issue.data >= start_week, Issue.data <= end_week))
+    future_issues = issues.filter(Issue.data > end_week)
+
+    return render_template("mainpage_contents.html", issues=week_issues, issues_count=issues.count(limit=None),
+                           future_issues=future_issues, future_issues_count=future_issues.count(limit=None))
 
 
 @app.errorhandler(404)
@@ -56,3 +55,19 @@ def page_not_found(e):
 def application_error(e):
     """Return a custom 500 error."""
     return 'Sorry, unexpected error: {}'.format(e), 500
+
+
+@app.route('/tasks/weekly_update')
+def cronjob():
+    par = parsatore()
+    dbm = db_manager()
+    dbm.save_to_DB(par.parser())
+    return redirect('/')
+
+
+@app.route('/restricted/cleardb')
+def clear_db():
+    ndb.delete_multi(
+        Issue.query().fetch(keys_only=True)
+    )
+    return redirect('/')
