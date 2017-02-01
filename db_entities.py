@@ -14,7 +14,6 @@ class Issue(ndb.Model):
     prezzo = ndb.StringProperty(indexed=False)
     image = ndb.StringProperty(indexed=False)
 
-class UserSeries(ndb.Model):
-    user_id = ndb.GenericProperty(indexed=True)
+class Users(ndb.Model):
     serie_list = ndb.KeyProperty(repeated=True)
 

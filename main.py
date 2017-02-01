@@ -5,10 +5,11 @@ from __future__ import unicode_literals
 from datetime import datetime, timedelta
 from flask import Flask, render_template, redirect
 from google.appengine.ext import ndb
+from google.appengine.api import users
 from db_manager import db_manager
 from werkzeug import debug
 from bs4 import BeautifulSoup
-from db_entities import Issue, Serie
+from db_entities import Issue, Serie, Users
 
 app = Flask(__name__)
 app.wsgi_app = debug.DebuggedApplication(app.wsgi_app, True)
@@ -21,38 +22,57 @@ app.wsgi_app = debug.DebuggedApplication(app.wsgi_app, True)
 @app.route('/')
 @app.route('/index.html')
 def main():
-    today = datetime.today()
+    # USER AUTH
+    my_user = None
+    logout_url = None
+    login_url = None
+    google_user = users.get_current_user()
+    if google_user:
+        logout_url = users.create_logout_url('/')
+        my_user = Users.get_or_insert(str(google_user.user_id()))
+        # my_user.serie_list = [
+        #     ndb.Key(Serie, 'Avengers'),
+        #     ndb.Key(Serie, 'Iron Man'),
+        #     ndb.Key(Serie, 'Devil e i Cavalieri Marvel'),
+        #     ndb.Key(Serie, 'Incredibili Inumani'),
+        #     ndb.Key(Serie, 'Marvel Crossover'),
+        #     ndb.Key(Serie, 'Marvel Miniserie')
+        # ]
+        my_user.put()
+        # print my_user
+    else:
+        login_url = users.create_login_url('/')
+        # END USER AUTH
 
+    # DATETIME RANGES SETTINGS
+    today = datetime.today()
     start_week = today - timedelta(today.weekday())
     end_week = start_week + timedelta(7)
     start_last_week = today - timedelta(today.weekday()) - (timedelta(7))
+    # END DATETIME RANGES SETTINGS
 
-    issues = Issue.query(
-        ndb.AND(
-            ndb.OR(
-                Issue.serie == ndb.Key(Serie, 'Avengers'),
-                Issue.serie == ndb.Key(Serie, 'Iron Man'),
-                Issue.serie == ndb.Key(Serie, 'Devil e i Cavalieri Marvel'),
-                Issue.serie == ndb.Key(Serie, 'Incredibili Inumani'),
-                Issue.serie == ndb.Key(Serie, 'Marvel Crossover'),
-                Issue.serie == ndb.Key(Serie, 'Marvel Miniserie')
-            )
-        )
-    ).order(Issue.data)
+    # QUERY
+    if my_user:
+        issues = Issue.query(Issue.serie.IN(my_user.serie_list)).order(Issue.data)
+    else:
+        issues = Issue.query()
 
     week_issues = issues.filter(ndb.AND(Issue.data >= start_week, Issue.data <= end_week))
     future_issues = issues.filter(Issue.data > end_week)
     past_issues = issues.filter(ndb.AND(Issue.data >= start_last_week, Issue.data < start_week))
+    # END QUERY
 
-    week_sum=0
-    past_sum=0
+
+    # SUM WEEKLY PRICES
+    week_sum = 0
+    past_sum = 0
     import re
     for issue in past_issues:
-        past_sum += float(re.sub(",",".",issue.prezzo[2:]))
+        past_sum += float(re.sub(",", ".", issue.prezzo[2:]))
 
     for issue in week_issues:
         week_sum += float(re.sub(",", ".", issue.prezzo[2:]))
-
+    # END SUM WEEKLY PRICES
 
     return render_template("mainpage_contents.html",
                            issues=week_issues,
@@ -62,7 +82,9 @@ def main():
                            future_issues_count=future_issues.count(limit=None),
                            past_issues=past_issues,
                            past_issues_count=past_issues.count(limit=None),
-                           past_sum=past_sum
+                           past_sum=past_sum,
+                           login_url=login_url,
+                           logout_url=logout_url
                            )
 
 
