@@ -3,35 +3,27 @@
 
 <head>
     <title>The Amazing Kirbi</title>
-
-    <link href="http://getbootstrap.com/dist/css/bootstrap.min.css" rel="stylesheet">
-
-    <link href="http://getbootstrap.com/examples/jumbotron-narrow/jumbotron-narrow.css" rel="stylesheet">
-
+    <link href="/static/css/bootstrap.css" rel="stylesheet">
 </head>
-
 <body>
-
 <div class="container">
     <div class="header">
         <nav>
             <ul class="nav nav-pills pull-right">
-                <li role="presentation" class="active"><a href="#">Home</a>
+                <li role="presentation" class="active"><a href="/">Home</a>
                 </li>
                 {% if login_url %}
                     <li role="presentation"><a href="{{ login_url }}">Sign In</a>
                     </li>
-                    <li role="presentation"><a href="{{ login_url }}">Sign Up</a>
-                    </li>
                 {% else %}
-                    <li role="presentation" ><a href="/user_page">My Lists</a>
+                    <li role="presentation"><a href="/user_page">My Lists</a>
                     </li>
-                     <li role="presentation" class="active"><a href="{{ logout_url }}">Sign Out</a>
+                    <li role="presentation" class="active"><a href="{{ logout_url }}">Sign Out</a>
                     </li>
                 {% endif %}
             </ul>
         </nav>
-        <h3 class="text-muted">The Amazing Kirbi</h3>
+        <h1 class="text-muted">The Amazing Kirbi</h1>
     </div>
 
     {% block container %}
@@ -42,6 +34,11 @@
     </footer>
 
 </div>
+<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+<!-- Include all compiled plugins (below), or include individual files as needed -->
+<script src="/static/js/bootstrap.min.js"></script>
+
 </body>
 
 </html>

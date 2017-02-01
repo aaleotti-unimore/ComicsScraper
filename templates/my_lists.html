@@ -1,35 +1,41 @@
 {% extends "index.html" %}
 {% block container %}
-    <div class="dropdown">
-        <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown"
-                aria-haspopup="true" aria-expanded="false">
-            Dropup
-            <span class="caret"></span>
-        </button>
-        <ul class="dropdown-menu" aria-labelledby="dropdownMenu2">
-            {% for serie in series %}
-                <li class="list-group-item">{{ serie }}</li>
+
+    <div class="row">
+        <div class="col-md-3 col-sm-12 showpill">
+            <strong>Pick a show from the list</strong>
+        </div>
+        <div class="col-md-7 col-sm-12 form-inline">
+            {#                <form action="#" method="post" class="form-horizontal" role="form">#}
+            {#                    <input type="hidden" name="_token" value="Yc3s65TwA2sKzmQdiOnXxvjFMjf4TOv9Y7tjet1F">#}
+            <label for="showselector"></label><select name="show" id="showselector" class="form-control" data-placeholder="Select a show…"
+                                                      style="max-width: 320px; display: none;">
+                <option value=""></option>
+                <option value="284">12 Monkeys</option>
+                <option value="284">12 Monkeys</option>
+                <option value="284">12 Monkeys</option>
+            </select>
+        </div>
+    </div>
+    <button type="submit" class="btn btn-primary selectpill">Add to my list</button>
+
+    <div class="col-md-2 col-sm-12 filterpill text-md-right">
+        <a class="btn btn-default" href="https://showrss.info/toggle">
+            Disable my filters
+        </a>
+    </div>
+
+
+    <p></p>
+
+    <div class="panel">
+        <h4>Le Mie Serie</h4>
+        <ul class="list-group">
+            {% for serie in my_user.serie_list %}
+                <li class="list-group-item">{{ serie.get().title }}</li>
             {% endfor %}
         </ul>
     </div>
 
-    <p></p>
-    <div class="dropup">
-  <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-    Dropup
-    <span class="caret"></span>
-  </button>
-  <ul class="dropdown-menu" aria-labelledby="dropdownMenu2">
-    <li><a href="#">Action</a></li>
-    <li><a href="#">Another action</a></li>
-    <li><a href="#">Something else here</a></li>
-    <li role="separator" class="divider"></li>
-    <li><a href="#">Separated link</a></li>
-  </ul>
-</div>
-    <ul class="list-group">
-        {% for serie in my_user.serie_list %}
-            <li class="list-group-item">{{ serie.get().title }}</li>
-        {% endfor %}
-    </ul>
+
 {% endblock %}

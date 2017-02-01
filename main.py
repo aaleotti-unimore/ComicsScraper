@@ -3,7 +3,7 @@ from __future__ import unicode_literals
 """`main` is the top level module for your Flask application."""
 
 from datetime import datetime, timedelta
-from flask import Flask, render_template, redirect, g
+from flask import Flask, render_template, redirect, g, request
 from google.appengine.ext import ndb
 from google.appengine.api import users
 from db_manager import db_manager
@@ -36,7 +36,7 @@ def inject_user():
         #     ndb.Key(Serie, 'Marvel Miniserie')
         # ]
         my_user.put()
-        # print my_user
+        print my_user
     else:
         login_url = users.create_login_url('/')
     g.user = my_user
@@ -57,43 +57,61 @@ def main():
     google_user = users.get_current_user()
     if google_user:
         my_user = Users.get_or_insert(str(google_user.user_id()))
-        issues = Issue.query(Issue.serie.IN(my_user.serie_list)).order(Issue.data)
+        if my_user.serie_list:
+            issues = Issue.query(Issue.serie.IN(my_user.serie_list)).order(Issue.data)
+        else:
+            issues = None
     else:
         issues = Issue.query()
 
-    week_issues = issues.filter(ndb.AND(Issue.data >= start_week, Issue.data <= end_week))
-    future_issues = issues.filter(Issue.data > end_week)
-    past_issues = issues.filter(ndb.AND(Issue.data >= start_last_week, Issue.data < start_week))
-    # END QUERY
-
-
-    # SUM WEEKLY PRICES
+    week_issues = None
+    future_issues = None
+    past_issues = None
+    week_issues_count = None
+    future_issues_count = None
+    past_issues_count = None
     week_sum = 0
     past_sum = 0
-    import re
-    for issue in past_issues:
-        past_sum += float(re.sub(",", ".", issue.prezzo[2:]))
+    if issues:
+        week_issues = issues.filter(ndb.AND(Issue.data >= start_week, Issue.data <= end_week))
+        future_issues = issues.filter(Issue.data > end_week)
+        past_issues = issues.filter(ndb.AND(Issue.data >= start_last_week, Issue.data < start_week))
 
-    for issue in week_issues:
-        week_sum += float(re.sub(",", ".", issue.prezzo[2:]))
-    # END SUM WEEKLY PRICES
+        week_issues_count = issues.count(limit=None),
+        future_issues_count = future_issues.count(limit=None),
+        past_issues_count = past_issues.count(limit=None),
+
+        # SUM WEEKLY PRICES
+
+        import re
+        for issue in past_issues:
+            past_sum += float(re.sub(",", ".", issue.prezzo[2:]))
+
+        for issue in week_issues:
+            week_sum += float(re.sub(",", ".", issue.prezzo[2:]))
+
+            # END SUM WEEKLY PRICES
+
+    # END QUERY
 
     return render_template("mainpage_contents.html",
                            issues=week_issues,
-                           issues_count=issues.count(limit=None),
+                           issues_count=week_issues_count,
                            week_sum=week_sum,
                            future_issues=future_issues,
-                           future_issues_count=future_issues.count(limit=None),
+                           future_issues_count=future_issues_count,
                            past_issues=past_issues,
-                           past_issues_count=past_issues.count(limit=None),
+                           past_issues_count=past_issues_count,
                            past_sum=past_sum
                            )
 
 
-@app.route('/user_page')
+@app.route('/user_page', methods=['GET', 'POST'])
 def my_page():
     dbm = db_manager()
     list = dbm.get_series(Serie.query())
+    # for serie in list:
+    #     print(serie)
     return render_template("my_lists.html", series=list)
 
 
@@ -143,7 +161,8 @@ class Parsatore():
             'http://comics.panini.it/store/pub_ita_it/magazines/cmc-m.html?limit=25&p=4',
             'http://comics.panini.it/store/pub_ita_it/magazines/cmc-m.html?limit=25&p=5',
             'http://comics.panini.it/store/pub_ita_it/magazines/cmc-m.html?limit=25&p=6',
-            'http://comics.panini.it/store/pub_ita_it/magazines/cmc-m.html?limit=25&p=7', ]
+            'http://comics.panini.it/store/pub_ita_it/magazines/cmc-m.html?limit=25&p=7',
+        ]
 
     def parser(self):
         parsed = []
