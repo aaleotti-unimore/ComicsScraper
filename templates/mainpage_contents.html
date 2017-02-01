@@ -20,9 +20,9 @@
                 <h6 class="text-muted">{{ item.prezzo }}</h6>
             {% endif %}
             <p>{{ item.data.strftime("%d %b %y") }}</p>
-            <button type="button" class="btn btn-default btn-lg">
-                <span class="glyphicon glyphicon-star" aria-hidden="true"></span> BUY
-            </button>
+            {#            <button type="button" class="btn btn-default btn-lg">#}
+            {#                <span class="glyphicon glyphicon-star" aria-hidden="true"></span> BUY#}
+            {#            </button>#}
         </div>
     </div>
 {% endmacro %}
@@ -38,10 +38,12 @@
                         {{ print_item(item, imgsize) }}
                     {% endfor %}
                 </div>
-                {% if title != "Prossime Settimane" %}
-                    <h4 align="right">Totale Settimana: € {{ sumsett }}</h4>
-                {% endif %}
             </div>
+            {% if title != "Prossime Settimane" %}
+                <div class="panel-footer">
+                    <h4 align="right">Totale Settimana: € {{ sumsett }}</h4>
+                </div>
+            {% endif %}
         </div>
     {% else %}
         <div class="jumbotron">

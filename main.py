@@ -3,7 +3,7 @@ from __future__ import unicode_literals
 """`main` is the top level module for your Flask application."""
 
 from datetime import datetime, timedelta
-from flask import Flask, render_template, redirect
+from flask import Flask, render_template, redirect, g
 from google.appengine.ext import ndb
 from google.appengine.api import users
 from db_manager import db_manager
@@ -18,11 +18,8 @@ app.wsgi_app = debug.DebuggedApplication(app.wsgi_app, True)
 # Note: We don't need to call run() since our application is embedded within
 # the App Engine WSGI application server.
 
-
-@app.route('/')
-@app.route('/index.html')
-def main():
-    # USER AUTH
+@app.context_processor
+def inject_user():
     my_user = None
     logout_url = None
     login_url = None
@@ -42,8 +39,13 @@ def main():
         # print my_user
     else:
         login_url = users.create_login_url('/')
-        # END USER AUTH
+    g.user = my_user
+    return dict(my_user=my_user, login_url=login_url, logout_url=logout_url)
 
+
+@app.route('/')
+@app.route('/index.html')
+def main():
     # DATETIME RANGES SETTINGS
     today = datetime.today()
     start_week = today - timedelta(today.weekday())
@@ -52,7 +54,9 @@ def main():
     # END DATETIME RANGES SETTINGS
 
     # QUERY
-    if my_user:
+    google_user = users.get_current_user()
+    if google_user:
+        my_user = Users.get_or_insert(str(google_user.user_id()))
         issues = Issue.query(Issue.serie.IN(my_user.serie_list)).order(Issue.data)
     else:
         issues = Issue.query()
@@ -82,10 +86,15 @@ def main():
                            future_issues_count=future_issues.count(limit=None),
                            past_issues=past_issues,
                            past_issues_count=past_issues.count(limit=None),
-                           past_sum=past_sum,
-                           login_url=login_url,
-                           logout_url=logout_url
+                           past_sum=past_sum
                            )
+
+
+@app.route('/user_page')
+def my_page():
+    dbm = db_manager()
+    list = dbm.get_series(Serie.query())
+    return render_template("my_lists.html", series=list)
 
 
 @app.errorhandler(404)

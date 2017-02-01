@@ -1,0 +1,35 @@
+{% extends "index.html" %}
+{% block container %}
+    <div class="dropdown">
+        <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown"
+                aria-haspopup="true" aria-expanded="false">
+            Dropup
+            <span class="caret"></span>
+        </button>
+        <ul class="dropdown-menu" aria-labelledby="dropdownMenu2">
+            {% for serie in series %}
+                <li class="list-group-item">{{ serie }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <p></p>
+    <div class="dropup">
+  <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+    Dropup
+    <span class="caret"></span>
+  </button>
+  <ul class="dropdown-menu" aria-labelledby="dropdownMenu2">
+    <li><a href="#">Action</a></li>
+    <li><a href="#">Another action</a></li>
+    <li><a href="#">Something else here</a></li>
+    <li role="separator" class="divider"></li>
+    <li><a href="#">Separated link</a></li>
+  </ul>
+</div>
+    <ul class="list-group">
+        {% for serie in my_user.serie_list %}
+            <li class="list-group-item">{{ serie.get().title }}</li>
+        {% endfor %}
+    </ul>
+{% endblock %}
