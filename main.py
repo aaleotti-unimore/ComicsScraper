@@ -157,14 +157,14 @@ def get_user():
     if google_user:
         logout_url = users.create_logout_url('/')
         my_user = Users.get_or_insert(str(google_user.user_id()))
-        my_user.serie_list = [
-            ndb.Key(Serie, 'Avengers'),
-            ndb.Key(Serie, 'Iron Man'),
-            ndb.Key(Serie, 'Devil e i Cavalieri Marvel'),
-            ndb.Key(Serie, 'Incredibili Inumani'),
-            ndb.Key(Serie, 'Marvel Crossover'),
-            ndb.Key(Serie, 'Marvel Miniserie')
-        ]
+        # my_user.serie_list = [
+        #     ndb.Key(Serie, 'Avengers'),
+        #     ndb.Key(Serie, 'Iron Man'),
+        #     ndb.Key(Serie, 'Devil e i Cavalieri Marvel'),
+        #     ndb.Key(Serie, 'Incredibili Inumani'),
+        #     ndb.Key(Serie, 'Marvel Crossover'),
+        #     ndb.Key(Serie, 'Marvel Miniserie')
+        # ]
         my_user.put()
         logger.debug("the user is logged in")
         logger.debug("my user is: " + str(my_user))
