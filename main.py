@@ -1,15 +1,21 @@
 from __future__ import unicode_literals
 
+from parsatore import Parsatore
+
 """`main` is the top level module for your Flask application."""
 
 from datetime import datetime, timedelta
-from flask import Flask, render_template, redirect, g, request
+from flask import Flask, render_template, redirect
 from google.appengine.ext import ndb
 from google.appengine.api import users
-from db_manager import db_manager
+from dbmanager import DbManager
 from werkzeug import debug
-from bs4 import BeautifulSoup
-from db_entities import Issue, Serie, Users
+from dbentities import Issue, Serie, Users
+import logging.config
+
+logging.config.fileConfig('logging.conf')
+# create logger
+logger = logging.getLogger(__name__)
 
 app = Flask(__name__)
 app.wsgi_app = debug.DebuggedApplication(app.wsgi_app, True)
@@ -17,31 +23,6 @@ app.wsgi_app = debug.DebuggedApplication(app.wsgi_app, True)
 
 # Note: We don't need to call run() since our application is embedded within
 # the App Engine WSGI application server.
-
-@app.context_processor
-def inject_user():
-    my_user = None
-    logout_url = None
-    login_url = None
-    google_user = users.get_current_user()
-    if google_user:
-        logout_url = users.create_logout_url('/')
-        my_user = Users.get_or_insert(str(google_user.user_id()))
-        # my_user.serie_list = [
-        #     ndb.Key(Serie, 'Avengers'),
-        #     ndb.Key(Serie, 'Iron Man'),
-        #     ndb.Key(Serie, 'Devil e i Cavalieri Marvel'),
-        #     ndb.Key(Serie, 'Incredibili Inumani'),
-        #     ndb.Key(Serie, 'Marvel Crossover'),
-        #     ndb.Key(Serie, 'Marvel Miniserie')
-        # ]
-        my_user.put()
-        print my_user
-    else:
-        login_url = users.create_login_url('/')
-    g.user = my_user
-    return dict(my_user=my_user, login_url=login_url, logout_url=logout_url)
-
 
 @app.route('/')
 @app.route('/index.html')
@@ -54,15 +35,20 @@ def main():
     # END DATETIME RANGES SETTINGS
 
     # QUERY
-    google_user = users.get_current_user()
-    if google_user:
-        my_user = Users.get_or_insert(str(google_user.user_id()))
+    my_user = get_user()[0]
+    logger.debug("main user is: " + str(my_user))
+    if my_user:
         if my_user.serie_list:
             issues = Issue.query(Issue.serie.IN(my_user.serie_list)).order(Issue.data)
         else:
             issues = None
     else:
         issues = Issue.query()
+
+    if issues:
+        logger.debug("the query retrieved: " + str(issues.count()) + " elements")
+    else:
+        logger.debug("no Issues in the DB")
 
     week_issues = None
     future_issues = None
@@ -94,6 +80,10 @@ def main():
 
     # END QUERY
 
+    logger.debug("week Issues Count: " + str(week_issues_count))
+    logger.debug("future Issues Count: " + str(future_issues_count))
+    logger.debug("past Issues Count: " + str(past_issues_count))
+
     return render_template("mainpage_contents.html",
                            issues=week_issues,
                            issues_count=week_issues_count,
@@ -102,17 +92,19 @@ def main():
                            future_issues_count=future_issues_count,
                            past_issues=past_issues,
                            past_issues_count=past_issues_count,
-                           past_sum=past_sum
+                           past_sum=past_sum,
+                           nullobj=Issue(id="cul", title="", image="", data=today)
                            )
 
 
 @app.route('/user_page', methods=['GET', 'POST'])
 def my_page():
-    dbm = db_manager()
-    list = dbm.get_series(Serie.query())
-    # for serie in list:
-    #     print(serie)
-    return render_template("my_lists.html", series=list)
+    dbm = DbManager()
+    logger.debug("retrieving all the series: ")
+    series = Serie.query()
+    for serie in series:
+        logger.debug(serie.title)
+    return render_template("my_lists.html", series=series)
 
 
 @app.errorhandler(404)
@@ -129,8 +121,9 @@ def application_error(e):
 
 @app.route('/tasks/weekly_update')
 def cronjob():
+    logger.info("Parsing all the Issues")
     par = Parsatore()
-    dbm = db_manager()
+    dbm = DbManager()
     dbm.save_to_DB(par.parser())
     return redirect('/')
 
@@ -144,63 +137,48 @@ def clear_db():
     return redirect('/')
 
 
-import logging
-import sys
-import urllib2
+@app.context_processor
+def series_utility():
+    def list_series(self, items):
+        list_serie = []
+        for item in items:
+            list_serie.append(item.title)
+        return list_serie
 
-reload(sys)
-sys.setdefaultencoding('utf8')
+    return dict(list_series=list_series)
 
 
-class Parsatore():
-    def __init__(self):
-        self.urls = [
-            'http://comics.panini.it/store/pub_ita_it/magazines/cmc-m.html?limit=25&p=1',
-            'http://comics.panini.it/store/pub_ita_it/magazines/cmc-m.html?limit=25&p=2',
-            'http://comics.panini.it/store/pub_ita_it/magazines/cmc-m.html?limit=25&p=3',
-            'http://comics.panini.it/store/pub_ita_it/magazines/cmc-m.html?limit=25&p=4',
-            'http://comics.panini.it/store/pub_ita_it/magazines/cmc-m.html?limit=25&p=5',
-            'http://comics.panini.it/store/pub_ita_it/magazines/cmc-m.html?limit=25&p=6',
-            'http://comics.panini.it/store/pub_ita_it/magazines/cmc-m.html?limit=25&p=7',
+def get_user():
+    my_user = None
+    logout_url = None
+    login_url = None
+    logger.debug("Getting user status")
+    google_user = users.get_current_user()
+    if google_user:
+        logout_url = users.create_logout_url('/')
+        my_user = Users.get_or_insert(str(google_user.user_id()))
+        my_user.serie_list = [
+            ndb.Key(Serie, 'Avengers'),
+            ndb.Key(Serie, 'Iron Man'),
+            ndb.Key(Serie, 'Devil e i Cavalieri Marvel'),
+            ndb.Key(Serie, 'Incredibili Inumani'),
+            ndb.Key(Serie, 'Marvel Crossover'),
+            ndb.Key(Serie, 'Marvel Miniserie')
         ]
+        my_user.put()
+        logger.debug("the user is logged in")
+        logger.debug("my user is: " + str(my_user))
+    else:
+        logger.debug("the user is not logged in")
+        login_url = users.create_login_url('/')
 
-    def parser(self):
-        parsed = []
-        for url in self.urls:
-            try:
-                result = urllib2.urlopen(url, None, 45)
-                page = result.read()
-                soup = BeautifulSoup(page, 'lxml')
-                uscite = soup.find_all('div', attrs={'class': "list-group-item row item "})
+    return [my_user, login_url, logout_url]
 
-                for uscita in uscite:
-                    diz = {}
 
-                    title = uscita.find('h3', class_="product-name").find('a').get_text()
-                    diz['title'] = " ".join(title.split())
-
-                    subtitle = uscita.find('h3', class_="product-name").find('small', attrs={"class": "subtitle"})
-                    if subtitle:
-                        diz['subtitle'] = " ".join(subtitle.text.split())
-
-                    serie = uscita.find('h3', class_="product-name").find('small', attrs={"class": "serie"})
-                    if serie:
-                        diz['serie'] = " ".join(serie.text.split())
-
-                    ristampa = uscita.find('h5', attrs={"class": "reprint"})
-                    if ristampa:
-                        diz['ristampa'] = " ".join(ristampa.text.split())
-
-                    data_str = uscita.find('h4', class_="publication-date").text.strip()
-                    struct_date = datetime.strptime(data_str, "%d/%m/%Y")
-                    diz['data'] = struct_date
-                    diz['prezzo'] = uscita.find('p', class_="old-price").text.strip()
-                    parsed.append(diz)
-
-                    thmb = uscita.find('img', class_="img-thumbnail img-responsive")
-                    diz['image'] = thmb["src"]
-
-            except urllib2.URLError:
-                logging.exception('Caught exception fetching url')
-
-        return parsed
+@app.context_processor
+def inject_user():
+    logger.info("Injecting User...")
+    userdata = get_user()
+    logger.debug("userdata: " + str(userdata))
+    logger.info("end injecting user")
+    return dict(my_user=userdata[0], login_url=userdata[1], logout_url=userdata[2])

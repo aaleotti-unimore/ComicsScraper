@@ -1,10 +1,15 @@
 from __future__ import print_function
 
-from db_entities import Issue, Serie
+from dbentities import Issue, Serie
+import logging
+
+# create logger
+logger = logging.getLogger(__name__)
 
 
-class db_manager:
+class DbManager:
     def save_to_DB(self, items):
+        logger.info("saving the issues")
         for item in items:
             issue = Issue(id=item['title'])
             issue.title = item['title']
@@ -23,14 +28,9 @@ class db_manager:
             else:
                 issue.image = item['image'].replace('small_image/200x', 'image')
             issue.put_async()
-            # print("issue " + issue.title + " saved")
+            logger.debug("issue " + issue.title + " saved")
 
     def del_all(self, items):
         for item in items:
             item.key.delete()
-
-    def get_series(self, items):
-        list_serie = []
-        for item in items:
-            list_serie.append(item.title)
-        return list_serie
+        logger.debug("Deleted all the items")

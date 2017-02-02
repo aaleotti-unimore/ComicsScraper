@@ -1,61 +1,65 @@
-{% macro print_item(item, imgsize) %}
-    <div class="media">
-        <div class="media-left">
-            <a href="#">
-                <img class="media-object" src="{{ item.image }}" width="{{ imgsize }}">
-            </a>
-        </div>
-        <div class="media-body">
-            <h4 class="media-heading">{{ item.title }}</h4>
-            {% if item.subtitle %}
-                <h6 class="text-muted">{{ item.subtitle }}</h6>
-            {% endif %}
-            {% if item.ristampa %}
-                <h6 class="text-muted">{{ item.ristampa }}</h6>
-            {% endif %}
-            {% if item.serie %}
-                <h6 class="text-muted">{{ item.serie.get().title }}</h6>
-            {% endif %}
-            {% if item.prezzo %}
-                <h6 class="text-muted">{{ item.prezzo }}</h6>
-            {% endif %}
-            <p>{{ item.data.strftime("%d %b %y") }}</p>
-            {#            <button type="button" class="btn btn-default btn-lg">#}
-            {#                <span class="glyphicon glyphicon-star" aria-hidden="true"></span> BUY#}
-            {#            </button>#}
-        </div>
-    </div>
-{% endmacro %}
+{% macro print_item(item, maxwidth) %}
+    {#    <div class="card" style="min-width:{{ maxwidth }}%; max-width:{{ maxwidth }}%;">#}
+    {% if item == nullobj %}
+        <div class="card" style="border: 0px;">
 
-{% macro week_block(title, items, issues_count, sumsett, imgsize) %}
-    <h3>{{ title }}</h3>
-    {% if issues_count > 0 %}
-        <div class="panel panel-default">
-            <div class="panel-body">
-                <div class="col">
-                    {# Adding items#}
-                    {% for item in items %}
-                        {{ print_item(item, imgsize) }}
-                    {% endfor %}
-                </div>
-            </div>
-            {% if title != "Prossime Settimane" %}
-                <div class="panel-footer">
-                    <h4 align="right">Totale Settimana: € {{ sumsett }}</h4>
-                </div>
-            {% endif %}
         </div>
     {% else %}
-        <div class="jumbotron">
-            <h2>No Issues</h2>
+    <div class="card">
+        <img class="card-img-top img-fluid" src="{{ item.image }}">
+        <div class="card-block">
+            <h4 class="card-title">{{ item.title }}</h4>
+            {% if item.subtitle %}
+                <h6 class="card-subtitle mb-2 text-muted">{{ item.subtitle }}</h6>
+            {% endif %}
+            {% if item.ristampa %}
+                <h6 class="card-text text-muted">{{ item.ristampa }}</h6>
+            {% endif %}
+            {% if item.serie %}
+                <h6 class="card-text text-muted">{{ item.serie.get().title }}</h6>
+            {% endif %}
+            {% if item.prezzo %}
+                <h6 class="card-text text-muted">{{ item.prezzo }}</h6>
+            {% endif %}
         </div>
+        <div class="card-footer">{{ item.data.strftime("%d %b %y") }}</div>
+    </div>
     {% endif %}
+{% endmacro %}
 
+{% macro week_block(title, items, sumsett, nColumns, maxwidth) %}
+    <div class="card">
+        <div class="card-block">
+            <h3 class="card-title">{{ title }}</h3>
+            {%- for row in items|batch(nColumns,nullobj) %}
+                <div class="card-deck">
+                    {% for column in row %}
+                        {{ print_item(column, maxwidth) }}
+                        <p></p>
+                    {% endfor %}
+                </div>
+                <p></p>
+            {% else %}
+                <div class="jumbotron">
+                    <h2>No Issues</h2>
+                </div>
+            {% endfor %}
+
+        </div>
+        {% if title != "Prossime Settimane" %}
+            <div class="card-footer">
+                <h4 align="right">Totale Settimana: € {{ sumsett }}</h4>
+            </div>
+        {% endif %}
+    </div>
 {% endmacro %}
 
 {% extends "index.html" %}
 {% block container %}
-    {{ week_block("Settimana Passata",past_issues, past_issues_count, past_sum, 150) }}
-    {{ week_block("Questa Settimana", issues, issues_count, week_sum, 250) }}
-    {{ week_block("Prossime Settimane",future_issues, future_issues_count, 0, 150) }}
+    <p></p>
+    {{ week_block("Settimana Passata",past_issues, past_sum, 4, 30) }}
+    <p></p>
+    {{ week_block("Questa Settimana", issues, week_sum, 3, 40) }}
+    <p></p>
+    {{ week_block("Prossime Settimane",future_issues, 0, 4, 30) }}
 {% endblock %}
