@@ -83,7 +83,7 @@ def main():
     logger.debug("week Issues Count: " + str(week_issues_count))
     logger.debug("future Issues Count: " + str(future_issues_count))
     logger.debug("past Issues Count: " + str(past_issues_count))
-
+    nullobj = Issue(id="cul", data=today)
     return render_template("mainpage_contents.html",
                            issues=week_issues,
                            issues_count=week_issues_count,
@@ -93,7 +93,7 @@ def main():
                            past_issues=past_issues,
                            past_issues_count=past_issues_count,
                            past_sum=past_sum,
-                           nullobj=Issue(id="cul", title="", image="", data=today)
+                           nullobj=nullobj
                            )
 
 
@@ -133,13 +133,12 @@ def clear_db():
     ndb.delete_multi(
         Issue.query().fetch(keys_only=True)
     )
-    cronjob()
     return redirect('/')
 
 
 @app.context_processor
 def series_utility():
-    def list_series(self, items):
+    def list_series(items):
         list_serie = []
         for item in items:
             list_serie.append(item.title)

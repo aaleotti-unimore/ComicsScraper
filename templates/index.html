@@ -4,6 +4,8 @@
 <head>
     <title>The Amazing Kirbi</title>
     <link href="/static/css/bootstrap.css" rel="stylesheet">
+    <link href="/static/chosen/chosen.css" rel="stylesheet">
+    <link href="/static/css/chosen-bootstrap.css" rel="stylesheet">
 </head>
 <body>
 <div class="container" style="max-width: 70rem;">
@@ -13,21 +15,21 @@
                 aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
-        <a class="navbar-brand" href="#">Navbar</a>
+        <a class="navbar-brand" href="#">The Amazing Kirbi</a>
 
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
-            <ul class="navbar-nav mr-auto">
+            <ul class="navbar-nav justify-content-end">
                 <li class="nav-item active">
-                    <a class="nav-link" href="/">Home <span class="sr-only">(current)</span></a>
+                    <a class="nav-link active" href="/">Home<span class="sr-only">(current)</span></a>
                 </li>
                 {% if my_user %}
-                    <li class="nav-item">
-                        <a class="nav-link" href="/user_page">My Series</a>
+                    <li class="nav-item align-right">
+                        <a class="nav-link" href="/user_page">Le Mie Serie</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="{{ logout_url }}">Sign Out</a>
                     </li>
-                    {% else %}
+                {% else %}
                     <li class="nav-item">
                         <a class="nav-link" href="{{ login_url }}">Sign In</a>
                     </li>
@@ -38,17 +40,23 @@
 
     {% block container %}
     {% endblock %}
-
-    <footer class="footer">
-        <p>&copy; Alessandro Aleotti 2017</p>
-    </footer>
-
 </div>
-<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
 <!-- Include all compiled plugins (below), or include individual files as needed -->
 <script src="/static/js/bootstrap.min.js"></script>
-
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js" type="text/javascript"></script>
+<script src="/static/chosen/chosen.jquery.js" type="text/javascript"></script>
+<script type="text/javascript">
+    var config = {
+        '.chosen-select': {},
+        '.chosen-select-deselect': {allow_single_deselect: true},
+        '.chosen-select-no-single': {disable_search_threshold: 10},
+        '.chosen-select-no-results': {no_results_text: 'Oops, nothing found!'},
+        '.chosen-select-width': {width: "95%"}
+    }
+    for (var selector in config) {
+        $(selector).chosen(config[selector]);
+    }
+</script>
 </body>
 
 </html>
