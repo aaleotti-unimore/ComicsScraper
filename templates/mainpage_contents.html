@@ -29,7 +29,7 @@
     <div class="card">
         <div class="card-block">
             <h3 class="card-title">{{ title }}</h3>
-            {% if items: %}
+            {% if items %}
                 {%- for row in items|batch(nColumns,nullobj) %}
                     <div class="card-deck">
                         {% for column in row %}
@@ -59,7 +59,7 @@
     <p></p>
     {{ week_block("Settimana Passata",past_issues, past_sum, 3, 30) }}
     <p></p>
-    {{ week_block("Questa Settimana", issues, week_sum, 3, 40) }}
+    {{ week_block("Questa Settimana", issues, week_sum, 2, 50) }}
     <p></p>
     {{ week_block("Prossime Settimane",future_issues, 0, 3, 30) }}
 {% endblock %}

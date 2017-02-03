@@ -5,7 +5,7 @@ from parsatore import Parsatore
 """`main` is the top level module for your Flask application."""
 
 from datetime import datetime, timedelta
-from flask import Flask, render_template, redirect
+from flask import Flask, render_template, redirect, request, url_for, g
 from google.appengine.ext import ndb
 from google.appengine.api import users
 from dbmanager import DbManager
@@ -35,7 +35,7 @@ def main():
     # END DATETIME RANGES SETTINGS
 
     # QUERY
-    my_user = get_user()[0]
+    my_user = __get_user_status__()[0]
     logger.debug("main user is: " + str(my_user))
     if my_user:
         if my_user.serie_list:
@@ -97,7 +97,17 @@ def main():
                            )
 
 
-@app.route('/user_page', methods=['GET', 'POST'])
+@app.route('/add_series/', methods=['POST'])
+def add_user_series():
+    my_user = Users.get_by_id(users.get_current_user().user_id())
+    id_serie = ndb.Key(Serie, request.form['serie'])
+    if Serie.get_by_id(request.form['serie']):
+        my_user.serie_list.append(id_serie)
+        logging.debug("user id:" + str(my_user) + " serie aggiunta: " + request.form['serie'])
+    return my_page()
+
+
+@app.route('/user_page')
 def my_page():
     dbm = DbManager()
     logger.debug("retrieving all the series: ")
@@ -136,6 +146,7 @@ def clear_db():
     return redirect('/')
 
 
+
 @app.context_processor
 def series_utility():
     def list_series(items):
@@ -147,7 +158,7 @@ def series_utility():
     return dict(list_series=list_series)
 
 
-def get_user():
+def __get_user_status__():
     my_user = None
     logout_url = None
     login_url = None
@@ -177,7 +188,7 @@ def get_user():
 @app.context_processor
 def inject_user():
     logger.info("Injecting User...")
-    userdata = get_user()
+    userdata = __get_user_status__()
     logger.debug("userdata: " + str(userdata))
     logger.info("end injecting user")
     return dict(my_user=userdata[0], login_url=userdata[1], logout_url=userdata[2])

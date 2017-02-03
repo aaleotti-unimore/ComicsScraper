@@ -1,37 +1,45 @@
 {% extends "index.html" %}
 {% block container %}
     <p></p>
-    <div class="container">
-        <div class="row">
-            <div class="col-md-4">
-                <div class="card">
-                    <div class="card-block">
-                        <h4 class="card-title">Card title</h4>
-                        <ul class="list-group list-group-flush">
-                            {% for serie in my_user.serie_list %}
-                                <li class="list-group-item">{{ serie.get().title }}</li>
-                            {% endfor %}
-                        </ul>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-8">
-                <div class="card">
-                    <div class="card-block">
-                        <h4 class="card-title">Aggiungi Serie</h4>
-
+    <div class="card">
+        <div class="card-block">
+            <form class="form-inline" method="post" action="{{ url_for('add_user_series') }}">
+                <label class="sr-only" for="inlineFormInput">Name</label>
+                <input type="text" class="form-control mb-2 mr-sm-2 mb-sm-0" id="inlineFormInput"
+                       placeholder="Inserisci la Serie" name="serie">
+                <button type="submit" class="btn btn-primary">Submit</button>
+            </form>
+        </div>
+    </div>
+    <p></p>
+    <div class="card">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-7 col-sm-12 form-inline">
+                    <form action="https://showrss.info/show/add" method="post" class="form-horizontal" role="form">
                         <select data-placeholder="Choose a Country..." class="chosen-select" style="width:350px;"
                                 tabindex="2">
                             {% for serie in list_series(series) %}
-                                <option value="{{ Serie }}">{{ serie }}</option>
+                                <option value="{{ serie }}">{{ serie }}</option>
                             {% endfor %}
                         </select>
-                        <button type="button" class="btn btn-primary">
-                            Aggiungi Serie
-                        </button>
-                    </div>
+
+                        <button type="submit" class="btn btn-primary selectpill">Add to my list</button>
+                    </form>
                 </div>
             </div>
+        </div>
+    </div>
+    <p></p>
+    <div class="card">
+        <div class="card-block">
+            <h4 class="card-title">Le Mie Serie</h4>
+            <ul class="list-group list-group-flush">
+                {% for serie in my_user.serie_list %}
+                    <li class="list-group-item"><i class="fa fa-times fa-fw"
+                                                   aria-hidden="true"></i>&nbsp;{{ serie.get().title }}</li>
+                {% endfor %}
+            </ul>
         </div>
     </div>
 {% endblock %}

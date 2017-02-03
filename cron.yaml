@@ -1,4 +1,4 @@
 cron:
 - description: weekly DB update
   url: /tasks/weekly_update
-  schedule: every monday 7:00
+  schedule: every monday 5:00

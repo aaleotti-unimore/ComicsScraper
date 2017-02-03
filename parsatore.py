@@ -1,10 +1,10 @@
 import urllib2
 from datetime import datetime
 from bs4 import BeautifulSoup
-import logging
+import logging.config, logging
 
-# create logger
-logger = logging.getLogger(__name__)
+
+
 
 
 # import sys
@@ -14,6 +14,10 @@ logger = logging.getLogger(__name__)
 
 class Parsatore():
     def __init__(self):
+        logging.config.fileConfig('logging.conf')
+        # create logger
+        self.logger = logging.getLogger(__name__)
+
         self.urls = [
             'http://comics.panini.it/store/pub_ita_it/magazines/cmc-m.html?limit=25&p=1',
             'http://comics.panini.it/store/pub_ita_it/magazines/cmc-m.html?limit=25&p=2',
@@ -22,6 +26,7 @@ class Parsatore():
             'http://comics.panini.it/store/pub_ita_it/magazines/cmc-m.html?limit=25&p=5',
             'http://comics.panini.it/store/pub_ita_it/magazines/cmc-m.html?limit=25&p=6',
             'http://comics.panini.it/store/pub_ita_it/magazines/cmc-m.html?limit=25&p=7',
+            'http://comics.panini.it/store/pub_ita_it/magazines/cmc-m.html?limit=25&p=8'
         ]
 
     def parser(self):
@@ -31,7 +36,8 @@ class Parsatore():
                 result = urllib2.urlopen(url, None, 45)
                 page = result.read()
                 soup = BeautifulSoup(page, 'lxml')
-                uscite = soup.find_all('div', attrs={'class': "list-group-item row item "})
+
+                uscite = soup.find_all('div', attrs={'class': "list-group-item"})
 
                 for uscita in uscite:
                     diz = {}
@@ -59,8 +65,8 @@ class Parsatore():
 
                     thmb = uscita.find('img', class_="img-thumbnail img-responsive")
                     diz['image'] = thmb["src"]
-
+                    self.logger.debug("parsed issue:" + diz['title'])
             except urllib2.URLError:
-                logger.exception('Caught exception fetching url')
-        logger.debug("Items parsed: %d", len(parsed))
+                self.logger.exception('Caught exception fetching url')
+        self.logger.debug("Items parsed: %d", len(parsed))
         return parsed
