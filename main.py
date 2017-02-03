@@ -101,9 +101,18 @@ def main():
 def add_user_series():
     my_user = Users.get_by_id(users.get_current_user().user_id())
     id_serie = ndb.Key(Serie, request.form['serie'])
-    if Serie.get_by_id(request.form['serie']):
+    if id_serie not in my_user.serie_list:
         my_user.serie_list.append(id_serie)
         logging.debug("user id:" + str(my_user) + " serie aggiunta: " + request.form['serie'])
+    return my_page()
+
+@app.route('/remove_series/', methods=['POST'])
+def remove_user_series():
+    my_user = Users.get_by_id(users.get_current_user().user_id())
+    id_serie = ndb.Key(Serie, request.form['serie'])
+    if id_serie in my_user.serie_list:
+        my_user.serie_list.remove(id_serie)
+        logging.debug("user id:" + str(my_user) + " serie rimossa: " + request.form['serie'])
     return my_page()
 
 
