@@ -13,6 +13,8 @@ class Issue(ndb.Model):
     data = ndb.DateProperty(indexed=True)
     prezzo = ndb.StringProperty(indexed=False)
     image = ndb.StringProperty(indexed=False)
+    url = ndb.StringProperty(indexed=False)
+    desc = ndb.StringProperty(indexed=False)
 
 class Users(ndb.Model):
     serie_list = ndb.KeyProperty(repeated=True)

@@ -19,6 +19,16 @@
                 {% if item.prezzo %}
                     <h6 class="card-text text-muted">{{ item.prezzo }}</h6>
                 {% endif %}
+                <a tabindex="0" class="btn btn-sm btn-default" role="button" data-toggle="popover" data-placement="top"
+                   data-trigger="focus">Sommario</a>
+                <div id="popover-content" class="hide" style="display:none;">
+                    <ul>
+                        {% for item in get_description(item.title) %}
+                            <li>{{ item }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+
             </div>
             <div class="card-footer">{{ item.data.strftime("%d %b %y") }}</div>
         </div>

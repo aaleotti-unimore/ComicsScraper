@@ -16,11 +16,17 @@ class DbManager:
             if 'subtitle' in item:
                 issue.subtitle = item['subtitle']
             if 'serie' in item:
-                serie = Serie(id=item['serie'].strip('1234567890 '), title=item['serie'].strip('1234567890 '))
+                serie = Serie(id=item['serie'].rstrip('1234567890 '), title=item['serie'].rstrip('1234567890 '))
                 serie.put()
                 issue.serie = serie.key
             if 'ristampa' in item:
                 issue.ristampa = item['ristampa']
+            if 'url' in item:
+                issue.url = item['url']
+            else:
+                issue.url = "#"
+            if 'desc' in item:
+                issue.desc = "<ul>"+item['desc'].replace('','<li>')+"</ul>"
             issue.data = item['data']
             issue.prezzo = item['prezzo']
             if "placeholder/default/no-photo" in item['image']:

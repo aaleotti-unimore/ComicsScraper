@@ -8,7 +8,7 @@
                 <form action="{{ url_for('add_user_series') }}" method="post" class="form-horizontal"
                       role="form">
                     <select name="serie" data-placeholder="Scegli una Serie..." class="chosen-select"
-                            style="width:350px;"
+                            style="max-width:350px;"
                             tabindex="2">
                         {% for serie in list_series(series) %}
                             <option value="{{ serie }}">{{ serie }}</option>

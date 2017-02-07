@@ -5,7 +5,7 @@
     <title>The Amazing Kirbi</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=yes">
     <link href="{{ url_for('static', filename='css/bootstrap.css') }}" rel="stylesheet">
-    <link href="{{ url_for('static', filename='chosen/chosen.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='css/chosen.min.css') }}" rel="stylesheet">
     <link href="{{ url_for('static', filename='css/chosen-bootstrap.css') }}" rel="stylesheet">
     <link href="{{ url_for('static', filename='css/font-awesome.min.css') }}" rel="stylesheet">
 
@@ -62,6 +62,20 @@
     for (var selector in config) {
         $(selector).chosen(config[selector]);
     }
+</script>
+<script type="text/javascript">
+    $(function () {
+        $('[data-toggle="popover"]').popover()
+    })
+    $('.popover-dismiss').popover({
+        trigger: 'focus'
+    })
+    $("[data-toggle=popover]").popover({
+    html: true,
+	content: function() {
+          return $('#popover-content').html();
+        }
+});
 </script>
 </body>
 

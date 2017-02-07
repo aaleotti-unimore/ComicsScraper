@@ -4,9 +4,6 @@ from bs4 import BeautifulSoup
 import logging.config, logging
 
 
-
-
-
 # import sys
 #
 # reload(sys)
@@ -42,8 +39,11 @@ class Parsatore():
                 for uscita in uscite:
                     diz = {}
 
-                    title = uscita.find('h3', class_="product-name").find('a').get_text()
-                    diz['title'] = " ".join(title.split())
+                    title = uscita.find('h3', class_="product-name").find('a')
+                    diz['title'] = " ".join(title.get_text().split())
+                    diz['url'] = str(title.get('href'))
+                    # self.logger.debug(diz['title'] + " - " + diz['url'])
+                    diz['desc'] = self.parse_description(diz['url'])
 
                     subtitle = uscita.find('h3', class_="product-name").find('small', attrs={"class": "subtitle"})
                     if subtitle:
@@ -70,3 +70,12 @@ class Parsatore():
                 self.logger.exception('Caught exception fetching url')
         self.logger.debug("Items parsed: %d", len(parsed))
         return parsed
+
+    def parse_description(self, url):
+        result = urllib2.urlopen(url, None, 45)
+        page = result.read()
+        soup = BeautifulSoup(page, 'lxml')
+        descr = soup.find('div', attrs={'id': "description"})
+        str = descr.text.lstrip().rstrip().split(u'\u2022')
+
+        return str[1:]

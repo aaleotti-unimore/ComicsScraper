@@ -84,6 +84,7 @@ def main():
     logger.debug("future Issues Count: " + str(future_issues_count))
     logger.debug("past Issues Count: " + str(past_issues_count))
     nullobj = Issue(id="cul", data=today)
+
     return render_template("mainpage_contents.html",
                            issues=week_issues,
                            issues_count=week_issues_count,
@@ -105,6 +106,7 @@ def add_user_series():
         my_user.serie_list.append(id_serie)
         logging.debug("user id:" + str(my_user) + " serie aggiunta: " + request.form['serie'])
     return my_page()
+
 
 @app.route('/remove_series/', methods=['POST'])
 def remove_user_series():
@@ -152,9 +154,23 @@ def clear_db():
     ndb.delete_multi(
         Issue.query().fetch(keys_only=True)
     )
+    ndb.delete_multi(
+        Serie.query().fetch(keys_only=True)
+    )
+    ndb.delete_multi(
+        Users.query().fetch(keys_only=True)
+    )
     return redirect('/')
 
 
+@app.context_processor
+def checkdescription():
+    def get_description(title):
+        par = Parsatore()
+        query = Issue.get_by_id(title)
+        return par.parse_description(query.url)
+
+    return dict(get_description=get_description)
 
 @app.context_processor
 def series_utility():
