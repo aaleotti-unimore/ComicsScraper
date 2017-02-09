@@ -128,6 +128,16 @@ def my_page():
     return render_template("my_lists.html", series=series)
 
 
+@app.route('/show_series')
+def show_page():
+    dbm = DbManager()
+    logger.debug("retrieving all the series: ")
+    series = Serie.query()
+    for serie in series:
+        logger.debug(serie.title)
+    return render_template("show_entire_series.html", series=series)
+
+
 @app.errorhandler(404)
 def page_not_found(e):
     """Return a custom 404 error."""
@@ -162,15 +172,6 @@ def clear_db():
     )
     return redirect('/')
 
-
-@app.context_processor
-def checkdescription():
-    def get_description(title):
-        par = Parsatore()
-        query = Issue.get_by_id(title)
-        return par.parse_description(query.url)
-
-    return dict(get_description=get_description)
 
 @app.context_processor
 def series_utility():

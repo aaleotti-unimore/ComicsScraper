@@ -26,7 +26,7 @@ class DbManager:
             else:
                 issue.url = "#"
             if 'desc' in item:
-                issue.desc = "<ul>"+item['desc'].replace('','<li>')+"</ul>"
+                issue.desc = item['desc']
             issue.data = item['data']
             issue.prezzo = item['prezzo']
             if "placeholder/default/no-photo" in item['image']:

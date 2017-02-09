@@ -11,7 +11,7 @@ import logging.config, logging
 
 class Parsatore():
     def __init__(self):
-        logging.config.fileConfig('logging.conf')
+        # logging.config.fileConfig('logging.conf')
         # create logger
         self.logger = logging.getLogger(__name__)
 
@@ -42,7 +42,7 @@ class Parsatore():
                     title = uscita.find('h3', class_="product-name").find('a')
                     diz['title'] = " ".join(title.get_text().split())
                     diz['url'] = str(title.get('href'))
-                    # self.logger.debug(diz['title'] + " - " + diz['url'])
+                    self.logger.debug("Getting description of: "+diz['title'])
                     diz['desc'] = self.parse_description(diz['url'])
 
                     subtitle = uscita.find('h3', class_="product-name").find('small', attrs={"class": "subtitle"})
@@ -52,6 +52,8 @@ class Parsatore():
                     serie = uscita.find('h3', class_="product-name").find('small', attrs={"class": "serie"})
                     if serie:
                         diz['serie'] = " ".join(serie.text.split())
+                    else:
+                        diz['serie'] = "One Shot"
 
                     ristampa = uscita.find('h5', attrs={"class": "reprint"})
                     if ristampa:
@@ -72,10 +74,11 @@ class Parsatore():
         return parsed
 
     def parse_description(self, url):
-        result = urllib2.urlopen(url, None, 45)
+        result = urllib2.urlopen(url, None, 145)
         page = result.read()
         soup = BeautifulSoup(page, 'lxml')
         descr = soup.find('div', attrs={'id': "description"})
         str = descr.text.lstrip().rstrip().split(u'\u2022')
+        self.logger.debug(str)
 
         return str[1:]

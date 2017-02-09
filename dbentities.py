@@ -14,7 +14,7 @@ class Issue(ndb.Model):
     prezzo = ndb.StringProperty(indexed=False)
     image = ndb.StringProperty(indexed=False)
     url = ndb.StringProperty(indexed=False)
-    desc = ndb.StringProperty(indexed=False)
+    desc = ndb.StringProperty(indexed=False, repeated=True)
 
 class Users(ndb.Model):
     serie_list = ndb.KeyProperty(repeated=True)

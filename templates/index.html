@@ -63,20 +63,20 @@
         $(selector).chosen(config[selector]);
     }
 </script>
-<script type="text/javascript">
-    $(function () {
-        $('[data-toggle="popover"]').popover()
-    })
-    $('.popover-dismiss').popover({
-        trigger: 'focus'
-    })
-    $("[data-toggle=popover]").popover({
-    html: true,
-	content: function() {
-          return $('#popover-content').html();
-        }
-});
-</script>
+{#<script type="text/javascript">#}
+{#    $(function () {#}
+{#        $('[data-toggle="popover"]').popover()#}
+{#    });#}
+{#    $('.popover-dismiss').popover({#}
+{#        trigger: 'focus'#}
+{#    });#}
+{#    $("[data-toggle=popover]").popover({#}
+{#        html: true,#}
+{#        content: function () {#}
+{#            return $('#popover-content').html();#}
+{#        }#}
+{#    });#}
+{#</script>#}
 </body>
 
 </html>

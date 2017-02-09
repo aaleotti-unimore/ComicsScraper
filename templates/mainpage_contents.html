@@ -1,49 +1,73 @@
-{% macro print_item(item, maxwidth) %}
-    {% if item == nullobj %}
-        <div class="card" style="border: 0px;">
-        </div>
-    {% else %}
-        <div class="card">
-            <img class="card-img-top img-fluid" src="{{ item.image }}">
-            <div class="card-block">
-                <h4 class="card-title">{{ item.title }}</h4>
-                {% if item.subtitle %}
-                    <h6 class="card-subtitle mb-2 text-muted">{{ item.subtitle }}</h6>
+{% macro print_item(item, maxwidth, current) %}
+
+    <div
+            {% if current %}
+                class="card"
+                {% if item==nullobj %}
+                style="border:0;"
                 {% endif %}
-                {% if item.ristampa %}
-                    <h6 class="card-text text-muted">{{ item.ristampa }}</h6>
-                {% endif %}
-                {% if item.serie %}
-                    <h6 class="card-text text-muted">{{ item.serie.get().title }}</h6>
-                {% endif %}
-                {% if item.prezzo %}
-                    <h6 class="card-text text-muted">{{ item.prezzo }}</h6>
-                {% endif %}
-                <a tabindex="0" class="btn btn-sm btn-default" role="button" data-toggle="popover" data-placement="top"
-                   data-trigger="focus">Sommario</a>
-                <div id="popover-content" class="hide" style="display:none;">
-                    <ul>
-                        {% for item in get_description(item.title) %}
-                            <li>{{ item }}</li>
+            {% else %}
+                class="card card-inverse" style="background-color: #333; border-color: #555;
+                    {% if item==nullobj %}
+                        border:0;
+                    {% endif %}
+                    "
+            {% endif %}
+    >
+        {% if item!=nullobj %}
+{#            {% if current %}#}
+                <img class="card-img-top img-fluid" src="{{ item.image }}">
+                <div class="card-block">
+                    <h4 class="card-title">{{ item.title }}</h4>
+                    {% if item.subtitle %}
+                        <h6 class="card-subtitle mb-2 text-muted">{{ item.subtitle }}</h6>
+                    {% endif %}
+                    {% if item.ristampa %}
+                        <h6 class="card-text text-muted">{{ item.ristampa }}</h6>
+                    {% endif %}
+                    {% if item.serie %}
+                        <h6 class="card-text text-muted">{{ item.serie.get().title }}</h6>
+                    {% endif %}
+                    {% if item.prezzo %}
+                        <h6 class="card-text text-muted">{{ item.prezzo }}</h6>
+                    {% endif %}
+                </div>
+                {% if current %}
+                    <ul class="list-group">
+                        {% for desc in item.desc %}
+                            <li class="list-group-item">
+                                <small>{{ desc }}</small>
+                            </li>
                         {% endfor %}
                     </ul>
-                </div>
-
-            </div>
+                {% endif %}
+{#            {% else %}#}
+{#                 <img class="card-img-top img-fluid" src="{{ item.image }}">#}
+{#                <div class="card-block">#}
+{#                    <h4 class="card-title">{{ item.title }}</h4>#}
+{#            {% endif %}#}
             <div class="card-footer">{{ item.data.strftime("%d %b %y") }}</div>
-        </div>
-    {% endif %}
+        {% endif %}
+    </div>
 {% endmacro %}
 
-{% macro week_block(title, items, sumsett, nColumns, maxwidth) %}
-    <div class="card">
+{% macro week_block(title, items, sumsett, nColumns, maxwidth, current) %}
+
+    <div
+            {% if current %}
+                class="card"
+            {% else %}
+                class="card card-inverse" style="background-color: #333; border-color: #555;"
+            {% endif %}
+    >
+
         <div class="card-block">
             <h3 class="card-title">{{ title }}</h3>
             {% if items %}
                 {%- for row in items|batch(nColumns,nullobj) %}
                     <div class="card-deck">
                         {% for column in row %}
-                            {{ print_item(column, maxwidth) }}
+                            {{ print_item(column, maxwidth, current) }}
                             <p></p>
                         {% endfor %}
                     </div>
@@ -54,7 +78,6 @@
                     <h2>Nessuna Uscita</h2>
                 </div>
             {% endif %}
-
         </div>
         {% if title != "Prossime Settimane" %}
             <div class="card-footer">
@@ -67,9 +90,9 @@
 {% extends "index.html" %}
 {% block container %}
     <p></p>
-    {{ week_block("Settimana Precedente",past_issues, past_sum, 5, 30) }}
+    {{ week_block("Settimana Precedente",past_issues, past_sum, 5, 30, False) }}
     <p></p>
-    {{ week_block("Questa Settimana", issues, week_sum, 4, 30) }}
+    {{ week_block("Questa Settimana", issues, week_sum, 3, 30, True) }}
     <p></p>
-    {{ week_block("Prossime Settimane",future_issues, 0, 5, 30) }}
+    {{ week_block("Prossime Settimane",future_issues, 0, 5, 30, False) }}
 {% endblock %}
