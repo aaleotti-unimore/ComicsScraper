@@ -181,7 +181,10 @@ def series_utility():
             list_serie.append(item.title)
         return list_serie
 
-    return dict(list_series=list_series)
+    def getUrlKey(title):
+        return ndb.Key(Issue, title).urlsafe()
+
+    return dict(list_series=list_series, getUrlKey=getUrlKey)
 
 
 def __get_user_status__():

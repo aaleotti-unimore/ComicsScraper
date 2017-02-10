@@ -9,6 +9,25 @@
     <link href="{{ url_for('static', filename='css/chosen-bootstrap.css') }}" rel="stylesheet">
     <link href="{{ url_for('static', filename='css/font-awesome.min.css') }}" rel="stylesheet">
 
+    <script src="https://code.jquery.com/jquery-3.1.1.slim.js"></script>
+    <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js"
+            integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb"
+            crossorigin="anonymous"></script>
+    <script src="{{ url_for('static', filename='js/bootstrap.js') }}" type="text/javascript"></script>
+    <script src="{{ url_for('static', filename='js/chosen.jquery.min.js') }}" type="text/javascript"></script>
+    <script type="text/javascript">
+        var config = {
+            '.chosen-select': {},
+            '.chosen-select-deselect': {allow_single_deselect: true},
+            '.chosen-select-no-single': {disable_search_threshold: 10},
+            '.chosen-select-no-results': {no_results_text: 'Oops, nothing found!'},
+            '.chosen-select-width': {width: "95%"}
+        }
+        for (var selector in config) {
+            $(selector).chosen(config[selector]);
+        }
+    </script>
 </head>
 <body>
 <div class="container" style="max-width: 70rem;">
@@ -41,28 +60,10 @@
         </div>
     </nav>
 
+
     {% block container %}
     {% endblock %}
 </div>
-<script src="https://code.jquery.com/jquery-3.1.1.slim.js"></script>
-<script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js"
-        integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb"
-        crossorigin="anonymous"></script>
-<script src="{{ url_for('static', filename='js/bootstrap.js') }}" type="text/javascript"></script>
-<script src="{{ url_for('static', filename='js/chosen.jquery.min.js') }}" type="text/javascript"></script>
-<script type="text/javascript">
-    var config = {
-        '.chosen-select': {},
-        '.chosen-select-deselect': {allow_single_deselect: true},
-        '.chosen-select-no-single': {disable_search_threshold: 10},
-        '.chosen-select-no-results': {no_results_text: 'Oops, nothing found!'},
-        '.chosen-select-width': {width: "95%"}
-    }
-    for (var selector in config) {
-        $(selector).chosen(config[selector]);
-    }
-</script>
 {#<script type="text/javascript">#}
 {#    $(function () {#}
 {#        $('[data-toggle="popover"]').popover()#}
