@@ -15,6 +15,9 @@ class DbManager:
             issue.title = item['title']
             if 'subtitle' in item:
                 issue.subtitle = item['subtitle']
+                if ("Variant" in item['subtitle']) or ("variant" in item['subtitle']):
+                    issue.id = item['title'] + " variant"
+                    logger.debug("found variant, new issue id is " + item['title'] + " variant")
             if 'serie' in item:
                 serie = Serie(id=item['serie'].rstrip('1234567890 '), title=item['serie'].rstrip('1234567890 '))
                 serie.put()

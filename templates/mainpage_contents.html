@@ -11,7 +11,9 @@
 
             <img class="card-img-top img-fluid" src="{{ item.image }}">
             <div class="card-block">
-                <h5 class="card-title">{{ item.title }}</h5>
+
+                <{% if current %}h5{% else %}h6{% endif %} class="card-title">{{ item.title }}</{% if current %}
+                h5{% else %}h6{% endif %}>
                 {% if current %}
                     {% if item.subtitle %}
                         <h6 class="card-subtitle mb-2 text-muted">{{ item.subtitle }}</h6>
@@ -27,14 +29,15 @@
                     {% endif %}
                 {% endif %}
             </div>
-            <button id="btn{{ getUrlKey(item.title) }}" class="btn btn-sm btn-action" type="button"
+            <button id="btn{{ getUrlKey(item.title) }}" class="btn btn-sm btn-primary" type="button"
                     data-toggle="modal"
                     data-target="mod{{ getUrlKey(item.title) }}">Sommario
             </button>
 
+
             <!-- Modal -->
             <div class="modal fade" id="mod{{ getUrlKey(item.title) }}" role="dialog">
-                <div class="modal-dialog">
+                <div class="modal-dialog modal-sm modal-lg">
 
                     <!-- Modal content-->
                     <div class="modal-content">

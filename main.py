@@ -98,7 +98,7 @@ def main():
                            )
 
 
-@app.route('/add_series/', methods=['POST'])
+@app.route('/user_page/add_series/', methods=['POST'])
 def add_user_series():
     my_user = Users.get_by_id(users.get_current_user().user_id())
     id_serie = ndb.Key(Serie, request.form['serie'])
@@ -108,7 +108,7 @@ def add_user_series():
     return my_page()
 
 
-@app.route('/remove_series/', methods=['POST'])
+@app.route('/user_page/remove_series/', methods=['POST'])
 def remove_user_series():
     my_user = Users.get_by_id(users.get_current_user().user_id())
     id_serie = ndb.Key(Serie, request.form['serie'])
@@ -128,13 +128,24 @@ def my_page():
     return render_template("my_lists.html", series=series)
 
 
+@app.route('/show_series/get/', methods=['POST'])
+def query_serie():
+    id_serie = ndb.Key(Serie, request.form['serie'])
+    logger.debug("REQUESTED SERIES:" + request.form['serie'])
+    issues = Issue.query(Issue.serie ==id_serie)
+    for issue in issues:
+        logger.debug("QUERY RESULT: "+issue.title)
+    return show_page()
+
+
+
 @app.route('/show_series')
 def show_page():
     dbm = DbManager()
     logger.debug("retrieving all the series: ")
     series = Serie.query()
-    for serie in series:
-        logger.debug(serie.title)
+    # for serie in series:
+    #     logger.debug(serie.title)
     return render_template("show_entire_series.html", series=series)
 
 
@@ -154,23 +165,22 @@ def application_error(e):
 def cronjob():
     logger.info("Parsing all the Issues")
     par = Parsatore()
-    dbm = DbManager()
-    dbm.save_to_DB(par.parser())
+    par.parser()
     return redirect('/')
 
 
-@app.route('/restricted/cleardb')
-def clear_db():
-    ndb.delete_multi(
-        Issue.query().fetch(keys_only=True)
-    )
-    ndb.delete_multi(
-        Serie.query().fetch(keys_only=True)
-    )
-    ndb.delete_multi(
-        Users.query().fetch(keys_only=True)
-    )
-    return redirect('/')
+# @app.route('/restricted/cleardb')
+# def clear_db():
+#     ndb.delete_multi(
+#         Issue.query().fetch(keys_only=True)
+#     )
+#     ndb.delete_multi(
+#         Serie.query().fetch(keys_only=True)
+#     )
+#     ndb.delete_multi(
+#         Users.query().fetch(keys_only=True)
+#     )
+#     return redirect('/')
 
 
 @app.context_processor

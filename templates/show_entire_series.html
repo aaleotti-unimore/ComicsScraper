@@ -1,49 +1,85 @@
+{% extends "index.html" %}
 
+{% macro print_item(item, maxwidth, current) %}
+    <div
 
-{% macro print_item(item, maxwidth) %}
-    {% if item == nullobj %}
-        <div class="card" style="border: 0px;">
-        </div>
-    {% else %}
-        <div class="card">
+            class="card"
+            {% if item==nullobj %}
+            style="border:0;"
+            {% endif %}
+
+    >
+        {% if item!=nullobj %}
+
             <img class="card-img-top img-fluid" src="{{ item.image }}">
             <div class="card-block">
-                <h4 class="card-title">{{ item.title }}</h4>
-                {% if item.subtitle %}
-                    <h6 class="card-subtitle mb-2 text-muted">{{ item.subtitle }}</h6>
-                {% endif %}
-                {% if item.ristampa %}
-                    <h6 class="card-text text-muted">{{ item.ristampa }}</h6>
-                {% endif %}
-                {% if item.serie %}
-                    <h6 class="card-text text-muted">{{ item.serie.get().title }}</h6>
-                {% endif %}
-                {% if item.prezzo %}
-                    <h6 class="card-text text-muted">{{ item.prezzo }}</h6>
+
+                <{% if current %}h5{% else %}h6{% endif %} class="card-title">{{ item.title }}</{% if current %}
+                h5{% else %}h6{% endif %}>
+                {% if current %}
+                    {% if item.subtitle %}
+                        <h6 class="card-subtitle mb-2 text-muted">{{ item.subtitle }}</h6>
+                    {% endif %}
+                    {% if item.ristampa %}
+                        <h6 class="card-text text-muted">{{ item.ristampa }}</h6>
+                    {% endif %}
+                    {% if item.serie %}
+                        <h6 class="card-text text-muted">{{ item.serie.get().title }}</h6>
+                    {% endif %}
+                    {% if item.prezzo %}
+                        <h6 class="card-text text-muted">{{ item.prezzo }}</h6>
+                    {% endif %}
                 {% endif %}
             </div>
-            <div class="list-group list-group-flush">
+            <button id="btn{{ getUrlKey(item.title) }}" class="btn btn-sm btn-primary" type="button"
+                    data-toggle="modal"
+                    data-target="mod{{ getUrlKey(item.title) }}">Sommario
+            </button>
 
-                <button type="button" class="list-group-item list-group-item-action" role="button" data-toggle="popover"
-                        {#                        data-container="body"#}
-                        data-placement="top"
-                        data-trigger="focus">Sommario
-                </button>
 
-            </div>
-            <div id="popover-content" class="hide" style="display:none;">
-                <div class="list-group list-group-flush">
-                    {% for item in item.desc %}
-                        <li class="list-group-item">{{ item }}</li>
-                    {% endfor %}
+            <!-- Modal -->
+            <div class="modal fade" id="mod{{ getUrlKey(item.title) }}" role="dialog">
+                <div class="modal-dialog modal-sm modal-lg">
+
+                    <!-- Modal content-->
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                            <h6 class="modal-title">Sommario {{ item.title }}</h6>
+                        </div>
+                        <div class="modal-body">
+                            <ul class="list-group list-group-flush">
+                                {% for desc in item.desc %}
+                                    <li class="list-group-item">{{ desc }}</li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-small btn-default" data-dismiss="modal">Close
+                            </button>
+                        </div>
+                    </div>
+
                 </div>
             </div>
-            <div class="card-footer">{{ item.data.strftime("%d %b %y") }}</div>
-        </div>
-    {% endif %}
+            <div class="card-footer">
+                <small>
+                    {{ item.data.strftime("%d %b %y") }}
+                </small>
+            </div>
+        {% endif %}
+    </div>
+
+    <script async language="javascript" type="text/javascript">
+        $(document).ready(function () {
+            $("#btn{{ getUrlKey(item.title) }}").click(function () {
+                $("#mod{{ getUrlKey(item.title) }}").modal();
+            });
+        });
+    </script>
 {% endmacro %}
 
-{% macro week_block(title, items, sumsett, nColumns, maxwidth) %}
+{% macro week_block(title, items, sumsett, nColumns, maxwidth, current) %}
     <div class="card">
         <div class="card-block">
             <h3 class="card-title">{{ title }}</h3>
@@ -51,7 +87,7 @@
                 {%- for row in items|batch(nColumns,nullobj) %}
                     <div class="card-deck">
                         {% for column in row %}
-                            {{ print_item(column, maxwidth) }}
+                            {{ print_item(column, maxwidth, current) }}
                             <p></p>
                         {% endfor %}
                     </div>
@@ -62,19 +98,22 @@
                     <h2>Nessuna Uscita</h2>
                 </div>
             {% endif %}
-
         </div>
+        {% if title != "Prossime Settimane" %}
+            <div class="card-footer">
+                <h4 align="right">Totale Settimana: € {{ sumsett }}</h4>
+            </div>
+        {% endif %}
     </div>
 {% endmacro %}
 
-{% extends "index.html" %}
 {% block container %}
     <p></p>
     <div class="card">
         <div class="card-block">
             <h4 class="card-title">Mostra una Serie</h4>
             <div class="form-inline">
-                <form action="{{ url_for('add_user_series') }}" method="post" class="form-horizontal"
+                <form action="{{ url_for('query_serie') }}" method="post" class="form-horizontal"
                       role="form">
                     <select name="serie" data-placeholder="Scegli una Serie..." class="chosen-select"
                             style="max-width:350px;"
@@ -90,6 +129,18 @@
         </div>
     </div>
     <p></p>
-    {{ week_block("Lista Uscite",past_issues, past_sum, 5, 30) }}
+    {{ week_block("Lista Uscite",issues, 0, 5, 30) }}
     <p></p>
+    <script async type="text/javascript">
+        var config = {
+            '.chosen-select': {},
+            '.chosen-select-deselect': {allow_single_deselect: true},
+            '.chosen-select-no-single': {disable_search_threshold: 10},
+            '.chosen-select-no-results': {no_results_text: 'Oops, nothing found!'},
+            '.chosen-select-width': {width: "95%"}
+        };
+        for (var selector in config) {
+            $(selector).chosen(config[selector]);
+        }
+    </script>
 {% endblock %}

@@ -2,7 +2,7 @@ import urllib2
 from datetime import datetime
 from bs4 import BeautifulSoup
 import logging.config, logging
-
+from dbmanager import DbManager
 
 # import sys
 #
@@ -11,6 +11,7 @@ import logging.config, logging
 
 class Parsatore():
     def __init__(self):
+        self.dbm = DbManager()
         # logging.config.fileConfig('logging.conf')
         # create logger
         self.logger = logging.getLogger(__name__)
@@ -26,23 +27,29 @@ class Parsatore():
             'http://comics.panini.it/store/pub_ita_it/magazines/cmc-m.html?limit=25&p=8'
         ]
 
+
+
     def parser(self):
-        parsed = []
+        # lista elementi parsati
+
         for url in self.urls:
+            parsed = []
             try:
                 result = urllib2.urlopen(url, None, 45)
                 page = result.read()
                 soup = BeautifulSoup(page, 'lxml')
-
+                # lettra di tutti gli elementi div della lista delle uscite
                 uscite = soup.find_all('div', attrs={'class': "list-group-item"})
 
                 for uscita in uscite:
+                    # dizionario contenente tutti i valori da salvare nell'oggetto Issue sul DB
                     diz = {}
 
+                    # ottiene titolo e url della pagina per ritorvare la Sinossi
                     title = uscita.find('h3', class_="product-name").find('a')
                     diz['title'] = " ".join(title.get_text().split())
                     diz['url'] = str(title.get('href'))
-                    self.logger.debug("Getting description of: "+diz['title'])
+                    self.logger.debug("Getting description of: " + diz['title'])
                     diz['desc'] = self.parse_description(diz['url'])
 
                     subtitle = uscita.find('h3', class_="product-name").find('small', attrs={"class": "subtitle"})
@@ -70,8 +77,10 @@ class Parsatore():
                     self.logger.debug("parsed issue:" + diz['title'])
             except urllib2.URLError:
                 self.logger.exception('Caught exception fetching url')
-        self.logger.debug("Items parsed: %d", len(parsed))
-        return parsed
+
+            self.dbm.save_to_DB(parsed)
+            self.logger.debug("Items parsed: %d", len(parsed))
+        # return parsed
 
     def parse_description(self, url):
         result = urllib2.urlopen(url, None, 145)
