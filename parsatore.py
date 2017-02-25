@@ -1,8 +1,9 @@
-import urllib2
+import urllib2, httplib
 from datetime import datetime
 from bs4 import BeautifulSoup
 import logging.config, logging
 from dbmanager import DbManager
+
 
 # import sys
 #
@@ -17,17 +18,15 @@ class Parsatore():
         self.logger = logging.getLogger(__name__)
 
         self.urls = [
-            'http://comics.panini.it/store/pub_ita_it/magazines/cmc-m.html?limit=25&p=1',
-            'http://comics.panini.it/store/pub_ita_it/magazines/cmc-m.html?limit=25&p=2',
-            'http://comics.panini.it/store/pub_ita_it/magazines/cmc-m.html?limit=25&p=3',
-            'http://comics.panini.it/store/pub_ita_it/magazines/cmc-m.html?limit=25&p=4',
+            # 'http://comics.panini.it/store/pub_ita_it/magazines/cmc-m.html?limit=25&p=1',
+            # 'http://comics.panini.it/store/pub_ita_it/magazines/cmc-m.html?limit=25&p=2',
+            # 'http://comics.panini.it/store/pub_ita_it/magazines/cmc-m.html?limit=25&p=3',
+            # 'http://comics.panini.it/store/pub_ita_it/magazines/cmc-m.html?limit=25&p=4',
             'http://comics.panini.it/store/pub_ita_it/magazines/cmc-m.html?limit=25&p=5',
-            'http://comics.panini.it/store/pub_ita_it/magazines/cmc-m.html?limit=25&p=6',
-            'http://comics.panini.it/store/pub_ita_it/magazines/cmc-m.html?limit=25&p=7',
-            'http://comics.panini.it/store/pub_ita_it/magazines/cmc-m.html?limit=25&p=8'
+            # 'http://comics.panini.it/store/pub_ita_it/magazines/cmc-m.html?limit=25&p=6',
+            # 'http://comics.panini.it/store/pub_ita_it/magazines/cmc-m.html?limit=25&p=7',
+            # 'http://comics.panini.it/store/pub_ita_it/magazines/cmc-m.html?limit=25&p=8'
         ]
-
-
 
     def parser(self):
         # lista elementi parsati
@@ -80,14 +79,29 @@ class Parsatore():
 
             self.dbm.save_to_DB(parsed)
             self.logger.debug("Items parsed: %d", len(parsed))
-        # return parsed
+            # return parsed
 
     def parse_description(self, url):
-        result = urllib2.urlopen(url, None, 145)
-        page = result.read()
-        soup = BeautifulSoup(page, 'lxml')
-        descr = soup.find('div', attrs={'id': "description"})
-        str = descr.text.lstrip().rstrip().split(u'\u2022')
-        self.logger.debug(str)
+        result = None
+        try:
+            result = urllib2.urlopen(url, None, 145)
+            page = result.read()
+            soup = BeautifulSoup(page, 'lxml')
+            descr = soup.find('div', attrs={'id': "description"})
+            str = descr.text.lstrip().rstrip().split(u'\u2022')
+            self.logger.debug(str)
+            return str[1:]
 
-        return str[1:]
+        except urllib2.HTTPError as e:
+            self.logger.error('HTTPError = ' + str(e.code))
+            return "#"
+        except urllib2.URLError as e:
+            self.logger.error('URLError = ' + str(e.reason))
+            return "#"
+        except httplib.HTTPException as e:
+            self.logger.error('HTTPException')
+            return "#"
+        except Exception:
+            import traceback
+            self.logger.error('generic exception: ' + traceback.format_exc())
+            return "#"

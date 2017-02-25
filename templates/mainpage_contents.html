@@ -14,7 +14,7 @@
 
                 <{% if current %}h5{% else %}h6{% endif %} class="card-title">{{ item.title }}</{% if current %}
                 h5{% else %}h6{% endif %}>
-                {% if current %}
+{#                {% if current %}#}
                     {% if item.subtitle %}
                         <h6 class="card-subtitle mb-2 text-muted">{{ item.subtitle }}</h6>
                     {% endif %}
@@ -27,7 +27,7 @@
                     {% if item.prezzo %}
                         <h6 class="card-text text-muted">{{ item.prezzo }}</h6>
                     {% endif %}
-                {% endif %}
+{#                {% endif %}#}
             </div>
             <button id="btn{{ getUrlKey(item.title) }}" class="btn btn-sm btn-primary" type="button"
                     data-toggle="modal"

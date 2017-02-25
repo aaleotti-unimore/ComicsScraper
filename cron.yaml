@@ -2,3 +2,6 @@ cron:
 - description: weekly DB update
   url: /tasks/weekly_update
   schedule: every monday 5:00
+  retry_parameters:
+    min_backoff_seconds: 30
+    max_doublings: 5

@@ -5,12 +5,13 @@ from parsatore import Parsatore
 """`main` is the top level module for your Flask application."""
 
 from datetime import datetime, timedelta
-from flask import Flask, render_template, redirect, request, url_for, g
+from flask import Flask, render_template, redirect, request, jsonify
 from google.appengine.ext import ndb
 from google.appengine.api import users
 from dbmanager import DbManager
 from werkzeug import debug
 from dbentities import Issue, Serie, Users
+import json
 import logging.config
 
 logging.config.fileConfig('logging.conf')
@@ -120,7 +121,6 @@ def remove_user_series():
 
 @app.route('/user_page')
 def my_page():
-    dbm = DbManager()
     logger.debug("retrieving all the series: ")
     series = Serie.query()
     for serie in series:
@@ -130,23 +130,36 @@ def my_page():
 
 @app.route('/show_series/get/', methods=['POST'])
 def query_serie():
-    id_serie = ndb.Key(Serie, request.form['serie'])
-    logger.debug("REQUESTED SERIES:" + request.form['serie'])
-    issues = Issue.query(Issue.serie ==id_serie)
-    for issue in issues:
-        logger.debug("QUERY RESULT: "+issue.title)
-    return show_page()
+    serie_title = request.form['serie']
+    if serie_title:
+        id_serie = ndb.Key(Serie, serie_title)
+        logger.debug("REQUESTED SERIE:" + request.form['serie'])
+        issue = Issue.query(Issue.serie == id_serie).fetch()
+        logger.debug(issue[0].to_json(issue[0]))
+        iss = issue[0].to_json(issue[0])
+        return app.response_class(iss, content_type='application/json')
+    else:
+        return jsonify({})
 
 
 
-@app.route('/show_series')
+@app.route('/show_series', methods=['GET', 'POST'])
 def show_page():
     dbm = DbManager()
     logger.debug("retrieving all the series: ")
     series = Serie.query()
-    # for serie in series:
-    #     logger.debug(serie.title)
-    return render_template("show_entire_series.html", series=series)
+    if request.method == 'POST':
+        pass
+    else:
+        logger.debug("rendering page:")
+        return render_template("show_entire_series.html", series=series)
+
+
+@app.route('/echo/', methods=['GET'])
+def echo():
+    ret_data = {"value": request.args.get('echoValue')}
+    logging.debug("ret data" + str(ret_data))
+    return jsonify(ret_data)
 
 
 @app.errorhandler(404)
