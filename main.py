@@ -5,14 +5,14 @@ from parsatore import Parsatore
 """`main` is the top level module for your Flask application."""
 
 from datetime import datetime, timedelta
-from flask import Flask, render_template, redirect, request, jsonify
+from flask import Flask, render_template, redirect, request, jsonify, Response
 from google.appengine.ext import ndb
 from google.appengine.api import users
 from dbmanager import DbManager
 from werkzeug import debug
 from dbentities import Issue, Serie, Users
-import json
 import logging.config
+import json
 
 logging.config.fileConfig('logging.conf')
 # create logger
@@ -128,24 +128,30 @@ def my_page():
     return render_template("my_lists.html", series=series)
 
 
+def date_handler(obj):
+    if hasattr(obj, 'isoformat'):
+        return obj.isoformat()
+    else:
+        raise TypeError
+
+
 @app.route('/show_series/get/', methods=['POST'])
 def query_serie():
     serie_title = request.form['serie']
+    dbm = DbManager()
     if serie_title:
         id_serie = ndb.Key(Serie, serie_title)
         logger.debug("REQUESTED SERIE:" + request.form['serie'])
-        issue = Issue.query(Issue.serie == id_serie).fetch()
-        logger.debug(issue[0].to_json(issue[0]))
-        iss = issue[0].to_json(issue[0])
-        return app.response_class(iss, content_type='application/json')
+        issues = Issue.query(Issue.serie == id_serie).fetch()
+        dump = dbm.to_json(issues)
+        logger.debug(dump)
+        return json.dumps(dump, default=date_handler)
     else:
-        return jsonify({})
-
+        return "null"
 
 
 @app.route('/show_series', methods=['GET', 'POST'])
 def show_page():
-    dbm = DbManager()
     logger.debug("retrieving all the series: ")
     series = Serie.query()
     if request.method == 'POST':

@@ -1,7 +1,7 @@
 from __future__ import print_function
 
 import logging
-
+import datetime
 from google.appengine.ext import ndb
 
 from dbentities import Issue, Serie
@@ -53,3 +53,23 @@ class DbManager:
         for item in items:
             item.key.delete()
         logger.debug("Deleted all the items")
+
+    def to_json(self, o):
+        if isinstance(o, list):
+            return [self.to_json(l) for l in o]
+        if isinstance(o, dict):
+            x = {}
+            for l in o:
+                x[l] = self.to_json(o[l])
+            return x
+        if isinstance(o, datetime.datetime):
+            return o.isoformat()
+        if isinstance(o, ndb.GeoPt):
+            return {'lat': o.lat, 'lon': o.lon}
+        if isinstance(o, ndb.Key):
+            return o.urlsafe()
+        if isinstance(o, ndb.Model):
+            dct = o.to_dict()
+            dct['id'] = o.key.id()
+            return self.to_json(dct)
+        return o

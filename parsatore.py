@@ -18,14 +18,14 @@ class Parsatore():
         self.logger = logging.getLogger(__name__)
 
         self.urls = [
-            # 'http://comics.panini.it/store/pub_ita_it/magazines/cmc-m.html?limit=25&p=1',
-            # 'http://comics.panini.it/store/pub_ita_it/magazines/cmc-m.html?limit=25&p=2',
-            # 'http://comics.panini.it/store/pub_ita_it/magazines/cmc-m.html?limit=25&p=3',
-            # 'http://comics.panini.it/store/pub_ita_it/magazines/cmc-m.html?limit=25&p=4',
+            'http://comics.panini.it/store/pub_ita_it/magazines/cmc-m.html?limit=25&p=1',
+            'http://comics.panini.it/store/pub_ita_it/magazines/cmc-m.html?limit=25&p=2',
+            'http://comics.panini.it/store/pub_ita_it/magazines/cmc-m.html?limit=25&p=3',
+            'http://comics.panini.it/store/pub_ita_it/magazines/cmc-m.html?limit=25&p=4',
             'http://comics.panini.it/store/pub_ita_it/magazines/cmc-m.html?limit=25&p=5',
-            # 'http://comics.panini.it/store/pub_ita_it/magazines/cmc-m.html?limit=25&p=6',
-            # 'http://comics.panini.it/store/pub_ita_it/magazines/cmc-m.html?limit=25&p=7',
-            # 'http://comics.panini.it/store/pub_ita_it/magazines/cmc-m.html?limit=25&p=8'
+            'http://comics.panini.it/store/pub_ita_it/magazines/cmc-m.html?limit=25&p=6',
+            'http://comics.panini.it/store/pub_ita_it/magazines/cmc-m.html?limit=25&p=7',
+            'http://comics.panini.it/store/pub_ita_it/magazines/cmc-m.html?limit=25&p=8'
         ]
 
     def parser(self):
