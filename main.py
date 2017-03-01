@@ -135,6 +135,13 @@ def date_handler(obj):
         raise TypeError
 
 
+@app.route('/show_series/add_issue/', methods=['POST'])
+def add_issue():
+    issue = request
+    logger.debug(str(issue))
+    return jsonify(response="response")
+
+
 @app.route('/show_series/get/', methods=['POST'])
 def query_serie():
     serie_title = request.form['serie']
@@ -142,9 +149,9 @@ def query_serie():
     if serie_title:
         id_serie = ndb.Key(Serie, serie_title)
         logger.debug("REQUESTED SERIE:" + request.form['serie'])
-        issues = Issue.query(Issue.serie == id_serie).fetch()
+        issues = Issue.query(Issue.serie == id_serie).order(Issue.data).fetch()
         dump = dbm.to_json(issues)
-        logger.debug(dump)
+        logger.debug("issues sent: " + str(len(dump)))
         return json.dumps(dump, default=date_handler)
     else:
         return "null"

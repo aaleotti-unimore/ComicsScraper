@@ -1,12 +1,76 @@
 {% extends "index.html" %}
 {% block container %}
-    <script type="text/javascript" src="{{ url_for('static', filename='js/script.js') }}"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.6/handlebars.min.js"></script>
+    <script async type="text/javascript" src="{{ url_for('static', filename='js/chosen_bootstrap.js') }}"></script>
+    {#    <script type="text/javascript" src="{{ url_for('static', filename='js/script.js') }}"></script>#}
+
+    <script id="card-template" type="text/x-handlebars-template">
+        {% raw %}
+        <div class="card">
+            <img class="card-img-top img-fluid" src="{{ image }}">
+            <div class="card-block">
+                <h6 class="card-title">{{ title }}</h6>
+                <h6 class="card-subtitle mb-2 text-muted">{{ subtitle }}</h6>
+                <h6 class="card-text text-muted">{{ ristampa }}</h6>
+                <h6 class="card-text text-muted">{{ prezzo }}</h6>
+            </div>
+        </div>
+        {% endraw %}
+    </script>
+    <script type="text/javascript">
+        $(function () {
+            var results = $('#results');
+            $('#sendSerie').click(function () {
+                var n_columns = 5;
+                var results = $('#results');
+                results.empty();
+                $.ajax({
+                    url: '/show_series/get/',
+                    data: $('form').serialize(),
+                    type: 'POST',
+                    dataType: 'json',
+                    success: function (response) {
+                        console.log(response);
+                        var length = response.length;
+                        var rest = length % n_columns;
+                        console.log("initial length " + length + " rest " + rest);
+                        if (rest != 0) {
+                            var itera = (n_columns * (Math.floor(length / n_columns) + 1) - length);
+                            console.log("da aggiungere " + itera);
+                            for (var i = 0; i < itera; i++) {
+                                response.push({})
+                            }
+                        }
+                        console.log("after: " + response.length);
+                        console.log(response);
+                        var source = $("#card-template").html();
+                        var template = Handlebars.compile(source);
+                        var deck = $('<div/>', {"class": "card-deck"}).attr("id", "deck0");
+                        deck.after($('<p/>'));
+                        var i = 0;
+                        $.each(response, function (index, val) {
+                            if ((index % 5) == 0) {
+                                deck = $('<div/>', {"class": "card-deck"}).attr("id", "deck" + i);
+                                results.append(deck);
+                                results.append("<p></p>");
+                                i++;
+                            }
+                            var html = template(val);
+                            deck.append(html);
+                        });
+                    },
+                    error: function (error) {
+                    }
+                })
+            })
+        })
+    </script>
     <p></p>
     <div class="card">
         <div class="card-block">
             <h4 class="card-title">Mostra una Serie</h4>
             <div class="form-inline">
-                <form method="post" class="form-horizontal"
+                <form method="post" class="form-horizontal form-"
                       role="form">
                     <select id="selectSerie" name="serie" data-placeholder="Scegli una Serie..." class="chosen-select"
                             style="max-width:350px;"
@@ -23,10 +87,7 @@
 
     <p></p>
     <div class="card">
-        <div class="card-block">
-            <div class="card-deck" id="results">
-            </div>
+        <div class="card-block" id="results">
         </div>
     </div>
-    <script async type="text/javascript" src="{{ url_for('static', filename='js/chosen_bootstrap.js') }}"></script>
 {% endblock %}

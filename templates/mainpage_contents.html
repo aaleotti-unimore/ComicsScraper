@@ -1,11 +1,9 @@
 {% macro print_item(item, maxwidth, current) %}
     <div
-
             class="card"
             {% if item==nullobj %}
             style="border:0;"
             {% endif %}
-
     >
         {% if item!=nullobj %}
 
@@ -14,20 +12,20 @@
 
                 <{% if current %}h5{% else %}h6{% endif %} class="card-title">{{ item.title }}</{% if current %}
                 h5{% else %}h6{% endif %}>
-{#                {% if current %}#}
-                    {% if item.subtitle %}
-                        <h6 class="card-subtitle mb-2 text-muted">{{ item.subtitle }}</h6>
-                    {% endif %}
-                    {% if item.ristampa %}
-                        <h6 class="card-text text-muted">{{ item.ristampa }}</h6>
-                    {% endif %}
-                    {% if item.serie %}
-                        <h6 class="card-text text-muted">{{ item.serie.get().title }}</h6>
-                    {% endif %}
-                    {% if item.prezzo %}
-                        <h6 class="card-text text-muted">{{ item.prezzo }}</h6>
-                    {% endif %}
-{#                {% endif %}#}
+                {#                {% if current %}#}
+                {% if item.subtitle %}
+                    <h6 class="card-subtitle mb-2 text-muted">{{ item.subtitle }}</h6>
+                {% endif %}
+                {% if item.ristampa %}
+                    <h6 class="card-text text-muted">{{ item.ristampa }}</h6>
+                {% endif %}
+                {% if item.serie %}
+                    <h6 class="card-text text-muted">{{ item.serie.get().title }}</h6>
+                {% endif %}
+                {% if item.prezzo %}
+                    <h6 class="card-text text-muted">{{ item.prezzo }}</h6>
+                {% endif %}
+                {#                {% endif %}#}
             </div>
             <button id="btn{{ getUrlKey(item.title) }}" class="btn btn-sm btn-primary" type="button"
                     data-toggle="modal"
@@ -82,7 +80,7 @@
         <div class="card-block">
             <h3 class="card-title">{{ title }}</h3>
             {% if items %}
-                {%- for row in items|batch(nColumns,nullobj) %}
+                {% for row in items|batch(nColumns,nullobj) %}
                     <div class="card-deck">
                         {% for column in row %}
                             {{ print_item(column, maxwidth, current) }}
