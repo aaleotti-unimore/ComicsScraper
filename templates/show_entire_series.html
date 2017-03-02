@@ -1,9 +1,10 @@
 {% extends "index.html" %}
 {% block container %}
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.6/handlebars.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.17.1/moment.min.js"></script>
+    <script async type="text/javascript" src="{{ url_for('static', filename='js/HandlebarsHelpers.js') }}"></script>
     <script async type="text/javascript" src="{{ url_for('static', filename='js/chosen_bootstrap.js') }}"></script>
-    {#    <script type="text/javascript" src="{{ url_for('static', filename='js/script.js') }}"></script>#}
-
     <script id="card-template" type="text/x-handlebars-template">
         {% raw %}
         <div class="card">
@@ -14,57 +15,62 @@
                 <h6 class="card-text text-muted">{{ ristampa }}</h6>
                 <h6 class="card-text text-muted">{{ prezzo }}</h6>
             </div>
+            {{#if title}}
+            <ul class="list-group list-group-flush text-center">
+                <li class="list-group-item">
+                    <div class="mx-auto">
+                        <button id="btn-{{hypenate title }}" class="btn btn-sm btn-outline-primary" type="button">
+                            <i class="fa fa-list" aria-hidden="true"></i>
+                        </button>
+                        <span></span>
+                        <button id="btn-{{hypenate title }}" class="btn btn-sm btn-outline-success" type="button">
+                            <i class="fa fa-plus" aria-hidden="true"></i>
+                        </button>
+                        <span></span>
+                        <button id="btn-{{hypenate title }}" class="btn btn-sm btn-outline-danger" type="button">
+                            <i class="fa fa-times" aria-hidden="true"></i>
+                        </button>
+                    </div>
+                </li>
+            </ul>
+            <div class="card-footer">
+                <small>
+                    {{formatDate data }}
+                </small>
+            </div>
+            {{/if }}
         </div>
+
+        <!-- Modal -->
+        <div class="modal fade" id="mod-{{hypenate title }}" role="dialog">
+            <div class="modal-dialog modal-sm modal-lg">
+
+                <!-- Modal content-->
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h6 class="modal-title">Sommario {{ title }}</h6>
+                    </div>
+                    <div class="modal-body">
+                        <ul class="list-group list-group-flush">
+                            {{#each desc }}
+                            <li class="list-group-item">{{ this }}</li>
+                            {{/each }}
+                        </ul>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-small btn-default" data-dismiss="modal">Close
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        <!-- END Modal -->
         {% endraw %}
     </script>
-    <script type="text/javascript">
-        $(function () {
-            var results = $('#results');
-            $('#sendSerie').click(function () {
-                var n_columns = 5;
-                var results = $('#results');
-                results.empty();
-                $.ajax({
-                    url: '/show_series/get/',
-                    data: $('form').serialize(),
-                    type: 'POST',
-                    dataType: 'json',
-                    success: function (response) {
-                        console.log(response);
-                        var length = response.length;
-                        var rest = length % n_columns;
-                        console.log("initial length " + length + " rest " + rest);
-                        if (rest != 0) {
-                            var itera = (n_columns * (Math.floor(length / n_columns) + 1) - length);
-                            console.log("da aggiungere " + itera);
-                            for (var i = 0; i < itera; i++) {
-                                response.push({})
-                            }
-                        }
-                        console.log("after: " + response.length);
-                        console.log(response);
-                        var source = $("#card-template").html();
-                        var template = Handlebars.compile(source);
-                        var deck = $('<div/>', {"class": "card-deck"}).attr("id", "deck0");
-                        deck.after($('<p/>'));
-                        var i = 0;
-                        $.each(response, function (index, val) {
-                            if ((index % 5) == 0) {
-                                deck = $('<div/>', {"class": "card-deck"}).attr("id", "deck" + i);
-                                results.append(deck);
-                                results.append("<p></p>");
-                                i++;
-                            }
-                            var html = template(val);
-                            deck.append(html);
-                        });
-                    },
-                    error: function (error) {
-                    }
-                })
-            })
-        })
-    </script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/script.js') }}"></script>
+
     <p></p>
     <div class="card">
         <div class="card-block">

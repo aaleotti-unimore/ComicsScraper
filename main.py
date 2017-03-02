@@ -149,7 +149,7 @@ def query_serie():
     if serie_title:
         id_serie = ndb.Key(Serie, serie_title)
         logger.debug("REQUESTED SERIE:" + request.form['serie'])
-        issues = Issue.query(Issue.serie == id_serie).order(Issue.data).fetch()
+        issues = Issue.query(Issue.serie == id_serie).order(-Issue.data).fetch()
         dump = dbm.to_json(issues)
         logger.debug("issues sent: " + str(len(dump)))
         return json.dumps(dump, default=date_handler)
@@ -168,13 +168,6 @@ def show_page():
         return render_template("show_entire_series.html", series=series)
 
 
-@app.route('/echo/', methods=['GET'])
-def echo():
-    ret_data = {"value": request.args.get('echoValue')}
-    logging.debug("ret data" + str(ret_data))
-    return jsonify(ret_data)
-
-
 @app.errorhandler(404)
 def page_not_found(e):
     """Return a custom 404 error."""
@@ -190,8 +183,14 @@ def application_error(e):
 @app.route('/tasks/weekly_update')
 def cronjob():
     logger.info("Parsing all the Issues")
-    par = Parsatore()
+    # par = Parsatore(1, 6)
+    # par.parser()
+    par = Parsatore(5, 8)
     par.parser()
+    # par = Parsatore(9, 18)
+    # par.parser()
+    # par = Parsatore(19, 24)
+    # par.parser()
     return redirect('/')
 
 
@@ -232,14 +231,6 @@ def __get_user_status__():
     if google_user:
         logout_url = users.create_logout_url('/')
         my_user = Users.get_or_insert(str(google_user.user_id()))
-        # my_user.serie_list = [
-        #     ndb.Key(Serie, 'Avengers'),
-        #     ndb.Key(Serie, 'Iron Man'),
-        #     ndb.Key(Serie, 'Devil e i Cavalieri Marvel'),
-        #     ndb.Key(Serie, 'Incredibili Inumani'),
-        #     ndb.Key(Serie, 'Marvel Crossover'),
-        #     ndb.Key(Serie, 'Marvel Miniserie')
-        # ]
         my_user.put()
         logger.debug("the user is logged in")
         logger.debug("my user is: " + str(my_user))
