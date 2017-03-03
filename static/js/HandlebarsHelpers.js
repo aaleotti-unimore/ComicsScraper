@@ -11,6 +11,6 @@ Handlebars.registerHelper("formatDate", function (datetime, format) {
 
 Handlebars.registerHelper("hypenate", function (str) {
     if (str && typeof str === 'string') {
-        return str.split(' ').join('-');
+        return str.replace(/[^\w\s]/gi, '').split(' ').join('-');
     }
 });

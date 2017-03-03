@@ -145,16 +145,16 @@ def add_issue():
 @app.route('/show_series/get/', methods=['POST'])
 def query_serie():
     serie_title = request.form['serie']
+    logger.debug("REQUESTED SERIE:" + request.form['serie'])
     dbm = DbManager()
     if serie_title:
         id_serie = ndb.Key(Serie, serie_title)
-        logger.debug("REQUESTED SERIE:" + request.form['serie'])
         issues = Issue.query(Issue.serie == id_serie).order(-Issue.data).fetch()
         dump = dbm.to_json(issues)
         logger.debug("issues sent: " + str(len(dump)))
         return json.dumps(dump, default=date_handler)
-    else:
-        return "null"
+        # else:
+        #     return "null"
 
 
 @app.route('/show_series', methods=['GET', 'POST'])
@@ -183,18 +183,11 @@ def application_error(e):
 @app.route('/tasks/weekly_update')
 def cronjob():
     logger.info("Parsing all the Issues")
-    # par = Parsatore(1, 6)
-    # par.parser()
-    par = Parsatore(5, 8)
-    par.parser()
-    # par = Parsatore(9, 18)
-    # par.parser()
-    # par = Parsatore(19, 24)
-    # par.parser()
+    par = Parsatore(1, 24)
     return redirect('/')
 
 
-# @app.route('/restricted/cleardb')
+# @app.route('/restricted/clean_and_parse/')
 # def clear_db():
 #     ndb.delete_multi(
 #         Issue.query().fetch(keys_only=True)
@@ -202,9 +195,7 @@ def cronjob():
 #     ndb.delete_multi(
 #         Serie.query().fetch(keys_only=True)
 #     )
-#     ndb.delete_multi(
-#         Users.query().fetch(keys_only=True)
-#     )
+#     cronjob()
 #     return redirect('/')
 
 

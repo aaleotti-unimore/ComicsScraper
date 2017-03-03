@@ -1,7 +1,8 @@
 from __future__ import print_function
 
-import logging
 import datetime
+import logging
+
 from google.appengine.ext import ndb
 
 from dbentities import Issue, Serie
@@ -11,43 +12,42 @@ logger = logging.getLogger(__name__)
 
 
 class DbManager:
-    def save_to_DB(self, items):
+    def save_to_DB(self, item):
         logger.info("saving the issues")
-        for item in items:
-            issue = Issue(id=item['title'])
-            issue.title = item['title']
-            if 'subtitle' in item:
-                if any(word in item['subtitle'] for word in ["variant", "Variant"]):
-                    issue.key = ndb.Key(Issue, item['title'] + " variant")
-                    logger.debug("found variant, new issue id is " + item['title'] + " variant")
-                issue.subtitle = item['subtitle']
+        issue = Issue(id=item['title'])
+        issue.title = item['title']
+        if 'subtitle' in item:
+            if any(word in item['subtitle'] for word in ["variant", "Variant"]):
+                issue.key = ndb.Key(Issue, item['title'] + " variant")
+                logger.debug("found variant, new issue id is " + item['title'] + " variant")
+            issue.subtitle = item['subtitle']
 
-            if 'serie' in item:
-                serie = Serie(id=item['serie'].rstrip('1234567890 '), title=item['serie'].rstrip('1234567890 '))
-                serie.put()
-                issue.serie = serie.key
+        if 'serie' in item:
+            serie = Serie(id=item['serie'].rstrip('1234567890 '), title=item['serie'].rstrip('1234567890 '))
+            serie.put()
+            issue.serie = serie.key
 
-            if 'ristampa' in item:
-                issue.ristampa = item['ristampa']
+        if 'ristampa' in item:
+            issue.ristampa = item['ristampa']
 
-            if 'url' in item:
-                issue.url = item['url']
-            else:
-                issue.url = "#"
+        if 'url' in item:
+            issue.url = item['url']
+        else:
+            issue.url = "#"
 
-            if 'desc' in item:
-                issue.desc = item['desc']
+        if 'desc' in item:
+            issue.desc = item['desc']
 
-            issue.data = item['data']
-            issue.prezzo = item['prezzo']
+        issue.data = item['data']
+        issue.prezzo = item['prezzo']
 
-            if "placeholder/default/no-photo" in item['image']:
-                issue.image = item['image']
-            else:
-                issue.image = item['image'].replace('small_image/200x', 'image')
+        if "placeholder/default/no-photo" in item['image']:
+            issue.image = item['image']
+        else:
+            issue.image = item['image'].replace('small_image/200x', 'image')
 
-            issue.put_async()
-            logger.debug("issue " + issue.title + " saved")
+        issue.put_async()
+        logger.debug("issue " + issue.title + " saved")
 
     def del_all(self, items):
         for item in items:

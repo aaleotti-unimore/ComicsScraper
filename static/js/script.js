@@ -4,6 +4,7 @@ $(function () {
         var n_columns = 5;
         var results = $('#results');
         results.empty();
+        // console.log("sent " + $('form').serialize());
         $.ajax({
             url: '/show_series/get/',
             data: $('form').serialize(),
@@ -20,14 +21,15 @@ $(function () {
                 }
                 // console.log("after: " + response.length);
                 // console.log(response);
-                var source = $("#card-template").html();
+                var source = $('#card-template').html();
                 var template = Handlebars.compile(source);
                 var deck = $('<div/>', {"class": "card-deck"}).attr("id", "deck0");
                 deck.after($('<p/>'));
                 var n = 0;
                 $.each(response, function (index, val) {
                     if (val.title != null) {
-                        var title = val.title.split(' ').join('-');
+                        var title = val.title.replace(/[^\w\s]/gi, '').split(' ').join('-');
+                        console.log("#mod-" + title);
                     }
                     if ((index % 5) == 0) {
                         deck = $('<div/>', {"class": "card-deck"}).attr("id", "deck" + n);
@@ -38,8 +40,7 @@ $(function () {
                     var html = template(val);
                     deck.append(html);
                     $('#btn-' + title).click(function () {
-                        console.log("#mod-" + title);
-                        $('#mod-'+title).modal();
+                        $('#mod-' + title).modal();
                     })
                 });
 

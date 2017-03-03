@@ -8,6 +8,7 @@
     <script id="card-template" type="text/x-handlebars-template">
         {% raw %}
         <div class="card">
+            {{#if title}}
             <img class="card-img-top img-fluid" src="{{ image }}">
             <div class="card-block">
                 <h6 class="card-title">{{ title }}</h6>
@@ -15,7 +16,6 @@
                 <h6 class="card-text text-muted">{{ ristampa }}</h6>
                 <h6 class="card-text text-muted">{{ prezzo }}</h6>
             </div>
-            {{#if title}}
             <ul class="list-group list-group-flush text-center">
                 <li class="list-group-item">
                     <div class="mx-auto">
@@ -40,7 +40,6 @@
             </div>
             {{/if }}
         </div>
-
         <!-- Modal -->
         <div class="modal fade" id="mod-{{hypenate title }}" role="dialog">
             <div class="modal-dialog modal-sm modal-lg">
