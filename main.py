@@ -183,7 +183,7 @@ def application_error(e):
 @app.route('/tasks/weekly_update')
 def cronjob():
     logger.info("Parsing all the Issues")
-    par = Parsatore(1, 24)
+    par = Parsatore(4, 8)
     return redirect('/')
 
 

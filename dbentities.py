@@ -21,3 +21,4 @@ class Issue(ndb.Model):
 
 class Users(ndb.Model):
     serie_list = ndb.KeyProperty(repeated=True)
+    special_list = ndb.KeyProperty(repeated=True)

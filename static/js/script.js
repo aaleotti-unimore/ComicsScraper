@@ -29,7 +29,7 @@ $(function () {
                 $.each(response, function (index, val) {
                     if (val.title != null) {
                         var title = val.title.replace(/[^\w\s]/gi, '').split(' ').join('-');
-                        console.log("#mod-" + title);
+                        // console.log("#mod-" + title);
                     }
                     if ((index % 5) == 0) {
                         deck = $('<div/>', {"class": "card-deck"}).attr("id", "deck" + n);

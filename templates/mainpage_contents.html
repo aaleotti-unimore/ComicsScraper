@@ -100,7 +100,7 @@
         </div>
         {% if title != "Prossime Settimane" %}
             <div class="card-footer">
-                <h4 align="right">Totale Settimana: € {{ sumsett }}</h4>
+                <h4 align="right">Totale: € {{ sumsett }}</h4>
             </div>
         {% endif %}
     </div>
@@ -108,11 +108,26 @@
 
 {% extends "index.html" %}
 {% block container %}
-    <p></p>
-    {{ week_block("Settimana Precedente",past_issues, past_sum, 5, 30, False) }}
-    <p></p>
-    {{ week_block("Questa Settimana", issues, week_sum, 3, 30, True) }}
-    <p></p>
-    {{ week_block("Prossime Settimane",future_issues, 0, 5, 30, False) }}
-
+    {% if my_user %}
+        {% set n_thumbs = 3 %}
+    {% else %}
+        {% set n_thumbs = 5 %}
+    {% endif %}
+    <div class="row">
+        <div {% if my_user %} class="col-sm-8" {% endif %}>
+            <p></p>
+            {{ week_block("Settimana Precedente",past_issues, past_sum, n_thumbs, 30, False) }}
+            <p></p>
+            {{ week_block("Questa Settimana", issues, week_sum, 3, 30, True) }}
+            <p></p>
+            {{ week_block("Prossime Settimane",future_issues, 0, n_thumbs, 30, False) }}
+        </div>
+        {% if my_user %}
+            <div class="col-sm-4">
+                <p></p>
+                {{ week_block("Numeri Speciali", special_issues, special_sum, 1,20, False) }}
+            </div>
+        {% endif %}
+    </div>
 {% endblock %}
+
