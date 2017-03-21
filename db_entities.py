@@ -18,7 +18,6 @@ class Issue(ndb.Model):
     desc = ndb.StringProperty(indexed=False, repeated=True)
 
 
-
 class Users(ndb.Model):
     serie_list = ndb.KeyProperty(repeated=True)
     special_list = ndb.KeyProperty(repeated=True)

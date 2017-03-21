@@ -7,7 +7,7 @@ $(function () {
         // console.log("sent " + $('form').serialize());
         $.ajax({
             url: '/show_series/get/',
-            data: $('form').serialize(),
+            data: $('#formSerie').serialize(),
             type: 'POST',
             dataType: 'json',
             success: function (response) {
@@ -39,8 +39,20 @@ $(function () {
                     }
                     var html = template(val);
                     deck.append(html);
-                    $('#btn-' + title).click(function () {
+                    $('#btn-sum-' + title).click(function () {
                         $('#mod-' + title).modal();
+                    });
+                    $('#btn-add-' + title).click(function () {
+                        console.log("sent " + val.title);
+                        $.ajax({
+                            url: '/user/add_special_issue/',
+                            data: { special_issue: val.title },
+                            type: 'POST',
+                            dataType: 'json',
+                            success: function (response) {
+                                console.log("success" + response)
+                            }
+                        })
                     })
                 });
 
@@ -51,3 +63,4 @@ $(function () {
         })
     })
 });
+

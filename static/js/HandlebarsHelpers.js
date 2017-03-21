@@ -9,7 +9,7 @@ Handlebars.registerHelper("formatDate", function (datetime, format) {
     }
 });
 
-Handlebars.registerHelper("hypenate", function (str) {
+Handlebars.registerHelper("hyphenate", function (str) {
     if (str && typeof str === 'string') {
         return str.replace(/[^\w\s]/gi, '').split(' ').join('-');
     }

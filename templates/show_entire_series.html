@@ -19,17 +19,19 @@
             <ul class="list-group list-group-flush text-center">
                 <li class="list-group-item">
                     <div class="mx-auto">
-                        <button id="btn-{{hypenate title }}" class="btn btn-sm btn-outline-primary" type="button">
-                            <i class="fa fa-list" aria-hidden="true"></i>
-                        </button>
-                        <span></span>
-                        <button id="btn-{{hypenate title }}" class="btn btn-sm btn-outline-success" type="button">
-                            <i class="fa fa-plus" aria-hidden="true"></i>
-                        </button>
-                        <span></span>
-                        <button id="btn-{{hypenate title }}" class="btn btn-sm btn-outline-danger" type="button">
-                            <i class="fa fa-times" aria-hidden="true"></i>
-                        </button>
+                        <form>
+                            <button id="btn-sum-{{hyphenate title }}" class="btn btn-sm btn-outline-primary" type="button">
+                                <i class="fa fa-list" aria-hidden="true"></i>
+                            </button>
+                            <span></span>
+                            <button id="btn-add-{{hyphenate title }}" class="btn btn-sm btn-outline-success" type="button">
+                                <i class="fa fa-plus" aria-hidden="true"></i>
+                            </button>
+                            <span></span>
+                            <button id="btn-del-{{hyphenate title }}" class="btn btn-sm btn-outline-danger" type="button">
+                                <i class="fa fa-times" aria-hidden="true"></i>
+                            </button>
+                        </form>
                     </div>
                 </li>
             </ul>
@@ -41,7 +43,7 @@
             {{/if }}
         </div>
         <!-- Modal -->
-        <div class="modal fade" id="mod-{{hypenate title }}" role="dialog">
+        <div class="modal fade" id="mod-{{hyphenate title }}" role="dialog">
             <div class="modal-dialog modal-sm modal-lg">
 
                 <!-- Modal content-->
@@ -68,14 +70,14 @@
         <!-- END Modal -->
         {% endraw %}
     </script>
-    <script type="text/javascript" src="{{ url_for('static', filename='js/script.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/show_series_script.js') }}"></script>
 
     <p></p>
     <div class="card">
         <div class="card-block">
             <h4 class="card-title">Mostra una Serie</h4>
             <div class="form-inline">
-                <form method="post" class="form-horizontal form-"
+                <form id="formSerie" method="post" class="form-horizontal"
                       role="form">
                     <select id="selectSerie" name="serie" data-placeholder="Scegli una Serie..." class="chosen-select"
                             style="max-width:350px;"

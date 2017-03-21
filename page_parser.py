@@ -8,7 +8,7 @@ from datetime import datetime
 
 from bs4 import BeautifulSoup
 
-from dbmanager import DbManager
+from db_manager import DbManager
 
 
 class Parsatore():

@@ -5,11 +5,10 @@ import logging
 
 from google.appengine.ext import ndb
 
-from dbentities import Issue, Serie
+from db_entities import Issue, Serie
 
 # create logger
 logger = logging.getLogger(__name__)
-
 
 class DbManager:
     def save_to_DB(self, item):
