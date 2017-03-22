@@ -39,6 +39,11 @@
                                 <i class="fa fa-list" aria-hidden="true"></i>
                             </button>
                             <span></span>
+                            <button id="btn-add-{{ hyphenate(item.title) }}" class="btn btn-sm btn-outline-success"
+                                    type="button">
+                                <i class="fa fa-times" aria-hidden="true"></i>
+                            </button>
+                            <span></span>
                             <button id="btn-del-{{ hyphenate(item.title) }}" class="btn btn-sm btn-outline-danger"
                                     type="button">
                                 <i class="fa fa-times" aria-hidden="true"></i>
@@ -88,12 +93,33 @@
             $("#btn-sum-{{ hyphenate(item.title) }}").click(function () {
                 $("#mod-{{ hyphenate(item.title) }}").modal();
             });
+            $("#btn-add-{{ hyphenate(item.title) }}").click(function () {
+                $.ajax({
+                    url: '/user/add_special_issue/',
+                    data: {special_issue: "{{ item.title }}"},
+                    type: 'POST',
+                    dataType: 'json',
+                    success: function (response) {
+                        console.log("successfully added " + response);
+                    },
+                    error: function (error) {
+                        console.log("error " + error)
+                    }
+                })
+            });
             $("#btn-del-{{ hyphenate(item.title) }}").click(function () {
+                console.log("#btn-del-{{ hyphenate(item.title) }} clicked");
                 $.ajax({
                     url: '/user/remove_special_issue/',
-                    data: {special_issue: {{ item.title }} },
+                    data: {special_issue: "{{ item.title }}"},
                     type: 'POST',
-                    dataType: 'json'
+                    dataType: 'json',
+                    success: function (response) {
+                        console.log(response.content);
+                    },
+                    error: function (error) {
+                        console.log(error.content)
+                    }
                 })
             });
         });

@@ -1,75 +1,11 @@
 {% extends "index.html" %}
 {% block container %}
     <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.6/handlebars.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.6/handlebars.runtime.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.17.1/moment.min.js"></script>
-    <script async type="text/javascript" src="{{ url_for('static', filename='js/HandlebarsHelpers.js') }}"></script>
-    <script async type="text/javascript" src="{{ url_for('static', filename='js/chosen_bootstrap.js') }}"></script>
-    <script id="card-template" type="text/x-handlebars-template">
-        {% raw %}
-        <div class="card">
-            {{#if title}}
-            <img class="card-img-top img-fluid" src="{{ image }}">
-            <div class="card-block">
-                <h6 class="card-title">{{ title }}</h6>
-                <h6 class="card-subtitle mb-2 text-muted">{{ subtitle }}</h6>
-                <h6 class="card-text text-muted">{{ ristampa }}</h6>
-                <h6 class="card-text text-muted">{{ prezzo }}</h6>
-            </div>
-            <ul class="list-group list-group-flush text-center">
-                <li class="list-group-item">
-                    <div class="mx-auto">
-                        <form>
-                            <button id="btn-sum-{{hyphenate title }}" class="btn btn-sm btn-outline-primary" type="button">
-                                <i class="fa fa-list" aria-hidden="true"></i>
-                            </button>
-                            <span></span>
-                            <button id="btn-add-{{hyphenate title }}" class="btn btn-sm btn-outline-success" type="button">
-                                <i class="fa fa-plus" aria-hidden="true"></i>
-                            </button>
-                            <span></span>
-                            <button id="btn-del-{{hyphenate title }}" class="btn btn-sm btn-outline-danger" type="button">
-                                <i class="fa fa-times" aria-hidden="true"></i>
-                            </button>
-                        </form>
-                    </div>
-                </li>
-            </ul>
-            <div class="card-footer">
-                <small>
-                    {{formatDate data }}
-                </small>
-            </div>
-            {{/if }}
-        </div>
-        <!-- Modal -->
-        <div class="modal fade" id="mod-{{hyphenate title }}" role="dialog">
-            <div class="modal-dialog modal-sm modal-lg">
-
-                <!-- Modal content-->
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal">&times;</button>
-                        <h6 class="modal-title">Sommario {{ title }}</h6>
-                    </div>
-                    <div class="modal-body">
-                        <ul class="list-group list-group-flush">
-                            {{#each desc }}
-                            <li class="list-group-item">{{ this }}</li>
-                            {{/each }}
-                        </ul>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-small btn-default" data-dismiss="modal">Close
-                        </button>
-                    </div>
-                </div>
-
-            </div>
-        </div>
-        <!-- END Modal -->
-        {% endraw %}
-    </script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/HandlebarsHelpers.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/chosen_bootstrap.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/card.js') }}"></script>
     <script type="text/javascript" src="{{ url_for('static', filename='js/show_series_script.js') }}"></script>
 
     <p></p>

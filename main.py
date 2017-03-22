@@ -72,27 +72,30 @@ def add_special_issue():
     logger.debug("received " + str(request))
     if id_special not in my_user.special_list:
         my_user.special_list.append(id_special)
-        logging.debug("user id:" + str(my_user) + " special aggiunto: " + request.form['special_issue'])
+        logger.debug("user id:" + str(my_user.key) + " special aggiunto: " + request.form['special_issue'])
     return my_page()
 
 
 @app.route('/user/remove_special_issue/', methods=['POST'])
 def remove_special_issue():
     my_user = Users.get_by_id(users.get_current_user().user_id())
-    id_special = ndb.Key(Issue, request.form['special_issue'])
+    issue_title = request.form['special_issue']
+    id_special = ndb.Key(Issue, issue_title)
     logger.debug("received " + str(request))
     if id_special in my_user.special_list:
         my_user.special_list.remove(id_special)
-        logging.debug("user id:" + str(my_user) + " special rimosso: " + request.form['special_issue'])
-    return my_page()
+        logger.debug("user id:" + str(my_user.key) + " special " + issue_title + " rimosso ")
+        return jsonify(content=issue_title + " rimosso")
+    else:
+        logger.debug("user id:" + str(my_user.key) + " special " + issue_title + " non presente")
+        return jsonify(content=issue_title + " non presente")
+    # return my_page()
 
 
 @app.route('/user_page')
 def my_page():
     logger.debug("retrieving all the series: ")
     series = Serie.query()
-    for serie in series:
-        logger.debug(serie.title)
     return render_template("my_lists.html", series=series)
 
 
@@ -103,11 +106,11 @@ def date_handler(obj):
         raise TypeError
 
 
-@app.route('/show_series/add_issue/', methods=['POST'])
-def add_issue():
-    issue = request
-    logger.debug(str(issue))
-    return jsonify(response="response")
+# @app.route('/show_series/add_issue/', methods=['POST'])
+# def add_issue():
+#     issue = request
+#     logger.debug(str(issue))
+#     return jsonify(response="response")
 
 
 @app.route('/show_series/get/', methods=['POST'])
@@ -125,12 +128,12 @@ def query_serie():
 
 @app.route('/show_series', methods=['GET', 'POST'])
 def show_page():
-    logger.debug("retrieving all the series: ")
+    logger.debug("retrieving all the series... ")
     series = Serie.query()
     if request.method == 'POST':
         pass
     else:
-        logger.debug("rendering page:")
+        logger.debug("rendering page...")
         return render_template("show_entire_series.html", series=series)
 
 
@@ -149,7 +152,7 @@ def application_error(e):
 @app.route('/tasks/weekly_update')
 def cronjob():
     logger.info("Parsing all the Issues")
-    Parsatore(1, 8)
+    Parsatore(2, 8)
     return redirect('/')
 
 
@@ -194,7 +197,7 @@ def __get_user_status__():
         my_user = Users.get_or_insert(str(google_user.user_id()))
         my_user.put()
         logger.debug("the user is logged in")
-        logger.debug("my user is: " + str(my_user))
+        logger.debug("my user is: " + str(my_user.key.id()))
     else:
         logger.debug("the user is not logged in")
         login_url = users.create_login_url('/')
@@ -204,8 +207,6 @@ def __get_user_status__():
 
 @app.context_processor
 def inject_user():
-    logger.info("Injecting User...")
     userdata = __get_user_status__()
-    logger.debug("userdata: " + str(userdata))
-    logger.info("end injecting user")
+    logger.info("Successfully retrieved my user")
     return dict(my_user=userdata[0], login_url=userdata[1], logout_url=userdata[2])

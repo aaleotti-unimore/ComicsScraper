@@ -33,8 +33,6 @@ class Query:
 
     def get_issues(self):
         ret = {}
-        self.logger.debug("main user is: " + str(self.my_user))
-
         if self.my_user:
             if self.my_user.serie_list:
                 self.issues = Issue.query(Issue.serie.IN(self.my_user.serie_list)).order(Issue.data)
@@ -71,10 +69,6 @@ class Query:
 
         # END QUERY
 
-        self.logger.debug("week Issues Count: " + str(self.week_issues_count))
-        self.logger.debug("future Issues Count: " + str(self.future_issues_count))
-        self.logger.debug("past Issues Count: " + str(self.past_issues_count))
-
         ret['issues'] = self.issues
         ret['week_issues'] = self.week_issues
         ret['future_issues'] = self.future_issues
@@ -98,14 +92,14 @@ class Query:
             if self.my_user.special_list:
                 # special_keys = [ndb.Key(Issue, special_id) for special_id in self.my_user.special_list]
                 self.special_issues = ndb.get_multi(self.my_user.special_list)
-                logging.debug("SPECIALS: " + str(self.special_issues))
+                if self.logger.getEffectiveLevel() == logging.DEBUG:
+                    for issue in self.special_issues:
+                        self.logger.debug("SPECIALS: " + str(issue.key.id()).decode('utf-8'))
 
             if self.special_issues:
                 for issue in self.special_issues:
                     # SUM WEEKLY PRICES
                     self.special_issues_sum += float(re.sub(",", ".", issue.prezzo[2:]))
-
-                self.logger.debug("special price %d" % self.special_issues_sum)
 
         ret['special_issues'] = self.special_issues
         ret['special_issues_sum'] = self.special_issues_sum

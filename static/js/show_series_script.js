@@ -21,8 +21,7 @@ $(function () {
                 }
                 // console.log("after: " + response.length);
                 // console.log(response);
-                var source = $('#card-template').html();
-                var template = Handlebars.compile(source);
+                // var template = Handlebars.templates['card'];
                 var deck = $('<div/>', {"class": "card-deck"}).attr("id", "deck0");
                 deck.after($('<p/>'));
                 var n = 0;
@@ -37,15 +36,27 @@ $(function () {
                         results.append("<p></p>");
                         i++;
                     }
-                    var html = template(val);
+                    var html = Handlebars.templates.card(val);
                     deck.append(html);
                     $('#btn-sum-' + title).click(function () {
                         $('#mod-' + title).modal();
                     });
                     $('#btn-add-' + title).click(function () {
-                        console.log("sent " + val.title);
+                        console.log("sent for adding" + val.title);
                         $.ajax({
                             url: '/user/add_special_issue/',
+                            data: { special_issue: val.title },
+                            type: 'POST',
+                            dataType: 'json',
+                            success: function (response) {
+                                console.log("success" + response)
+                            }
+                        })
+                    })
+                    $('#btn-del-' + title).click(function () {
+                        console.log("sent for remove " + val.title);
+                        $.ajax({
+                            url: '/user/remove_special_issue/',
                             data: { special_issue: val.title },
                             type: 'POST',
                             dataType: 'json',
