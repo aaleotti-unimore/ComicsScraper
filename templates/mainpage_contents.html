@@ -1,19 +1,15 @@
 {% extends "index.html" %}
 {% macro print_item(item, maxwidth, current) %}
-    <div
-            class="card"
-            {% if item==nullobj %}
-            style="border:0;"
-            {% endif %}
-    >
-        {% if item!=nullobj %}
-
+    {% if item==nullobj %}
+        <div class="card" style="border:0;">
+        </div>
+    {% else %}
+        <div class="card">
             <img class="card-img-top img-fluid" src="{{ item.image }}">
             <div class="card-block">
 
                 <{% if current %}h5{% else %}h6{% endif %} class="card-title">{{ item.title }}</{% if current %}
                 h5{% else %}h6{% endif %}>
-                {#                {% if current %}#}
                 {% if item.subtitle %}
                     <h6 class="card-subtitle mb-2 text-muted">{{ item.subtitle }}</h6>
                 {% endif %}
@@ -26,34 +22,32 @@
                 {% if item.prezzo %}
                     <h6 class="card-text text-muted">{{ item.prezzo }}</h6>
                 {% endif %}
-                {#                {% endif %}#}
             </div>
             <ul class="list-group list-group-flush text-center">
                 <li class="list-group-item">
                     <div class="mx-auto">
                         <form>
-                            <button id="btn-sum-{{ hyphenate(item.title) }}" class="btn btn-sm btn-outline-primary"
+                            <button id="btn-sum-{{ get_url_key(item.title) }}"
+                                    class="btn btn-sm btn-outline-primary"
                                     type="button"
                                     data-toggle="modal"
-                                    data-target="mod-{{ hyphenate(item.title) }}">
+                                    data-target="mod-{{ get_url_key(item.title) }}">
                                 <i class="fa fa-list" aria-hidden="true"></i>
                             </button>
-                            <span></span>
-                            <button id="btn-add-{{ hyphenate(item.title) }}" class="btn btn-sm btn-outline-success"
-                                    type="button">
-                                <i class="fa fa-times" aria-hidden="true"></i>
-                            </button>
-                            <span></span>
-                            <button id="btn-del-{{ hyphenate(item.title) }}" class="btn btn-sm btn-outline-danger"
-                                    type="button">
-                                <i class="fa fa-times" aria-hidden="true"></i>
-                            </button>
+                            {% if my_user %}
+                                <span></span>
+                                <button id="btn-add-{{ get_url_key(item.title) }}"
+                                        class="btn btn-sm btn-outline-success"
+                                        type="button">
+                                    <i class="fa fa-plus" aria-hidden="true"></i>
+                                </button>
+                            {% endif %}
                         </form>
                     </div>
                 </li>
             </ul>
             <!-- Modal -->
-            <div class="modal fade" id="mod-{{ hyphenate(item.title) }}" role="dialog">
+            <div class="modal fade" id="mod-{{ get_url_key(item.title) }}" role="dialog">
                 <div class="modal-dialog modal-sm modal-lg">
 
                     <!-- Modal content-->
@@ -79,51 +73,39 @@
             </div>
             <!-- END Modal -->
 
-
             <div class="card-footer">
                 <small>
                     {{ item.data.strftime("%d %b %y") }}
                 </small>
             </div>
-        {% endif %}
-    </div>
+        </div>
 
-    <script async language="javascript" type="text/javascript">
-        $(document).ready(function () {
-            $("#btn-sum-{{ hyphenate(item.title) }}").click(function () {
-                $("#mod-{{ hyphenate(item.title) }}").modal();
+        <script async language="javascript" type="text/javascript">
+            $(document).ready(function () {
+                $("#btn-sum-{{ get_url_key(item.title) }}").click(function () {
+                    $("#mod-{{ get_url_key(item.title) }}").modal();
+                });
+                $("#btn-add-{{ get_url_key(item.title) }}").click(function () {
+                    var deck = $('#specials_block');
+                    $.ajax({
+                        url: '/user/add_special_issue/',
+                        data: {special_issue: "{{ item.title }}"},
+                        type: 'POST',
+                        dataType: 'json',
+                        success: function (response) {
+                            deck.empty();
+                            deck.append("<h3 class=\"card-title\">Specials</h3>");
+                            console.log("success" + response);
+                            getSpecials();
+                        },
+                        error: function (error) {
+                            console.log(error.content)
+                        }
+                    })
+                });
             });
-            $("#btn-add-{{ hyphenate(item.title) }}").click(function () {
-                $.ajax({
-                    url: '/user/add_special_issue/',
-                    data: {special_issue: "{{ item.title }}"},
-                    type: 'POST',
-                    dataType: 'json',
-                    success: function (response) {
-                        console.log("successfully added " + response);
-                    },
-                    error: function (error) {
-                        console.log("error " + error)
-                    }
-                })
-            });
-            $("#btn-del-{{ hyphenate(item.title) }}").click(function () {
-                console.log("#btn-del-{{ hyphenate(item.title) }} clicked");
-                $.ajax({
-                    url: '/user/remove_special_issue/',
-                    data: {special_issue: "{{ item.title }}"},
-                    type: 'POST',
-                    dataType: 'json',
-                    success: function (response) {
-                        console.log(response.content);
-                    },
-                    error: function (error) {
-                        console.log(error.content)
-                    }
-                })
-            });
-        });
-    </script>
+        </script>
+    {% endif %}
 {% endmacro %}
 
 {% macro week_block(title, items, sumsett, nColumns, maxwidth, current) %}
@@ -155,11 +137,7 @@
 {% endmacro %}
 
 {% block container %}
-    {% if my_user %}
-        {% set n_thumbs = 3 %}
-    {% else %}
-        {% set n_thumbs = 5 %}
-    {% endif %}
+    {% set n_thumbs = 3 %}
     <div class="row">
         <div {% if my_user %} class="col-sm-9" {% endif %}>
             <p></p>
@@ -172,7 +150,16 @@
         {% if my_user %}
             <div class="col-sm-3">
                 <p></p>
-                {{ week_block("Numeri Speciali", special_issues, special_issues_sum, 1, 20, False) }}
+                <script type="text/javascript"
+                        src="{{ url_for('static', filename='js/mainpage_show_specials.js') }}"></script>
+                <div class="card" id="specials_card">
+                    <div class="card-block" id="specials_block">
+                        <h3 class="card-title">Specials</h3>
+                    </div>
+                    <div class="card-footer">
+                        <h5 align="right" id="specials_footer"></h5>
+                    </div>
+                </div>
             </div>
         {% endif %}
     </div>

@@ -26,6 +26,8 @@ $(function () {
                 deck.after($('<p/>'));
                 var n = 0;
                 $.each(response, function (index, val) {
+                    val.specials = 0;
+                    val.index = index;
                     if (val.title != null) {
                         var title = val.title.replace(/[^\w\s]/gi, '').split(' ').join('-');
                         // console.log("#mod-" + title);
@@ -38,29 +40,31 @@ $(function () {
                     }
                     var html = Handlebars.templates.card(val);
                     deck.append(html);
-                    $('#btn-sum-' + title).click(function () {
-                        $('#mod-' + title).modal();
+                    $('#btn-sum-' + index).click(function () {
+                        $('#mod-' + index).modal();
                     });
-                    $('#btn-add-' + title).click(function () {
+                    $('#btn-add-' + index).click(function () {
                         console.log("sent for adding" + val.title);
                         $.ajax({
                             url: '/user/add_special_issue/',
-                            data: { special_issue: val.title },
+                            data: {special_issue: val.title},
                             type: 'POST',
                             dataType: 'json',
                             success: function (response) {
+                                alert(response.content);
                                 console.log("success" + response)
                             }
                         })
-                    })
-                    $('#btn-del-' + title).click(function () {
+                    });
+                    $('#btn-del-' + index).click(function () {
                         console.log("sent for remove " + val.title);
                         $.ajax({
                             url: '/user/remove_special_issue/',
-                            data: { special_issue: val.title },
+                            data: {special_issue: val.title},
                             type: 'POST',
                             dataType: 'json',
                             success: function (response) {
+                                alert(response.content);
                                 console.log("success" + response)
                             }
                         })

@@ -1,40 +1,43 @@
 <div class="card">
     {{#if title}}
-    <img class="card-img-top img-fluid" src="{{ image }}">
-    <div class="card-block">
-        <h6 class="card-title">{{ title }}</h6>
-        <h6 class="card-subtitle mb-2 text-muted">{{ subtitle }}</h6>
-        <h6 class="card-text text-muted">{{ ristampa }}</h6>
-        <h6 class="card-text text-muted">{{ prezzo }}</h6>
-    </div>
-    <ul class="list-group list-group-flush text-center">
-        <li class="list-group-item">
-            <div class="mx-auto">
-                <form>
-                    <button id="btn-sum-{{hyphenate title }}" class="btn btn-sm btn-outline-primary" type="button">
-                        <i class="fa fa-list" aria-hidden="true"></i>
-                    </button>
-                    <span></span>
-                    <button id="btn-add-{{hyphenate title }}" class="btn btn-sm btn-outline-success" type="button">
-                        <i class="fa fa-plus" aria-hidden="true"></i>
-                    </button>
-                    <span></span>
-                    <button id="btn-del-{{hyphenate title }}" class="btn btn-sm btn-outline-danger" type="button">
-                        <i class="fa fa-times" aria-hidden="true"></i>
-                    </button>
-                </form>
-            </div>
-        </li>
-    </ul>
-    <div class="card-footer">
-        <small>
-            {{formatDate data }}
-        </small>
-    </div>
+        <img class="card-img-top img-fluid" src="{{ image }}">
+        <div class="card-block">
+            <h6 class="card-title">{{ title }}</h6>
+            <h6 class="card-subtitle mb-2 text-muted">{{ subtitle }}</h6>
+            <h6 class="card-text text-muted">{{ ristampa }}</h6>
+            <h6 class="card-text text-muted">{{ prezzo }}</h6>
+        </div>
+        <ul class="list-group list-group-flush text-center">
+            <li class="list-group-item">
+                <div class="mx-auto">
+                    <form>
+                        <button id="btn-sum-{{ index }}" class="btn btn-sm btn-outline-primary" type="button">
+                            <i class="fa fa-list" aria-hidden="true"></i>
+                        </button>
+                        {{#unless specials}}
+                            <span></span>
+                            <button id="btn-add-{{ index }}" class="btn btn-sm btn-outline-success" type="button">
+                                <i class="fa fa-plus" aria-hidden="true"></i>
+                            </button>
+                        {{ else }}
+                            <span></span>
+                            <button id="btn-del-{{ index }}" class="btn btn-sm btn-outline-danger" type="button">
+                                <i class="fa fa-times" aria-hidden="true"></i>
+                            </button>
+                        {{/unless}}
+                    </form>
+                </div>
+            </li>
+        </ul>
+        <div class="card-footer">
+            <small>
+                {{formatDate data }}
+            </small>
+        </div>
     {{/if }}
 </div>
 <!-- Modal -->
-<div class="modal fade" id="mod-{{hyphenate title }}" role="dialog">
+<div class="modal fade" id="mod-{{ index }}" role="dialog">
     <div class="modal-dialog modal-sm modal-lg">
 
         <!-- Modal content-->
@@ -46,7 +49,7 @@
             <div class="modal-body">
                 <ul class="list-group list-group-flush">
                     {{#each desc }}
-                    <li class="list-group-item">{{ this }}</li>
+                        <li class="list-group-item">{{ this }}</li>
                     {{/each }}
                 </ul>
             </div>

@@ -32,7 +32,6 @@ app.wsgi_app = debug.DebuggedApplication(app.wsgi_app, True)
 def main():
     query = Query(__get_user_status__()[0])
     issues_result = query.get_issues()
-    special_result = query.get_specials()
     return render_template("mainpage_contents.html",
                            issues=issues_result['week_issues'],
                            week_sum=issues_result['week_issues_sum'],
@@ -40,9 +39,17 @@ def main():
                            past_issues=issues_result['past_issues'],
                            past_sum=issues_result['past_issues_sum'],
                            nullobj=issues_result['nullobj'],
-                           special_issues=special_result['special_issues'],
-                           special_issues_sum=special_result['special_issues_sum']
                            )
+
+
+@app.route('/', methods=['POST'])
+@app.route('/index.html', methods=['POST'])
+def get_specials():
+    if request.method == 'POST':
+        query = Query(__get_user_status__()[0])
+        dbm = DbManager()
+        dump = dbm.to_json(query.get_specials())
+        return json.dumps(dump, default=date_handler)
 
 
 @app.route('/user_page/add_series/', methods=['POST'])
@@ -51,8 +58,9 @@ def add_user_series():
     id_serie = ndb.Key(Serie, request.form['serie'])
     if id_serie not in my_user.serie_list:
         my_user.serie_list.append(id_serie)
+        my_user.put()
         logging.debug("user id:" + str(my_user) + " serie aggiunta: " + request.form['serie'])
-    return my_page()
+    return show_user_page()
 
 
 @app.route('/user_page/remove_series/', methods=['POST'])
@@ -61,19 +69,25 @@ def remove_user_series():
     id_serie = ndb.Key(Serie, request.form['serie'])
     if id_serie in my_user.serie_list:
         my_user.serie_list.remove(id_serie)
+        my_user.put()
         logging.debug("user id:" + str(my_user) + " serie rimossa: " + request.form['serie'])
-    return my_page()
+    return show_user_page()
 
 
 @app.route('/user/add_special_issue/', methods=['POST'])
 def add_special_issue():
     my_user = Users.get_by_id(users.get_current_user().user_id())
-    id_special = ndb.Key(Issue, request.form['special_issue'])
+    issue_title = request.form['special_issue']
+    id_special = ndb.Key(Issue, issue_title)
     logger.debug("received " + str(request))
     if id_special not in my_user.special_list:
         my_user.special_list.append(id_special)
-        logger.debug("user id:" + str(my_user.key) + " special aggiunto: " + request.form['special_issue'])
-    return my_page()
+        my_user.put()
+        logger.debug("user id:" + str(my_user.key) + " special aggiunto: " + issue_title)
+        return jsonify(content=issue_title + " aggiunto")
+    else:
+        logger.debug("user id:" + str(my_user.key) + " special " + issue_title + " non presente")
+        return jsonify(content=issue_title + " gia presente")
 
 
 @app.route('/user/remove_special_issue/', methods=['POST'])
@@ -84,16 +98,17 @@ def remove_special_issue():
     logger.debug("received " + str(request))
     if id_special in my_user.special_list:
         my_user.special_list.remove(id_special)
+        my_user.put()
         logger.debug("user id:" + str(my_user.key) + " special " + issue_title + " rimosso ")
         return jsonify(content=issue_title + " rimosso")
     else:
         logger.debug("user id:" + str(my_user.key) + " special " + issue_title + " non presente")
         return jsonify(content=issue_title + " non presente")
-    # return my_page()
+        # return my_page()
 
 
 @app.route('/user_page')
-def my_page():
+def show_user_page():
     logger.debug("retrieving all the series: ")
     series = Serie.query()
     return render_template("my_lists.html", series=series)
@@ -106,15 +121,8 @@ def date_handler(obj):
         raise TypeError
 
 
-# @app.route('/show_series/add_issue/', methods=['POST'])
-# def add_issue():
-#     issue = request
-#     logger.debug(str(issue))
-#     return jsonify(response="response")
-
-
 @app.route('/show_series/get/', methods=['POST'])
-def query_serie():
+def get_series():
     serie_title = request.form['serie']
     logger.debug("REQUESTED SERIE:" + request.form['serie'])
     dbm = DbManager()
@@ -126,15 +134,11 @@ def query_serie():
         return json.dumps(dump, default=date_handler)
 
 
-@app.route('/show_series', methods=['GET', 'POST'])
-def show_page():
+@app.route('/show_series')
+def show_series_page():
     logger.debug("retrieving all the series... ")
     series = Serie.query()
-    if request.method == 'POST':
-        pass
-    else:
-        logger.debug("rendering page...")
-        return render_template("show_entire_series.html", series=series)
+    return render_template("show_entire_series.html", series=series)
 
 
 @app.errorhandler(404)
@@ -152,7 +156,7 @@ def application_error(e):
 @app.route('/tasks/weekly_update')
 def cronjob():
     logger.info("Parsing all the Issues")
-    Parsatore(2, 8)
+    Parsatore(1, 10)
     return redirect('/')
 
 
