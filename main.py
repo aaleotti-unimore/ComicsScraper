@@ -1,45 +1,126 @@
-from __future__ import unicode_literals
+from __future__ import unicode_literals, print_function
 
 from page_parser import Parsatore
-
-"""`main` is the top level module for your Flask application."""
-
-from datetime import datetime, timedelta
-from flask import Flask, render_template, redirect, request, jsonify, Response
+from flask import Flask, render_template, redirect, request, jsonify, url_for, session
 from google.appengine.ext import ndb
 from google.appengine.api import users
 from db_manager import DbManager
 from werkzeug import debug
 from db_entities import Issue, Serie, Users
 from query import Query
+from flask_login import LoginManager, login_user, logout_user, login_required, current_user
+from urllib2 import HTTPError
 import logging.config
 import json
-import re
+from config import Auth, Config
+from requests_oauthlib.oauth2_session import OAuth2Session
 
-logging.config.fileConfig('logging.conf')
-# create logger
-logger = logging.getLogger(__name__)
-
+# from OpenSSL import SSL
+# context = SSL.Context(SSL.SSLv23_METHOD)
+# context.use_privatekey_file('yourserver.key')
+# context.use_certificate_file('yourserver.crt')
+# create the app
 app = Flask(__name__)
 app.wsgi_app = debug.DebuggedApplication(app.wsgi_app, True)
+app.secret_key = Config.SECRET_KEY
+# app.run(host='127.0.0.1',port='12344',
+#         debug = False/True, ssl_context=context)
+# login-manager
+login_manager = LoginManager(app)
+login_manager.login_view = "login"
+login_manager.session_protection = "strong"
 
+# logger
+logging.config.fileConfig('logging.conf')
+logger = logging.getLogger(__name__)
 
-# Note: We don't need to call run() since our application is embedded within
-# the App Engine WSGI application server.
 
 @app.route('/')
 @app.route('/index.html')
 def main():
-    query = Query(__get_user_status__()[0])
+    query = Query(users.get_current_user())
+    if query.check_if_empty() is 0:
+        cronjob()
     issues_result = query.get_issues()
+    logger.debug("current user: %s" % (users.get_current_user()))
     return render_template("mainpage_contents.html",
                            issues=issues_result['week_issues'],
                            week_sum=issues_result['week_issues_sum'],
+                           week_issues_count=issues_result['week_issues_count'],
                            future_issues=issues_result['future_issues'],
+                           future_issues_count=issues_result['future_issues_count'],
                            past_issues=issues_result['past_issues'],
                            past_sum=issues_result['past_issues_sum'],
+                           past_issues_count=issues_result['past_issues_count'],
                            nullobj=issues_result['nullobj'],
                            )
+
+
+@app.route('/gCallback')
+def callback():
+    # Redirect user to home page if already logged in.
+    if current_user is not None and current_user.is_authenticated:
+        return redirect(url_for('index'))
+    if 'error' in request.args:
+        if request.args.get('error') == 'access_denied':
+            return 'You denied access.'
+        return 'Error encountered.'
+    if 'code' not in request.args and 'state' not in request.args:
+        return redirect(url_for('login'))
+    else:
+        # Execution reaches here when user has
+        # successfully authenticated our app.
+        logger.debug("callback session['oauth_state']" + session['oauth_state'])
+        google = get_google_auth(state=session['oauth_state'])
+        try:
+            token = google.fetch_token(
+                Auth.TOKEN_URI,
+                client_secret=Auth.CLIENT_SECRET,
+                authorization_response=request.url)
+        except HTTPError:
+            return 'HTTPError occurred.'
+        google = get_google_auth(token=token)
+        resp = google.get(Auth.USER_INFO)
+        if resp.status_code == 200:
+            user_data = resp.json()
+            user_id = user_data['id']
+            user = Users.get_or_insert(user_id)
+            user.id = user_id
+            logger.debug("user token: " + token)
+            user.tokens = json.dumps(token)
+            user.put()
+            login_user(user)
+            return redirect(url_for('index'))
+        return 'Could not fetch your information.'
+
+
+def get_google_auth(state=None, token=None):
+    if token:
+        return OAuth2Session(Auth.CLIENT_ID, token=token)
+    if state:
+        return OAuth2Session(
+            Auth.CLIENT_ID,
+            state=state,
+            redirect_uri=Auth.REDIRECT_URI)
+    oauth = OAuth2Session(
+        Auth.CLIENT_ID,
+        redirect_uri=Auth.REDIRECT_URI,
+        scope=Auth.SCOPE)
+    return oauth
+
+
+@app.route('/login')
+def login():
+    if current_user.is_authenticated:
+        return redirect(url_for('index'))
+    google = get_google_auth()
+    logger.debug("Google AUTH: " + str(google))
+    auth_url, state = google.authorization_url(
+        Auth.AUTH_URI, access_type='offline')
+    logger.debug("State " + str(state))
+    session['oauth_state'] = state
+    logger.debug("session['oauth_state'] "+ session['oauth_state'])
+    return render_template('login.html', auth_url=auth_url)
 
 
 @app.route('/', methods=['POST'])
@@ -111,7 +192,7 @@ def remove_special_issue():
 def show_user_page():
     logger.debug("retrieving all the series: ")
     series = Serie.query()
-    return render_template("my_lists.html", series=series)
+    return render_template("user_page.html", series=series)
 
 
 def date_handler(obj):
@@ -138,7 +219,26 @@ def get_series():
 def show_series_page():
     logger.debug("retrieving all the series... ")
     series = Serie.query()
-    return render_template("show_entire_series.html", series=series)
+    return render_template("show_series.html", series=series)
+
+
+@app.route('/tasks/weekly_update')
+def cronjob():
+    logger.info("Parsing all the Issues")
+    Parsatore(1, 10)
+    return redirect('/')
+
+
+# @app.route('/restricted/clean_and_parse/')
+def clear_db():
+    ndb.delete_multi(
+        Issue.query().fetch(keys_only=True)
+    )
+    ndb.delete_multi(
+        Serie.query().fetch(keys_only=True)
+    )
+    cronjob()
+    return redirect('/')
 
 
 @app.errorhandler(404)
@@ -153,27 +253,8 @@ def application_error(e):
     return 'Sorry, unexpected error: {}'.format(e), 500
 
 
-@app.route('/tasks/weekly_update')
-def cronjob():
-    logger.info("Parsing all the Issues")
-    Parsatore(1, 10)
-    return redirect('/')
-
-
-# @app.route('/restricted/clean_and_parse/')
-# def clear_db():
-#     ndb.delete_multi(
-#         Issue.query().fetch(keys_only=True)
-#     )
-#     ndb.delete_multi(
-#         Serie.query().fetch(keys_only=True)
-#     )
-#     cronjob()
-#     return redirect('/')
-
-
 @app.context_processor
-def series_utility():
+def __series_utility__():
     def list_series(items):
         list_serie = []
         for item in items:
@@ -190,27 +271,26 @@ def series_utility():
     return dict(list_series=list_series, get_url_key=get_url_key, hyphenate=hyphenate)
 
 
-def __get_user_status__():
-    my_user = None
-    logout_url = None
-    login_url = None
+def __get_user_status__(my_user_id):
     logger.debug("Getting user status")
-    google_user = users.get_current_user()
-    if google_user:
-        logout_url = users.create_logout_url('/')
-        my_user = Users.get_or_insert(str(google_user.user_id()))
-        my_user.put()
-        logger.debug("the user is logged in")
-        logger.debug("my user is: " + str(my_user.key.id()))
+    if my_user_id:
+        my_user_id = Users.get_or_insert(my_user_id)
+        my_user_id.put()
+        logger.debug("the user is logged in/registerd")
+        logger.debug("my user is: " + str(my_user_id.key.id()))
     else:
         logger.debug("the user is not logged in")
-        login_url = users.create_login_url('/')
 
-    return [my_user, login_url, logout_url]
+    return my_user_id
 
 
-@app.context_processor
-def inject_user():
-    userdata = __get_user_status__()
-    logger.info("Successfully retrieved my user")
-    return dict(my_user=userdata[0], login_url=userdata[1], logout_url=userdata[2])
+@login_manager.user_loader
+def load_user(id):
+    return Users.get_by_id(id)
+
+
+@app.route("/logout")
+@login_required
+def logout():
+    logout_user()
+    return redirect(url_for('index'))

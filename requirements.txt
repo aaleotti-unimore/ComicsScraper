@@ -1,3 +1,5 @@
+authomatic
+oauth2client
 # This requirements file lists all third-party dependencies for this project.
 #
 # Run 'pip install -r requirements.txt -t lib/' to install these dependencies

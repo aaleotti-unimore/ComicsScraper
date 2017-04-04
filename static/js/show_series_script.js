@@ -19,9 +19,6 @@ $(function () {
                         response.push({})
                     }
                 }
-                // console.log("after: " + response.length);
-                // console.log(response);
-                // var template = Handlebars.templates['card'];
                 var deck = $('<div/>', {"class": "card-deck"}).attr("id", "deck0");
                 deck.after($('<p/>'));
                 var n = 0;
@@ -40,6 +37,11 @@ $(function () {
                     }
                     var html = Handlebars.templates.card(val);
                     deck.append(html);
+                    var modal = $('#response');
+                    modal.modal({
+                        focus: true,
+                        show: false
+                    });
                     $('#btn-sum-' + index).click(function () {
                         $('#mod-' + index).modal();
                     });
@@ -51,8 +53,10 @@ $(function () {
                             type: 'POST',
                             dataType: 'json',
                             success: function (response) {
-                                alert(response.content);
-                                console.log("success" + response)
+                                // modal.empty();
+                                modal.find(".modal-body").text(response.content);
+                                modal.modal('show');
+                                console.log("success" + response.content)
                             }
                         })
                     });

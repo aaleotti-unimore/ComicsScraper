@@ -1,5 +1,5 @@
+from flask_login import UserMixin
 from google.appengine.ext import ndb
-import datetime
 
 
 class Serie(ndb.Model):
@@ -18,6 +18,8 @@ class Issue(ndb.Model):
     desc = ndb.StringProperty(indexed=False, repeated=True)
 
 
-class Users(ndb.Model):
+class Users(UserMixin, ndb.Model):
+    id = ndb.IntegerProperty(indexed=True)
     serie_list = ndb.KeyProperty(repeated=True)
     special_list = ndb.KeyProperty(repeated=True)
+    token=ndb.StringProperty(indexed=False)

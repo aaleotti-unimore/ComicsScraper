@@ -22,9 +22,9 @@ class Query:
         self.past_issues = None
         self.special_issues = None
 
-        self.week_issues_count = None
-        self.future_issues_count = None
-        self.past_issues_count = None
+        self.week_issues_count = 0
+        self.future_issues_count = 0
+        self.past_issues_count = 0
 
         self.week_issues_sum = 0
         self.past_issues_sum = 0
@@ -75,9 +75,9 @@ class Query:
         ret['past_issues'] = self.past_issues
         ret['special_issues'] = self.special_issues
 
-        # ret['week_issues_count'] = self.week_issues_count
-        # ret['future_issues_count'] = self.future_issues_count
-        # ret['past_issues_count'] = self.past_issues_count
+        ret['week_issues_count'] = self.week_issues_count
+        ret['future_issues_count'] = self.future_issues_count
+        ret['past_issues_count'] = self.past_issues_count
 
         ret['week_issues_sum'] = self.week_issues_sum
         ret['past_issues_sum'] = self.past_issues_sum
@@ -104,3 +104,8 @@ class Query:
         ret['special_issues'] = self.special_issues
         ret['special_issues_sum'] = self.special_issues_sum
         return ret
+
+    def check_if_empty(self):
+        q = Issue.query().count()
+        self.logger.debug("database has " + str(q) + " elements")
+        return q

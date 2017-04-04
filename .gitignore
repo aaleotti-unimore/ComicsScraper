@@ -3,3 +3,5 @@
 !lib/README.md
 .DS_Store
 /lib
+.idea/workspace.xml
+client_secret.json

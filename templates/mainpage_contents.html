@@ -108,11 +108,11 @@
     {% endif %}
 {% endmacro %}
 
-{% macro week_block(title, items, sumsett, nColumns, maxwidth, current) %}
+{% macro week_block(title, items, items_count, sumsett, nColumns, maxwidth, current) %}
     <div class="card">
         <div class="card-block">
             <h3 class="card-title">{{ title }}</h3>
-            {% if items %}
+            {% if items_count>0 %}
                 {% for row in items|batch(nColumns,nullobj) %}
                     <div class="card-deck">
                         {% for column in row %}
@@ -139,13 +139,13 @@
 {% block container %}
     {% set n_thumbs = 3 %}
     <div class="row">
-        <div {% if my_user %} class="col-sm-9" {% endif %}>
+        <div {% if my_user %} class="col-sm-9" {% else %} class="col-sm-12" {% endif %}>
             <p></p>
-            {{ week_block("Settimana Precedente",past_issues, past_sum, n_thumbs, 30, False) }}
+            {{ week_block("Settimana Precedente",past_issues, past_issues_count, past_sum, n_thumbs, 30, False) }}
             <p></p>
-            {{ week_block("Questa Settimana", issues, week_sum, 3, 30, True) }}
+            {{ week_block("Questa Settimana", issues, week_issues_count, week_sum, 3, 30, True) }}
             <p></p>
-            {{ week_block("Prossime Settimane",future_issues, 0, n_thumbs, 30, False) }}
+            {{ week_block("Prossime Settimane",future_issues, future_issues_count, 0, n_thumbs, 30, False) }}
         </div>
         {% if my_user %}
             <div class="col-sm-3">

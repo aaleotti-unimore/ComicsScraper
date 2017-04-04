@@ -72,8 +72,6 @@ class Parsatore():
             title = uscita.find('h3', class_="product-name").find('a')
             diz['title'] = " ".join(title.get_text().split())
             diz['url'] = str(title.get('href'))
-            # self.logger.debug("Getting description of: " + diz['title'])
-            # diz['desc'] = self.parse_description(diz['url'])
 
             subtitle = uscita.find('h3', class_="product-name").find('small', attrs={"class": "subtitle"})
             if subtitle:
@@ -90,11 +88,18 @@ class Parsatore():
                 diz['ristampa'] = " ".join(ristampa.text.split())
 
             data_str = uscita.find('h4', class_="publication-date").text.strip()
-            struct_date = datetime.strptime(data_str, "%d/%m/%Y")
-            diz['data'] = struct_date
-            diz['prezzo'] = uscita.find('p', class_="old-price").text.strip()
+            if data_str:
+                struct_date = datetime.strptime(data_str, "%d/%m/%Y")
+                diz['data'] = struct_date
+
+            prezzo = uscita.find('p', class_="old-price").text.strip()
+            if prezzo:
+                diz['prezzo'] = prezzo
+
             thmb = uscita.find('img', class_="img-thumbnail img-responsive")
-            diz['image'] = thmb["src"]
+            if thmb:
+                diz['image'] = thmb["src"]
+
             parsed.append(diz)
             desc_urls.append(diz['url'])
 

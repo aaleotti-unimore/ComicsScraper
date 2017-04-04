@@ -1,0 +1,33 @@
+{% extends "index.html" %}
+
+{% block container %}
+    <p></p>
+    <meta name="google-signin-client_id"
+          content="830180249780-mpleh36bf0c9akkda9hfdi2kbpel44tl.apps.googleusercontent.com">
+    <script src="https://apis.google.com/js/platform.js" async defer></script>
+{#    <script type="text/javascript">#}
+{#        function onSignIn(googleUser) {#}
+{#            var id_token = googleUser.getAuthResponse().id_token;#}
+            {#            console.log(id_token);#}
+{#            var xhr = new XMLHttpRequest();#}
+{#            xhr.open('POST', '/tokensignin', true);#}
+{#            xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');#}
+{#            xhr.onload = function () {#}
+{#                console.log('Signed in as: ' + this.responseText);#}
+{#            };#}
+{##}
+{#            xhr.send('idtoken=' + id_token);#}
+            {#            console.log(xhr)#}
+{#        }#}
+{#    </script>#}
+    <div class="card">
+        <div class="card-block">
+            <h2 class="card-title">Login</h2>
+{#            <div class="nav-item">#}
+{#                <a class="nav-link g-signin2" data-onsuccess="onSignIn">Sign In</a>#}
+{#            </div>#}
+            <a href="{{auth_url}}" class="btn btn-primary btn-block" style="padding: 15px 0;">Login with Google</a>
+        </div>
+    </div>
+
+{% endblock container %}
