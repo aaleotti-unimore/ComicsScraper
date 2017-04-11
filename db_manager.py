@@ -1,3 +1,6 @@
+"""
+
+"""
 from __future__ import print_function
 
 import datetime
@@ -11,7 +14,16 @@ from db_entities import Issue, Serie
 logger = logging.getLogger(__name__)
 
 class DbManager:
+    """
+    
+    """
+
     def save_to_DB(self, item):
+        """
+        
+        :param item: 
+        :return: 
+        """
         logger.info("saving the issues")
         issue = Issue(id=item['title'])
         issue.title = item['title']
@@ -52,11 +64,21 @@ class DbManager:
         logger.debug("issue " + issue.title + " saved")
 
     def del_all(self, items):
+        """
+        
+        :param items: 
+        :return: 
+        """
         for item in items:
             item.key.delete()
         logger.debug("Deleted all the items")
 
     def to_json(self, o):
+        """
+        
+        :param o: 
+        :return: 
+        """
         if isinstance(o, list):
             return [self.to_json(l) for l in o]
         if isinstance(o, dict):

@@ -1,15 +1,15 @@
-from __future__ import unicode_literals, print_function
+"""
 
-import logging.config
+"""
+from __future__ import unicode_literals
 
-from flask import Flask, redirect, request, url_for, session, Blueprint, g
+from flask import Flask, redirect, request, url_for, session, Blueprint, g, jsonify
 from flask_login import login_user, logout_user, AnonymousUserMixin
 from flask_oauthlib.client import OAuth
-from oauth2client import client
-from config import Auth
+
+from config import DevelopmentConfig as Config
 from db_entities import Users
 
-logger = logging.getLogger(__name__)
 user_manager_api = Blueprint('user_manager_api', __name__)
 
 app = Flask(__name__)
@@ -17,10 +17,11 @@ with app.app_context():
     oauth = OAuth(app)
     google = oauth.remote_app(
         'google',
-        consumer_key=Auth.CLIENT_ID,
-        consumer_secret=Auth.CLIENT_SECRET,
+        consumer_key=Config.CLIENT_ID,
+        consumer_secret=Config.CLIENT_SECRET,
         request_token_params={
-            'scope': 'email'
+            'scope': 'email',
+            'access_type': 'offline'
         },
         base_url='https://www.googleapis.com/oauth2/v1/',
         request_token_url=None,
@@ -32,11 +33,22 @@ with app.app_context():
 
 @user_manager_api.route('/login')
 def login():
-    return google.authorize(callback=url_for('user_manager_api.authorized', _external=True))
+    """
+    
+    :return: 
+    """
+    return google.authorize(callback=url_for(
+        'user_manager_api.authorized',
+        _external=True)
+    )
 
 
 @user_manager_api.route('/logout')
 def logout():
+    """
+    
+    :return: 
+    """
     session.pop('google_token', None)
     logout_user()
     return redirect(url_for('main'))
@@ -44,6 +56,10 @@ def logout():
 
 @user_manager_api.route('/gCallback')
 def authorized():
+    """
+    
+    :return: 
+    """
     resp = google.authorized_response()
     if resp is None:
         return 'Access denied: reason=%s error=%s' % (
@@ -51,17 +67,15 @@ def authorized():
             request.args['error_description']
         )
     session['google_token'] = (resp['access_token'], '')
-    flow = client.flow_from_clientsecrets()
     me = google.get('userinfo')
-    logger.debug("authorized user: " + me.data['id'])
     new_user = Users.get_or_insert(me.data['id'])
     new_user.id = me.data['id']
     new_user.name = me.data['name']
     new_user.put()
-    logger.debug("local user is: " + str(new_user))
     login_user(new_user, remember=True)
     g.user = new_user
     return redirect(url_for('main'))
+    # return jsonify({"data": me.data})
 
 
 @google.tokengetter

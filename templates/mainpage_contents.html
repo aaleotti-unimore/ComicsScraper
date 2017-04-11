@@ -141,9 +141,9 @@
     <div class="row">
         <div {% if current_user.is_authenticated %} class="col-sm-9" {% else %} class="col-sm-12" {% endif %}>
             <p></p>
-            {{ week_block("Settimana Precedente",past_issues, past_issues_count, past_sum, n_thumbs, 30, False) }}
+            {{ week_block("Settimana Precedente",past_issues, past_issues_count, past_issues_sum, n_thumbs, 30, False) }}
             <p></p>
-            {{ week_block("Questa Settimana", issues, week_issues_count, week_sum, 3, 30, True) }}
+            {{ week_block("Questa Settimana", week_issues, week_issues_count, week_issues_sum, 3, 30, True) }}
             <p></p>
             {{ week_block("Prossime Settimane",future_issues, future_issues_count, 0, n_thumbs, 30, False) }}
         </div>
