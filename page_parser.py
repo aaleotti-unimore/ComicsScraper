@@ -40,7 +40,7 @@ class Parsatore():
             self.logger.error('URLError = ' + str(e.reason))
             # return "#"
         except httplib.HTTPException as e:
-            self.logger.error('HTTPException')
+            self.logger.error('HTTPException' + str(e.reason))
             # return "#"
         except Exception:
             import traceback
@@ -92,9 +92,9 @@ class Parsatore():
                 struct_date = datetime.strptime(data_str, "%d/%m/%Y")
                 diz['data'] = struct_date
 
-            prezzo = uscita.find('p', class_="old-price").text.strip()
+            prezzo = uscita.find('p', class_="old-price")
             if prezzo:
-                diz['prezzo'] = prezzo
+                diz['prezzo'] = prezzo.text.strip()
 
             thmb = uscita.find('img', class_="img-thumbnail img-responsive")
             if thmb:

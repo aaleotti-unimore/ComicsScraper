@@ -1,8 +1,7 @@
 from __future__ import unicode_literals
 
 import logging
-
-"""`main` is the top level module for your Flask application."""
+from flask_login import current_user
 
 from datetime import datetime, timedelta
 from google.appengine.ext import ndb
@@ -33,7 +32,7 @@ class Query:
 
     def get_issues(self):
         ret = {}
-        if self.my_user:
+        if current_user.is_authenticated:
             if self.my_user.serie_list:
                 self.issues = Issue.query(Issue.serie.IN(self.my_user.serie_list)).order(Issue.data)
         else:
@@ -88,7 +87,7 @@ class Query:
 
     def get_specials(self):
         ret = {}
-        if self.my_user:
+        if current_user.is_authenticated:
             if self.my_user.special_list:
                 # special_keys = [ndb.Key(Issue, special_id) for special_id in self.my_user.special_list]
                 self.special_issues = ndb.get_multi(self.my_user.special_list)

@@ -25,6 +25,7 @@
     <orderEntry type="library" name="jquery-3.1.1" level="application" />
     <orderEntry type="library" name="moment" level="application" />
     <orderEntry type="library" name="handlebars.runtime" level="application" />
+    <orderEntry type="library" name="chosen.jquery" level="application" />
   </component>
   <component name="TemplatesService">
     <option name="TEMPLATE_CONFIGURATION" value="Jinja2" />

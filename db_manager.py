@@ -37,8 +37,11 @@ class DbManager:
         if 'desc' in item:
             issue.desc = item['desc']
 
-        issue.data = item['data']
-        issue.prezzo = item['prezzo']
+        if 'data' in item:
+            issue.data = item['data']
+
+        if 'prezzo' in item:
+            issue.prezzo = item['prezzo']
 
         if "placeholder/default/no-photo" in item['image']:
             issue.image = item['image']
