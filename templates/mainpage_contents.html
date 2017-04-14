@@ -34,7 +34,8 @@
                                     data-target="mod-{{ get_url_key(item.title) }}">
                                 <i class="fa fa-list" aria-hidden="true"></i>
                             </button>
-                            {% if my_user %}
+                            +
+                            {% if current_user.is_authenticated %}
                                 <span></span>
                                 <button id="btn-add-{{ get_url_key(item.title) }}"
                                         class="btn btn-sm btn-outline-success"

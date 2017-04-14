@@ -105,6 +105,5 @@ class Query:
         return ret
 
     def check_if_empty(self):
-        q = Issue.query().count()
-        self.logger.debug("database has " + str(q) + " elements")
+        q = Issue.query().fetch(limit=1)
         return q

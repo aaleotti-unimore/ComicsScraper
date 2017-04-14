@@ -4,14 +4,14 @@ from google.appengine.ext import ndb
 
 class Serie(ndb.Model):
     """
-    
+    Modello per una serie di fumetti
     """
     title = ndb.StringProperty(indexed=True)
 
 
 class Issue(ndb.Model):
     """
-    
+    Modello di un numero
     """
     title = ndb.StringProperty(indexed=True)
     subtitle = ndb.StringProperty(indexed=False)
@@ -26,10 +26,11 @@ class Issue(ndb.Model):
 
 class Users(ndb.Model, UserMixin):
     """
-    
+    Modello utente
     """
     id = ndb.StringProperty(indexed=True)
     name = ndb.StringProperty(indexed=False)
+    email = ndb.StringProperty(indexed=False)
     serie_list = ndb.KeyProperty(repeated=True)
     special_list = ndb.KeyProperty(repeated=True)
     token = ndb.StringProperty(indexed=False)

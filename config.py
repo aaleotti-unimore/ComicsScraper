@@ -5,7 +5,7 @@ import os
 class Config(object):
     APP_NAME = "The Amazing Kirby"
     SECRET_KEY = os.urandom(24)
-    DEBUG = False
+    DEBUG = True
     TESTING = False
     REDIRECT_URI = "https://localhost:8080/gCallback"
     CLIENT_ID = '830180249780-kq1046ma4m11ot3n3nps1kvbqf3o32nf.apps.googleusercontent.com'

@@ -15,7 +15,9 @@ templates['card'] = template({"1":function(container,depth0,helpers,partials,dat
     + alias4(((helper = (helper = helpers.prezzo || (depth0 != null ? depth0.prezzo : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"prezzo","hash":{},"data":data}) : helper)))
     + "</h6>\n        </div>\n        <ul class=\"list-group list-group-flush text-center\">\n            <li class=\"list-group-item\">\n                <div class=\"mx-auto\">\n                    <form>\n                        <button id=\"btn-sum-"
     + alias4(((helper = (helper = helpers.index || (depth0 != null ? depth0.index : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"index","hash":{},"data":data}) : helper)))
-    + "\" class=\"btn btn-sm btn-outline-primary\" type=\"button\">\n                            <i class=\"fa fa-list\" aria-hidden=\"true\"></i>\n                        </button>\n"
+    + "\" class=\"btn btn-sm btn-outline-primary\" type=\"button\">\n                            <i class=\"fa fa-list\" aria-hidden=\"true\"></i>\n                        </button>\n                        <a class=\"btn btn-sm btn-outline-primary\" href=\""
+    + alias4(((helper = (helper = helpers.url || (depth0 != null ? depth0.url : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"url","hash":{},"data":data}) : helper)))
+    + "\" role=\"button\"> <i\n                                class=\"fa fa-shopping-cart\" aria-hidden=\"true\"></i></a>\n"
     + ((stack1 = helpers.unless.call(alias1,(depth0 != null ? depth0.specials : depth0),{"name":"unless","hash":{},"fn":container.program(2, data, 0),"inverse":container.program(4, data, 0),"data":data})) != null ? stack1 : "")
     + "                    </form>\n                </div>\n            </li>\n        </ul>\n        <div class=\"card-footer\">\n            <small>\n                "
     + alias4((helpers.formatDate || (depth0 && depth0.formatDate) || alias2).call(alias1,(depth0 != null ? depth0.data : depth0),{"name":"formatDate","hash":{},"data":data}))

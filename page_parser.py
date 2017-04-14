@@ -126,7 +126,7 @@ class Parsatore():
         except urllib2.URLError as e:
             self.logger.error('URLError = ' + str(e.reason))
         except httplib.HTTPException as e:
-            self.logger.error('HTTPException' + str(e.reason))
+            self.logger.error('HTTPException' + str(e))
         except Exception:
             import traceback
             self.logger.error('generic exception: ' + traceback.format_exc())

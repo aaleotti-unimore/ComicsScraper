@@ -12,15 +12,15 @@ from flask_login import current_user, LoginManager
 from google.appengine.ext import ndb
 from werkzeug import debug
 
-from db_entities import Issue
-from db_entities import Users
-from login_manager import user_manager_api, Anonuser
+from db_entities import Issue, Users
+from login_manager import app as user_manager_api, Anonuser
 from query import Query
 from show_series import show_series_api
 from user_page import user_page_api
 from user_specials import user_specials_api
 from utils import utils_api, cronjob
-from config import Config
+from config import DevelopmentConfig as Config
+from calendar_manager import calendar_manager_api
 
 #####################
 ####     app     ####
@@ -34,6 +34,7 @@ app.register_blueprint(user_page_api)
 app.register_blueprint(utils_api)
 app.register_blueprint(user_specials_api)
 app.register_blueprint(user_manager_api)
+app.register_blueprint(calendar_manager_api)
 
 #####################
 ####    logger   ####
@@ -42,7 +43,6 @@ logging.config.fileConfig('logging.conf')
 logger = logging.getLogger(__name__)
 
 
-#
 @app.route('/')
 @app.route('/index.html')
 def main():
@@ -54,7 +54,7 @@ def main():
     logger.debug("current user: %s" % current_user)
 
     query = Query(current_user)
-    if query.check_if_empty() is 0:
+    if not query.check_if_empty():
         cronjob()  # popola il db se e' vuoto
 
     issues_result = query.get_issues()
