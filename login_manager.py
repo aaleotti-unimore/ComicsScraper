@@ -3,11 +3,11 @@ from logging import getLogger
 import httplib2
 from apiclient import errors
 from flask import redirect, request, url_for, session, Blueprint
-from flask_login import login_user, AnonymousUserMixin
+from flask_login import login_user, AnonymousUserMixin, logout_user
 from googleapiclient.discovery import build
 from oauth2client import client
-
-from db_entities import Users
+from oauth2client.contrib.appengine import StorageByKeyName
+from db_entities import Users, CredentialsModel
 
 app = Blueprint('user_manager_api', __name__)
 
@@ -41,7 +41,6 @@ def gCallback():
         'client_secrets.json',
         scope=['profile', 'email', 'https://www.googleapis.com/auth/calendar'],
         redirect_uri=url_for('user_manager_api.gCallback', _external=True),
-        # include_granted_scopes=True
     )
     flow.params['access_type'] = 'offline'  # offline access
     flow.params['include_granted_scopes'] = 'true'  # incremental auth
@@ -52,18 +51,20 @@ def gCallback():
         auth_code = request.args.get('code')
         credentials = flow.step2_exchange(auth_code)
         session['credentials'] = credentials.to_json()
-
-        login(get_user_info(credentials))
+        login(credentials)
         return redirect(url_for('main'))
 
 
-def login(user_data):
+def login(credentials):
+    user_data = get_user_info(credentials)
     new_user = Users.get_or_insert(user_data['id'])
     new_user.id = user_data['id']
     new_user.name = user_data['name']
     new_user.email = user_data['email']
     session['user_email'] = user_data['email']
     new_user.put()
+    storage = StorageByKeyName(CredentialsModel, new_user.id, 'credentials')
+    storage.put(credentials)
     login_user(new_user, remember=True)
 
 
@@ -82,9 +83,19 @@ def get_user_info(credentials):
     user_info = None
     try:
         user_info = user_info_service.userinfo().get().execute()
-    except errors.HttpError, e:
+    except errors.HttpError as e:
         logger.error('An error occurred: %s', e)
     if user_info and user_info.get('id'):
         return user_info
     else:
         raise Exception
+
+@app.route('/logout')
+def logout():
+    """
+    Invalida il token di autenticazione ed esegue il logout utente.
+    :return: reindirizza l'utente alla pagina principale
+    """
+    session.pop('google_token', None)
+    logout_user()
+    return redirect(url_for('main'))

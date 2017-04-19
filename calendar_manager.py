@@ -3,63 +3,118 @@ from __future__ import unicode_literals
 import logging
 
 import httplib2
-from flask import Blueprint, session, url_for
+from flask import jsonify
+from flask import url_for, Blueprint, redirect
 from flask_login import current_user
 from googleapiclient import discovery
-from oauth2client.client import OAuth2Credentials
+from oauth2client.contrib.appengine import StorageByKeyName
+from datetime import timedelta
+from db_entities import Users, CredentialsModel
 from query import Query
 
 logger = logging.getLogger(__name__)
 
 calendar_manager_api = Blueprint('calendar_manager_api', __name__)
 
+CLIENT_ID = "client_id"
+CLIENT_SECRET = "client_secret"
+REFRESH_TOKEN = "refresh_token"
 
-@calendar_manager_api.route('/add_cal')
-def add_cal():
-    """Builds a GMAIL API query for shipment emails in the last 6 months.
-     Returns a function call asking for the contents of those shipping emails.
-     """
-    # query = "shipped shipping shipment tracking after:2014/1/14"
-
-    # messages = data["messages"]
-    # messages is a list of dictionaries [{ 'id': '12345', 'threadId': '12345'}, ]
-    # return request_email_body(messages)
-    query = Query(current_user)
-    result = query.get_issues()
-    issue = result['weel_issues'][0]
+user = Users.query().fetch(limit=1)
+storage = StorageByKeyName(CredentialsModel, user[0].id, 'credentials')
+credentials = storage.get()
+http = credentials.authorize(httplib2.Http())
+service = discovery.build('calendar', 'v3', http=http)
 
 
+def get_list():
+    page_token = None
+    while True:
+        calendar_list = service.calendarList().list(pageToken=page_token).execute()
+        # for calendar_list_entry in calendar_list['items']:
+        #     logger.debug(calendar_list_entry['summary'])
+        page_token = calendar_list.get('nextPageToken')
+        if not page_token:
+            break
+    return calendar_list
+
+
+@calendar_manager_api.route('/cal_list')
+def cal_list():
+    calendar_list = get_list()
+    return jsonify(calendar_list)
+
+
+@calendar_manager_api.route('/create_cal')
+def create_cal():
+    calendar = {
+        'accessRole': 'reader',
+        'summary': 'Uscite Fumetti',
+        'timeZone': 'Europe/Rome'
+    }
+    created_calendar = service.calendars().insert(body=calendar).execute()
+    return jsonify(created_calendar)
+
+
+@calendar_manager_api.route('/del_cal')
+def delete_cal():
+    calendar_list = get_list()
+    ids = []
+    for calendar in calendar_list['items']:
+        if calendar['summary'] in 'Uscite Fumetti':
+            ids.append(calendar['id'])
+            logger.debug(calendar['id'])
+
+    for id in ids:
+        print id
+        service.calendars().delete(calendarId=id).execute()
+
+    return redirect(url_for('main'))
+
+
+@calendar_manager_api.route('/add_event')
+def add_issue():
+    from db_entities import Issue
+    import json
+    from utils import date_handler
+    from datetime import datetime
+    import datetime
+    issue = Issue.query().fetch(limit=1)[0]
+    # start = datetime.datetime.combine(issue.data, datetime.time())
+    # end = datetime.datetime.combine(issue.data+timedelta(days=1), datetime.time())
+    start = issue.data
+    end = issue.data+timedelta(days=1)
     event = {
-        'summary': 'Google I/O 2015',
-        'location': '800 Howard St., San Francisco, CA 94103',
-        'description': 'A chance to hear more about Google\'s developer products.',
+        'summary': issue.title,
         'start': {
-            'dateTime': '2017-04-13T09:00:00-07:00',
-            'timeZone': 'America/Los_Angeles',
-        },
-        'end': {
-            'dateTime': '2017-04-14T17:00:00-07:00',
+            'date': start.isoformat(),
             'timeZone': 'Europe/Rome',
         },
-        'recurrence': [
-            'RRULE:FREQ=DAILY;COUNT=2'
-        ],
-        'attendees': [
-            {'email': 'lpage@example.com'},
-            {'email': 'sbrin@example.com'},
-        ],
-        'reminders': {
-            'useDefault': False,
-            'overrides': [
-                {'method': 'email', 'minutes': 24 * 60},
-                {'method': 'popup', 'minutes': 10},
-            ],
+        'end': {
+            'date': end.isoformat(),
+            'timeZone': 'Europe/Rome',
         },
     }
 
-    credentials = OAuth2Credentials.from_json(session['credentials'])
-    http = credentials.authorize(httplib2.Http())
-    service = discovery.build('calendar', 'v3', http=http)
     event = service.events().insert(calendarId='primary', body=event).execute()
-    logger.debug('Event created: %s' % (event.get('htmlLink')))
-    return url_for('main')
+    print('Event created: %s' % (event.get('htmlLink')))
+    return redirect(url_for('main'))
+
+
+def to_json(o):
+    import datetime
+    """
+
+    :param o: 
+    :return: 
+    """
+    if isinstance(o, list):
+        return [to_json(l) for l in o]
+    if isinstance(o, dict):
+        x = {}
+        for l in o:
+            x[l] = to_json(o[l])
+        return x
+    if isinstance(o, datetime.datetime):
+        return o.isoformat()
+    return o

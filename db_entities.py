@@ -1,6 +1,12 @@
 from flask_login import UserMixin
 from google.appengine.ext import ndb
 
+from oauth2client.contrib.appengine import CredentialsNDBProperty
+
+
+class CredentialsModel(ndb.Model):
+    credentials = CredentialsNDBProperty()
+
 
 class Serie(ndb.Model):
     """

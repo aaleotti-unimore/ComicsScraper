@@ -21,6 +21,7 @@ from user_specials import user_specials_api
 from utils import utils_api, cronjob
 from config import DevelopmentConfig as Config
 from calendar_manager import calendar_manager_api
+import calendar_manager
 
 #####################
 ####     app     ####
@@ -51,6 +52,7 @@ def main():
     template render. Se nessun utente e' loggato passera' tutte le uscite da oggi in poi.
     :return: genera la pagina index contenente i fumetti seguiti dall'utente. 
     """
+
     logger.debug("current user: %s" % current_user)
 
     query = Query(current_user)
