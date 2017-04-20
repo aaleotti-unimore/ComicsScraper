@@ -26,7 +26,7 @@ from werkzeug.filesystem import get_filesystem_encoding
 
 
 _coding_re = re.compile(br'coding[:=]\s*([-\w.]+)')
-_line_re = re.compile(br'^(.*?)$(?m)')
+_line_re = re.compile(br'^(.*?)$', re.MULTILINE)
 _funcdef_re = re.compile(r'^(\s*def\s)|(.*(?<!\w)lambda(:|\s))|^(\s*@)')
 UTF8_COOKIE = b'\xef\xbb\xbf'
 
@@ -43,7 +43,7 @@ HEADER = u'''\
 <html>
   <head>
     <title>%(title)s // Werkzeug Debugger</title>
-    <link rel="stylesheet" href="?__debugger__=yes&amp;cmd=resource&amp;f=signup.css"
+    <link rel="stylesheet" href="?__debugger__=yes&amp;cmd=resource&amp;f=style.css"
         type="text/css">
     <!-- We need to make sure this has a favicon so that the debugger does
          not by accident trigger a request to /favicon.ico which might
@@ -60,7 +60,7 @@ HEADER = u'''\
           SECRET = "%(secret)s";
     </script>
   </head>
-  <body>
+  <body style="background-color: #fff">
     <div class="debugger">
 '''
 FOOTER = u'''\

@@ -30,6 +30,9 @@ class Query:
         self.special_issues_sum = 0
         # END VAR DECLARATION
 
+    def get_user_issues(self, user):
+        return Issue.query(Issue.serie.IN(user.serie_list))
+
     def get_issues(self):
         ret = {}
         if current_user.is_authenticated:
@@ -84,6 +87,9 @@ class Query:
         ret['nullobj'] = Issue(id="null", data=datetime.today())
 
         return ret
+
+    def get_user_specials(self,user):
+        return ndb.get_multi(user.special_list)
 
     def get_specials(self):
         ret = {}
