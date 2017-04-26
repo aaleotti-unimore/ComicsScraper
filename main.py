@@ -12,16 +12,17 @@ from flask_login import current_user, LoginManager
 from google.appengine.ext import ndb
 from werkzeug import debug
 
+from calendar_manager import calendar_manager_api
+from config import ProductionConfig as Config
 from db_entities import Issue, Users
 from login_manager import app as user_manager_api, Anonuser
 from query import Query
 from show_series import show_series_api
 from user_page import user_page_api
 from user_specials import user_specials_api
+from api_manager import api
 from utils import utils_api, cronjob
-from config import DevelopmentConfig as Config
-from calendar_manager import calendar_manager_api
-import calendar_manager
+
 
 #####################
 ####     app     ####
@@ -36,6 +37,7 @@ app.register_blueprint(utils_api)
 app.register_blueprint(user_specials_api)
 app.register_blueprint(user_manager_api)
 app.register_blueprint(calendar_manager_api)
+app.register_blueprint(api)
 
 #####################
 ####    logger   ####
@@ -53,9 +55,9 @@ def main():
     :return: genera la pagina index contenente i fumetti seguiti dall'utente. 
     """
 
-    logger.debug("current user: %s" % current_user)
+    logger.debug("current user: %s" % current_user.name)
 
-    query = Query(current_user)
+    query = Query()
     if not query.check_if_empty():
         cronjob()  # popola il db se e' vuoto
 

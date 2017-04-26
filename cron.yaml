@@ -5,3 +5,10 @@ cron:
   retry_parameters:
     min_backoff_seconds: 30
     max_doublings: 5
+
+- description: weekly user calendar update
+  url: /pupulate_users_calendar
+  schedule: every monday 5:30
+  retry_parameters:
+    min_backoff_seconds: 30
+    max_doublings: 5

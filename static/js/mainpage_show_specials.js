@@ -38,8 +38,9 @@ function getSpecials() {
                 });
             });
         },
-        error: function (error) {
-            console.log(error.content)
+        error: function (xhr, err) {
+            console.log("readyState: " + xhr.readyState + "\nstatus: " + xhr.status);
+            console.log("responseText: " + xhr.responseText);
         }
     })
 }

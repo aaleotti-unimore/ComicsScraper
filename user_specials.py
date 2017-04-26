@@ -5,12 +5,11 @@ import logging.config
 
 from flask import request, jsonify, Blueprint
 from flask_login import current_user
-from google.appengine.api import users
 from google.appengine.ext import ndb
+
+from db_entities import Issue
 from db_manager import DbManager
 from query import Query
-
-from db_entities import Issue, Users
 from utils import date_handler
 
 logger = logging.getLogger(__name__)
@@ -21,7 +20,7 @@ user_specials_api = Blueprint('user_specials_api', __name__)
 @user_specials_api.route('/index.html', methods=['POST'])
 def get_specials():
     if request.method == 'POST':
-        query = Query(current_user)
+        query = Query()
         dbm = DbManager()
         return json.dumps(dbm.to_json(query.get_specials()), default=date_handler)
 

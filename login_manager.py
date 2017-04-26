@@ -15,6 +15,7 @@ logger = getLogger(__name__)
 
 
 class Anonuser(AnonymousUserMixin):
+    name = "Anon"
     serie_list = None
 
 
@@ -26,13 +27,8 @@ def auth_user():
     if credentials.access_token_expired:
         return redirect(url_for('user_manager_api.gCallback'))
     else:
-        # pass
-        http_auth = credentials.authorize(httplib2.Http())
-        # drive = discovery.build('drive', 'v2', http_auth)
-        # files = drive.files().list().execute()
-
-
-        # return json.dumps(dump)
+        session.pop('google_token', None)
+        return redirect(url_for('user_manager_api.gCallback'))
 
 
 @app.route('/gCallback')

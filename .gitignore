@@ -4,3 +4,5 @@
 .DS_Store
 /lib
 .idea/workspace.xml
+/client_secrets_dev.json
+/client_secrets.json

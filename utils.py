@@ -1,6 +1,7 @@
 from __future__ import unicode_literals, print_function
 
 import logging.config
+from datetime import datetime
 
 from flask import redirect, Blueprint
 from google.appengine.ext import ndb
@@ -36,6 +37,31 @@ def clear_db():
     )
     cronjob()
     return redirect('/')
+
+def to_json(o):
+    """
+
+    :param o: 
+    :return: 
+    """
+    if isinstance(o, list):
+        return [to_json(l) for l in o]
+    if isinstance(o, dict):
+        x = {}
+        for l in o:
+            x[l] = to_json(o[l])
+        return x
+    if isinstance(o, datetime):
+        return o.isoformat()
+    if isinstance(o, ndb.GeoPt):
+        return {'lat': o.lat, 'lon': o.lon}
+    if isinstance(o, ndb.Key):
+        return o.urlsafe()
+    if isinstance(o, ndb.Model):
+        dct = o.to_dict()
+        dct['id'] = o.key.id()
+        return to_json(dct)
+    return o
 
 
 @utils_api.errorhandler(404)

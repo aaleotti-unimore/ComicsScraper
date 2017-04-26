@@ -13,6 +13,7 @@ from db_entities import Issue, Serie
 # create logger
 logger = logging.getLogger(__name__)
 
+
 class DbManager:
     """
     

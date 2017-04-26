@@ -11,8 +11,8 @@ import re
 
 
 class Query:
-    def __init__(self, my_user):
-        self.my_user = my_user
+    def __init__(self):
+        # self.my_user = my_user
         self.logger = logging.getLogger(__name__)
 
         self.issues = None
@@ -36,8 +36,8 @@ class Query:
     def get_issues(self):
         ret = {}
         if current_user.is_authenticated:
-            if self.my_user.serie_list:
-                self.issues = Issue.query(Issue.serie.IN(self.my_user.serie_list)).order(Issue.data)
+            if current_user.serie_list:
+                self.issues = Issue.query(Issue.serie.IN(current_user.serie_list)).order(Issue.data)
         else:
             self.issues = Issue.query()
 
@@ -94,12 +94,11 @@ class Query:
     def get_specials(self):
         ret = {}
         if current_user.is_authenticated:
-            if self.my_user.special_list:
-                # special_keys = [ndb.Key(Issue, special_id) for special_id in self.my_user.special_list]
-                self.special_issues = ndb.get_multi(self.my_user.special_list)
-                if self.logger.getEffectiveLevel() == logging.DEBUG:
-                    for issue in self.special_issues:
-                        self.logger.debug("SPECIALS: " + str(issue.key.id()).decode('utf-8'))
+            if current_user.special_list:
+                # special_keys = [ndb.Key(Issue, special_id) for special_id in current_user.special_list]
+                self.special_issues = ndb.get_multi(current_user.special_list)
+                for issue in self.special_issues:
+                    self.logger.debug("SPECIALS: " + str(issue.key.id()).decode('utf-8'))
 
             if self.special_issues:
                 for issue in self.special_issues:
