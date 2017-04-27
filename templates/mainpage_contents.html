@@ -8,19 +8,19 @@
             <img class="card-img-top img-fluid" src="{{ item.image }}">
             <div class="card-block">
 
-                <{% if current %}h5{% else %}h6{% endif %} class="card-title">{{ item.title }}</{% if current %}
-                h5{% else %}h6{% endif %}>
+                <{% if current %}h5{% else %}h6{% endif %} class="card-title">{{ item.title }}</ {% if current %}
+                h5{% else %}h6{% endif %} >
                 {% if item.subtitle %}
                     <h6 class="card-subtitle mb-2 text-muted">{{ item.subtitle }}</h6>
                 {% endif %}
-                {% if item.ristampa %}
-                    <h6 class="card-text text-muted">{{ item.ristampa }}</h6>
+                {% if item.reprint %}
+                    <h6 class="card-text text-muted">{{ item.reprint }}</h6>
                 {% endif %}
-                {% if item.serie %}
-                    <h6 class="card-text text-muted">{{ item.serie.get().title }}</h6>
+                {% if item.series %}
+                    <h6 class="card-text text-muted">{{ item.series.get().title }}</h6>
                 {% endif %}
-                {% if item.prezzo %}
-                    <h6 class="card-text text-muted">{{ item.prezzo }}</h6>
+                {% if item.price %}
+                    <h6 class="card-text text-muted">{{ item.price }}</h6>
                 {% endif %}
             </div>
             <ul class="list-group list-group-flush text-center">
@@ -60,8 +60,8 @@
                         </div>
                         <div class="modal-body">
                             <ul class="list-group list-group-flush">
-                                {% for desc in item.desc %}
-                                    <li class="list-group-item">{{ desc }}</li>
+                                {% for summary in item.summary %}
+                                    <li class="list-group-item">{{ summary }}</li>
                                 {% endfor %}
                             </ul>
                         </div>
@@ -77,7 +77,7 @@
 
             <div class="card-footer">
                 <small>
-                    {{ item.data.strftime("%d %b %y") }}
+                    {{ item.date.strftime("%d %b %y") }}
                 </small>
             </div>
         </div>

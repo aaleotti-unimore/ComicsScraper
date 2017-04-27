@@ -6,7 +6,7 @@
             <div class="card-block">
                 <h4 class="card-title">Le Mie Serie</h4>
                 <ul class="list-group list-group-flush">
-                    {% for serie in current_user.serie_list %}
+                    {% for series in current_user.series_list %}
                         <li class="list-group-item">
                             <form action="{{ url_for('user_page_api.remove_user_series') }}" method="post"
                                   class="form-horizontal"
@@ -14,8 +14,8 @@
                                 <button class="btn btn-outline-secondary btn-sm" type="submit">
                                     <i class="fa fa-times fa-fw" aria-hidden="true"></i>
                                 </button>
-                                &nbsp;&nbsp;{{ serie.get().title }}
-                                <input name="serie" type="hidden" value="{{ serie.get().title }}">
+                                &nbsp;&nbsp;{{ series.get().title }}
+                                <input name="series" type="hidden" value="{{ series.get().title }}">
                             </form>
                         </li>
                     {% endfor %}
@@ -29,9 +29,9 @@
                 <div class="form-inline">
                     <form action="{{ url_for('user_page_api.add_user_series') }}" method="post" class="form-inline"
                           role="form">
-                        <select name="serie" data-placeholder="Scegli una Serie..." class="chosen-select"
+                        <select name="series" data-placeholder="Scegli una Serie..." class="chosen-select"
                                 style="max-width:350px;"
-                                tabindex="2" title="selectSerie">
+                                tabindex="2" title="selectSeries">
                             {% for serie in list_series(series) %}
                                 <option value="{{ serie }}">{{ serie }}</option>
                             {% endfor %}

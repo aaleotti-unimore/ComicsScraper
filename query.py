@@ -1,16 +1,21 @@
 from __future__ import unicode_literals
 
 import logging
-from flask_login import current_user
-
-from datetime import datetime, timedelta
-from google.appengine.ext import ndb
-from db_entities import Issue
 import logging.config
 import re
+from datetime import datetime, timedelta
+
+from flask_login import current_user
+from google.appengine.ext import ndb
+
+from db_entities import Issue
 
 
 class Query:
+    """
+    Provides ready-to-use functions for querying the database
+    """
+
     def __init__(self):
         # self.my_user = my_user
         self.logger = logging.getLogger(__name__)
@@ -31,13 +36,23 @@ class Query:
         # END VAR DECLARATION
 
     def get_user_issues(self, user):
-        return Issue.query(Issue.serie.IN(user.serie_list))
+        """
+        return all the issues from the user
+        :param user: user
+        :return: list of user issues
+        """
+        return Issue.query(Issue.series.IN(user.series_list))
 
     def get_issues(self):
+        """
+        Retrieves current user's issues from last week-onwards. 
+        If the user's is not authenticated, returns all the issues from last week-onwards
+        :return: dictionary of issues lists for the mainpage template, plus the number of issues and the total price amount
+        """
         ret = {}
         if current_user.is_authenticated:
-            if current_user.serie_list:
-                self.issues = Issue.query(Issue.serie.IN(current_user.serie_list)).order(Issue.data)
+            if current_user.series_list:
+                self.issues = Issue.query(Issue.series.IN(current_user.series_list)).order(Issue.date)
         else:
             self.issues = Issue.query()
 
@@ -52,9 +67,9 @@ class Query:
             self.logger.debug("the query retrieved: " + str(self.issues.count()) + " elements")
 
             # FILTERING QUERY
-            self.week_issues = self.issues.filter(ndb.AND(Issue.data >= start_week, Issue.data <= end_week))
-            self.future_issues = self.issues.filter(Issue.data > end_week)
-            self.past_issues = self.issues.filter(ndb.AND(Issue.data >= start_last_week, Issue.data < start_week))
+            self.week_issues = self.issues.filter(ndb.AND(Issue.date >= start_week, Issue.date <= end_week))
+            self.future_issues = self.issues.filter(Issue.date > end_week)
+            self.past_issues = self.issues.filter(ndb.AND(Issue.date >= start_last_week, Issue.date < start_week))
             # END FILTERING QUERY
 
             self.week_issues_count = self.issues.count(limit=None),
@@ -63,11 +78,11 @@ class Query:
 
             for issue in self.past_issues:
                 # SUM WEEKLY PRICES
-                self.past_issues_sum += float(re.sub(",", ".", issue.prezzo[2:]))
+                self.past_issues_sum += float(re.sub(",", ".", issue.price[2:]))
 
             for issue in self.week_issues:
                 # SUM WEEKLY PRICES
-                self.week_issues_sum += float(re.sub(",", ".", issue.prezzo[2:]))
+                self.week_issues_sum += float(re.sub(",", ".", issue.price[2:]))
 
         # END QUERY
 
@@ -77,38 +92,55 @@ class Query:
         ret['past_issues'] = self.past_issues
         ret['special_issues'] = self.special_issues
 
+        # ISSUES COUNT
         ret['week_issues_count'] = self.week_issues_count
         ret['future_issues_count'] = self.future_issues_count
         ret['past_issues_count'] = self.past_issues_count
 
+        # ISSUES TOTAL PRICES
         ret['week_issues_sum'] = self.week_issues_sum
         ret['past_issues_sum'] = self.past_issues_sum
         ret['special_issues_sum'] = self.special_issues_sum
-        ret['nullobj'] = Issue(id="null", data=datetime.today())
+
+        ret['nullobj'] = Issue(id="null", date=datetime.today())  # empty placeholder issue
 
         return ret
 
-    def get_user_specials(self,user):
-        return ndb.get_multi(user.special_list)
+    def get_user_specials(self, user):
+        """
+        Retrieves user's special issues. 
+        :param user: user
+        :return: list of special issues
+        """
+        return ndb.get_multi(user.specials_list)
 
     def get_specials(self):
+        """
+        return current users's special numbers
+        If the users is not autenticated, return an empty list
+        :return: dictionary of issues list and the summed price
+        """
         ret = {}
         if current_user.is_authenticated:
-            if current_user.special_list:
-                # special_keys = [ndb.Key(Issue, special_id) for special_id in current_user.special_list]
-                self.special_issues = ndb.get_multi(current_user.special_list)
+            if current_user.specials_list:
+                # special_keys = [ndb.Key(Issue, special_id) for special_id in current_user.specials_list]
+                self.special_issues = ndb.get_multi(current_user.specials_list)
                 for issue in self.special_issues:
                     self.logger.debug("SPECIALS: " + str(issue.key.id()).decode('utf-8'))
 
             if self.special_issues:
                 for issue in self.special_issues:
                     # SUM WEEKLY PRICES
-                    self.special_issues_sum += float(re.sub(",", ".", issue.prezzo[2:]))
+                    self.special_issues_sum += float(re.sub(",", ".", issue.price[2:]))
 
         ret['special_issues'] = self.special_issues
         ret['special_issues_sum'] = self.special_issues_sum
         return ret
 
     def check_if_empty(self):
+        """
+        Checks if the database is empty
+        :return: 0 or 1 if the database has at least one issue
+        """
         q = Issue.query().fetch(limit=1)
         return q

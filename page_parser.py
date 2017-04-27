@@ -1,25 +1,23 @@
+import Queue
 import httplib
 import logging
 import logging.config
-import urllib2
-import Queue
 import threading
+import urllib2
 from datetime import datetime
 
 from bs4 import BeautifulSoup
 
-from db_manager import DbManager
+from managers.db_manager import db_manager
 
 
 class Parsatore():
     def __init__(self, min_pages, max_pages):
-        self.dbm = DbManager()
+        self.dbm = db_manager()
         # logging.config.fileConfig('logging.conf')
         # create logger
         self.logger = logging.getLogger(__name__)
         self.urls_to_load = []
-        # max_pages = 6
-        # min_pages = 4
         for i in range(min_pages, max_pages):
             self.urls_to_load.append('http://comics.panini.it/store/pub_ita_it/magazines/cmc-m.html?limit=25&p=%d' % i)
 
@@ -62,64 +60,64 @@ class Parsatore():
         desc_urls = []
         soup = BeautifulSoup(page, 'lxml')
         # lettura di tutti gli elementi div della lista delle uscite
-        uscite = soup.find_all('div', attrs={'class': "list-group-item"})
+        issues = soup.find_all('div', attrs={'class': "list-group-item"})
 
-        for uscita in uscite:
+        for issue in issues:
             # dizionario contenente tutti i valori da salvare nell'oggetto Issue sul DB
-            diz = {}
+            dic = {}
 
             # ottiene titolo e url della pagina per ritorvare la Sinossi
-            title = uscita.find('h3', class_="product-name").find('a')
-            diz['title'] = " ".join(title.get_text().split())
-            diz['url'] = str(title.get('href'))
+            title = issue.find('h3', class_="product-name").find('a')
+            dic['title'] = " ".join(title.get_text().split())
+            dic['url'] = str(title.get('href'))
 
-            subtitle = uscita.find('h3', class_="product-name").find('small', attrs={"class": "subtitle"})
+            subtitle = issue.find('h3', class_="product-name").find('small', attrs={"class": "subtitle"})
             if subtitle:
-                diz['subtitle'] = " ".join(subtitle.text.split())
+                dic['subtitle'] = " ".join(subtitle.text.split())
 
-            serie = uscita.find('h3', class_="product-name").find('small', attrs={"class": "serie"})
-            if serie:
-                diz['serie'] = " ".join(serie.text.split())
+            series = issue.find('h3', class_="product-name").find('small', attrs={"class": "serie"})
+            if series:
+                dic['series'] = " ".join(series.text.split())
             else:
-                diz['serie'] = "One Shot"
+                dic['series'] = "One Shot"
 
-            ristampa = uscita.find('h5', attrs={"class": "reprint"})
-            if ristampa:
-                diz['ristampa'] = " ".join(ristampa.text.split())
+            reprint = issue.find('h5', attrs={"class": "reprint"})
+            if reprint:
+                dic['reprint'] = " ".join(reprint.text.split())
 
-            data_str = uscita.find('h4', class_="publication-date").text.strip()
-            if data_str:
-                struct_date = datetime.strptime(data_str, "%d/%m/%Y")
-                diz['data'] = struct_date
+            date_str = issue.find('h4', class_="publication-date").text.strip()
+            if date_str:
+                struct_date = datetime.strptime(date_str, "%d/%m/%Y")
+                dic['date'] = struct_date
 
-            prezzo = uscita.find('p', class_="old-price")
-            if prezzo:
-                diz['prezzo'] = prezzo.text.strip()
+            price = issue.find('p', class_="old-price")
+            if price:
+                dic['price'] = price.text.strip()
 
-            thmb = uscita.find('img', class_="img-thumbnail img-responsive")
+            thmb = issue.find('img', class_="img-thumbnail img-responsive")
             if thmb:
-                diz['image'] = thmb["src"]
+                dic['image'] = thmb["src"]
 
-            parsed.append(diz)
-            desc_urls.append(diz['url'])
+            parsed.append(dic)
+            desc_urls.append(dic['url'])
 
-        q = self.fetch_desc_parallel(parsed)
+        q = self.fetch_summary_parallel(parsed)
         while not q.empty():  # check that the queue isn't empty
             self.dbm.save_to_DB(q.get())
             q.task_done()  # specify that you are done with the item
 
         self.logger.debug("Items parsed: %d", len(parsed))
 
-    def parse_description(self, item, queue):
+    def parse_issue_summary(self, item, queue):
         url = item['url']
-        desc = []
+        summary = []
         try:
             result = urllib2.urlopen(url, None, 145)
             page = result.read()
             soup = BeautifulSoup(page, 'lxml')
             parsed_description = soup.find('div', attrs={'id': "description"})
             stripped_descr = parsed_description.text.lstrip().rstrip().split(u'\u2022')
-            desc = stripped_descr[1:]
+            summary = stripped_descr[1:]
 
         except urllib2.HTTPError as e:
             self.logger.error('HTTPError = ' + str(e.code))
@@ -131,12 +129,12 @@ class Parsatore():
             import traceback
             self.logger.error('generic exception: ' + traceback.format_exc())
 
-        item['desc'] = desc
+        item['summary'] = summary
         queue.put(item)
 
-    def fetch_desc_parallel(self, parsed_items):
+    def fetch_summary_parallel(self, parsed_items):
         result = Queue.Queue()
-        threads = [threading.Thread(target=self.parse_description, args=(item, result)) for item in parsed_items]
+        threads = [threading.Thread(target=self.parse_issue_summary, args=(item, result)) for item in parsed_items]
         for t in threads:
             t.start()
         for t in threads:

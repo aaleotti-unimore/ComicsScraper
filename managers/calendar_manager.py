@@ -22,6 +22,11 @@ urlfetch.set_default_fetch_deadline(45)
 
 
 def cal_list(service):
+    """
+    List user's calendar
+    :param service: service
+    :return: list of calendars
+    """
     page_token = None
     while True:
         calendar_list = service.calendarList().list(pageToken=page_token).execute()
@@ -33,6 +38,11 @@ def cal_list(service):
 
 @calendar_manager_api.route('/cal_list/<userid>')
 def show_list(userid):
+    """
+    Returns a JSON object with user's calendars
+    :param userid: user id
+    :return: JSON calendar list
+    """
     service = create_service(userid)
     calendar_list = cal_list(service)
     return jsonify(calendar_list)
@@ -40,6 +50,11 @@ def show_list(userid):
 
 @calendar_manager_api.route('/del_cal/<userid>')
 def delete_cal(userid):
+    """
+    Delete the comics calendar
+    :param userid: user id
+    :return: redirects to main page
+    """
     service = create_service(userid)
     calendar_list = cal_list(service)
     for calendar in calendar_list['items']:
@@ -50,6 +65,11 @@ def delete_cal(userid):
 
 
 def get_or_insert_cal(service):
+    """
+    Gets the Comics calendar. if the calendar is not found, a new calendar will be created
+    :param service: service
+    :return: comics calendar id
+    """
     calendar_list = cal_list(service)
     for calendar in calendar_list['items']:
         if calendar['summary'] in 'Uscite Fumetti':
@@ -64,8 +84,15 @@ def get_or_insert_cal(service):
 
 
 def add_issue(service, calendarID, issue):
-    start = issue.data
-    end = issue.data + timedelta(days=1)
+    """
+    Adds an issue the comics calendar
+    :param service: service
+    :param calendarID: comics calendar id
+    :param issue: issue
+    :return: calendar event object
+    """
+    start = issue.date
+    end = issue.date + timedelta(days=1)
     event = {
         'summary': issue.title,
         'start': {
@@ -80,7 +107,7 @@ def add_issue(service, calendarID, issue):
             'url': issue.url,
             'title': issue.title
         },
-        'description': '\n'.join(issue.desc),
+        'description': '\n'.join(issue.summary),
         'locked': True
     }
     event = service.events().insert(calendarId=calendarID, body=event).execute()
@@ -90,6 +117,11 @@ def add_issue(service, calendarID, issue):
 
 @calendar_manager_api.route('/populate/<userid>')
 def populate_user_calendar(userid):
+    """
+    Populates user's comics calendar
+    :param userid: user id
+    :return: renders main page
+    """
     user = Users.get_by_id(userid)
     logger.debug("populating user " + user.name + " calendar")
     service = create_service(userid)
@@ -105,6 +137,11 @@ def populate_user_calendar(userid):
 
 @calendar_manager_api.route('/populate_users_calendar/')
 def populate_all_calendars():
+    """
+    CRON JOB
+    Concurrently populates all users' calendars 
+    :return: renders main page when finished
+    """
     users = Users.query().fetch()
     threads = [threading.Thread(target=populate_user_calendar, args=(user.id,)) for user in users]
     for t in threads:
@@ -117,6 +154,11 @@ def populate_all_calendars():
 
 
 def clear_calendar(service, cal_id):
+    """
+    Clears a calendar from all the events
+    :param service: service
+    :param cal_id: calendar id
+    """
     page_token = None
     while True:
         events = service.events().list(calendarId=cal_id, pageToken=page_token).execute()
@@ -128,6 +170,11 @@ def clear_calendar(service, cal_id):
 
 
 def create_service(userid):
+    """
+    Google Calendar API service creation
+    :param userid: user id 
+    :return: service
+    """
     storage = StorageByKeyName(CredentialsModel, userid, 'credentials')
     credentials = storage.get()
     http = credentials.authorize(httplib2.Http())

@@ -7,7 +7,7 @@ from flask_login import current_user
 from google.appengine.api import users
 from google.appengine.ext import ndb
 
-from db_entities import Serie, Users
+from db_entities import Series, Users
 
 logger = logging.getLogger(__name__)
 user_page_api = Blueprint('user_page_api', __name__)
@@ -15,28 +15,39 @@ user_page_api = Blueprint('user_page_api', __name__)
 
 @user_page_api.route('/user_page/add_series/', methods=['POST'])
 def add_user_series():
+    """
+    Adds requested series in the user's series
+    :return: renders the user page
+    """
     my_user = current_user
-    id_serie = ndb.Key(Serie, request.form['serie'])
-    if id_serie not in my_user.serie_list:
-        my_user.serie_list.append(id_serie)
+    series_id = ndb.Key(Series, request.form['series'])
+    if series_id not in my_user.series_list:
+        my_user.series_list.append(series_id)
         my_user.put()
-        logging.debug("user id:" + str(my_user) + " serie aggiunta: " + request.form['serie'])
+        logging.debug("user id:" + str(my_user) + " added series: " + request.form['series'])
     return show_user_page()
 
 
 @user_page_api.route('/user_page/remove_series/', methods=['POST'])
 def remove_user_series():
+    """
+    remove requested series from the user's series list
+    :return: renders user page
+    """
     my_user = current_user
-    id_serie = ndb.Key(Serie, request.form['serie'])
-    if id_serie in my_user.serie_list:
-        my_user.serie_list.remove(id_serie)
+    series_id = ndb.Key(Series, request.form['series'])
+    if series_id in my_user.series_list:
+        my_user.series_list.remove(series_id)
         my_user.put()
-        logging.debug("user id:" + str(my_user) + " serie rimossa: " + request.form['serie'])
+        logging.debug("user id:" + str(my_user) + " removed series: " + request.form['series'])
     return show_user_page()
 
 
 @user_page_api.route('/user_page')
 def show_user_page():
-    logger.debug("retrieving all the series: ")
-    series = Serie.query()
+    """
+    renders the user page 
+    :return: renders the user_page template
+    """
+    series = Series.query()
     return render_template("user_page.html", series=series)

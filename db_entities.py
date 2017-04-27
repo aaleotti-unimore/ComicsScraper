@@ -8,26 +8,26 @@ class CredentialsModel(ndb.Model):
     credentials = CredentialsNDBProperty()
 
 
-class Serie(ndb.Model):
+class Series(ndb.Model):
     """
-    Modello per una serie di fumetti
+    Comic series.
     """
     title = ndb.StringProperty(indexed=True)
 
 
 class Issue(ndb.Model):
     """
-    Modello di un numero
+    Single comic issue model
     """
     title = ndb.StringProperty(indexed=True)
     subtitle = ndb.StringProperty(indexed=False)
-    serie = ndb.KeyProperty(Serie)
-    ristampa = ndb.StringProperty(indexed=False)
-    data = ndb.DateProperty(indexed=True)
-    prezzo = ndb.StringProperty(indexed=False)
+    series = ndb.KeyProperty(Series)
+    reprint = ndb.StringProperty(indexed=False)
+    date = ndb.DateProperty(indexed=True)
+    price = ndb.StringProperty(indexed=False)
     image = ndb.StringProperty(indexed=False)
     url = ndb.StringProperty(indexed=False)
-    desc = ndb.StringProperty(indexed=False, repeated=True)
+    summary = ndb.StringProperty(indexed=False, repeated=True)
 
 
 class Users(ndb.Model, UserMixin):
@@ -37,8 +37,8 @@ class Users(ndb.Model, UserMixin):
     id = ndb.StringProperty(indexed=True)
     name = ndb.StringProperty(indexed=False)
     email = ndb.StringProperty(indexed=False)
-    serie_list = ndb.KeyProperty(repeated=True)
-    special_list = ndb.KeyProperty(repeated=True)
+    series_list = ndb.KeyProperty(repeated=True)
+    specials_list = ndb.KeyProperty(repeated=True)
     token = ndb.StringProperty(indexed=False)
 
     def is_active(self):

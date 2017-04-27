@@ -1,13 +1,13 @@
 $(function () {
     var results = $('#results');
-    $('#sendSerie').click(function () {
+    $('#sendSeries').click(function () {
         var n_columns = 5;
         var results = $('#results');
         results.empty();
         // console.log("sent " + $('form').serialize());
         $.ajax({
             url: '/show_series/get/',
-            data: $('#formSerie').serialize(),
+            data: $('#formSeries').serialize(),
             type: 'POST',
             dataType: 'json',
             success: function (response) {

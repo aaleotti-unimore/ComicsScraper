@@ -21,18 +21,26 @@ class Anonuser(AnonymousUserMixin):
 
 @app.route('/login')
 def auth_user():
+    """
+    User login procedure. if the credentials are not in session, the user is redirected to the Google login panel
+    :return: redirects to authorization callback
+    """
     if 'credentials' not in session:
         return redirect(url_for('user_manager_api.gCallback'))
     credentials = client.OAuth2Credentials.from_json(session['credentials'])
     if credentials.access_token_expired:
         return redirect(url_for('user_manager_api.gCallback'))
     else:
-        session.pop('google_token', None)
-        return redirect(url_for('user_manager_api.gCallback'))
+        # session.pop('google_token', None)
+        # return redirect(url_for('user_manager_api.gCallback'))
+        return redirect(url_for('main'))
 
 
 @app.route('/gCallback')
 def gCallback():
+    """
+    OAuth2 authorization flow
+    """
     flow = client.flow_from_clientsecrets(
         'client_secrets.json',
         scope=['profile', 'email', 'https://www.googleapis.com/auth/calendar'],
@@ -47,11 +55,15 @@ def gCallback():
         auth_code = request.args.get('code')
         credentials = flow.step2_exchange(auth_code)
         session['credentials'] = credentials.to_json()
-        login(credentials)
+        save_user(credentials)
         return redirect(url_for('main'))
 
 
-def login(credentials):
+def save_user(credentials):
+    """
+    Saving and logging user to the app
+    :param credentials: authorization credentials 
+    """
     user_data = get_user_info(credentials)
     new_user = Users.get_or_insert(user_data['id'])
     new_user.id = user_data['id']
@@ -66,12 +78,8 @@ def login(credentials):
 
 def get_user_info(credentials):
     """Send a request to the UserInfo API to retrieve the user's information.
-
-    Args:
-    credentials: oauth2client.client.OAuth2Credentials instance to authorize the
-                 request.
-    Returns:
-    User information as a dict.
+    :param credentials: oauth2client.client.OAuth2Credentials instance to authorize the request.
+    Returns: User information as a dict.
     """
     user_info_service = build(
         serviceName='oauth2', version='v2',
@@ -86,12 +94,14 @@ def get_user_info(credentials):
     else:
         raise Exception
 
+
 @app.route('/logout')
 def logout():
     """
-    Invalida il token di autenticazione ed esegue il logout utente.
-    :return: reindirizza l'utente alla pagina principale
+    Invalidates session and logout user
+    :return: redirect to main page
     """
     session.pop('google_token', None)
+    session.pop('credentials', None)
     logout_user()
     return redirect(url_for('main'))
