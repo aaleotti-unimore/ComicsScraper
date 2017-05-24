@@ -1,11 +1,14 @@
-{% extends "index.html" %}
+{% extends "base.html" %}
 {% macro print_item(item, maxwidth, current) %}
+
     {% if item==nullobj %}
         <div class="card" style="border:0;">
         </div>
     {% else %}
         <div class="card">
-            <img class="card-img-top img-fluid" src="{{ item.image }}">
+            <a href="/show_issues/{{ item.title }}">
+                <img class="card-img-top img-fluid" src="{{ item.image }}">
+            </a>
             <div class="card-block">
 
                 <{% if current %}h5{% else %}h6{% endif %} class="card-title">{{ item.title }}</ {% if current %}
@@ -35,7 +38,7 @@
                                 <i class="fa fa-list" aria-hidden="true"></i>
                             </button>
                             <a class="btn btn-sm btn-outline-primary" href="{{ item.url }}" role="button"> <i
-                                class="fa fa-shopping-cart" aria-hidden="true"></i></a>
+                                    class="fa fa-shopping-cart" aria-hidden="true"></i></a>
                             {% if current_user.is_authenticated %}
                                 <span></span>
                                 <button id="btn-add-{{ get_url_key(item.title) }}"

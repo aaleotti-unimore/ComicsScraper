@@ -7,7 +7,7 @@ from flask import render_template, request, Blueprint
 from google.appengine.ext import ndb
 
 from db_entities import Issue, Series
-from managers.db_manager import db_manager
+from managers.db_manager import DB_manager
 from utils import date_handler
 
 logger = logging.getLogger(__name__)
@@ -23,7 +23,7 @@ def get_series():
     """
     series_title = request.form['series']
     logger.debug("REQUESTED SERIE:" + request.form['series'])
-    dbm = db_manager()
+    dbm = DB_manager()
     if series_title:
         series_id = ndb.Key(Series, series_title)
         issues = Issue.query(Issue.series == series_id).order(-Issue.date).fetch()

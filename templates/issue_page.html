@@ -1,0 +1,145 @@
+{% extends "base.html" %}
+{% block container %}
+
+    <div class="container">
+        <div class="row">
+            <div class="card">
+                <div class="card-block">
+                    {% for item in issues %}
+
+
+                        <div class="row justify-content-md-center">
+
+                            <div class="col col-lg-6">
+                                <div class="card">
+                                    <img class="card-img img-fluid" src="{{ item.image }}">
+                                    <div class="card-img-overlay"></div>
+                                </div>
+                            </div>
+                            <div class="col-6 col-md-auto">
+                                <div class="card">
+                                    <div class="card-block">
+                                        <h2 class="card-title">{{ item.title }}</h2>
+                                        {% if item.subtitle %}
+                                            <h4 class="card-subtitle mb-2 text-muted">{{ item.subtitle }}</h4>
+                                        {% endif %}
+                                        {% if item.reprint %}
+                                            <h4 class="card-text text-muted">{{ item.reprint }}</h4>
+                                        {% endif %}
+                                        {% if item.series %}
+                                            <h4 class="card-text text-muted">{{ item.series.get().title }}</h4>
+                                        {% endif %}
+                                        {% if item.price %}
+                                            <h4 class="card-text text-muted">{{ item.price }}</h4>
+                                        {% endif %}
+                                    </div>
+                                    <ul class="list-group list-group-flush text-center">
+                                        {% for summary in item.summary %}
+                                            <li class="list-group-item">{{ summary }}</li>
+                                        {% endfor %}
+                                    </ul>
+                                    <ul class="list-group list-group-flush text-center">
+                                        <li class="list-group-item">
+                                            <div class="mx-auto">
+                                                <form>
+
+                                                    <a class="btn btn-sm btn-outline-primary" href="{{ item.url }}"
+                                                       role="button">
+                                                        <i
+                                                                class="fa fa-shopping-cart" aria-hidden="true"></i></a>
+                                                    {% if current_user.is_authenticated %}
+                                                        <span></span>
+                                                        <button id="btn-add-{{ get_url_key(item.title) }}"
+                                                                class="btn btn-sm btn-outline-success"
+                                                                type="button">
+                                                            <i class="fa fa-plus" aria-hidden="true"></i>
+                                                        </button>
+                                                    {% endif %}
+                                                </form>
+                                            </div>
+                                        </li>
+                                    </ul>
+
+
+                                    <div class="card-footer">
+                                        <small>
+                                            {{ item.date.strftime("%d %b %y") }}
+                                        </small>
+                                    </div>
+                                </div>
+                            </div>
+                            <script async language="javascript" type="text/javascript">
+                                $(document).ready(function () {
+                                    $("#btn-add-{{ get_url_key(item.title) }}").click(function () {
+                                        var deck = $('#specials_block');
+                                        $.ajax({
+                                            url: '/user/add_special_issue/',
+                                            data: {special_issue: "{{ item.title }}"},
+                                            type: 'POST',
+                                            dataType: 'json',
+                                            success: function (response) {
+                                                deck.empty();
+                                                deck.append("<h3 class=\"card-title\">Specials</h3>");
+                                                console.log("success" + response);
+                                                getSpecials();
+                                            },
+                                            error: function (error) {
+                                                console.log(error.content)
+                                            }
+                                        })
+                                    });
+                                });
+                            </script>
+                            {#                <div class="col col-lg-2">#}
+                            {#                </div>#}
+                        </div>
+                        <br>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="card col-12">
+
+                <div class="card-block">
+                    <h1>Amazon Store</h1>
+
+                    {% if products %}
+                        {% if products|length == 5 %}
+                            <div class="card-columns">
+                        {% else %}
+                            <div class="card-deck">
+                        {% endif %}
+                    {% for product in products %}
+                        <div class="card">
+                            <div class="card-header">
+                                <div class="text-center">
+                                    <a href="{{ product.detail_page_url }}">
+                                        <img class="card-img-top img-fluid" src="{{ product.large_image_url }}">
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="card-block">
+
+                                <a href="{{ product.detail_page_url }}">
+                                    <h4 class="card-title">{{ product.title }}</h4>
+                                </a>
+
+                                {% if product.formatted_price %}
+                                    <p class="card-text">{{ product.formatted_price }}</p>
+                                {% endif %}
+                            </div>
+                        </div>
+                    {% endfor %}
+                    </div>
+                    {% else %}
+                        <div class="jumbotron"><h3>Nessuna uscita con questo titolo su Amazon</h3></div>
+                    {% endif %}
+
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+{% endblock %}

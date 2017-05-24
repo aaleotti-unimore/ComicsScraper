@@ -8,7 +8,7 @@ from flask_login import current_user
 from google.appengine.ext import ndb
 
 from db_entities import Issue
-from managers.db_manager import db_manager
+from managers.db_manager import DB_manager
 from query import Query
 from utils import date_handler
 
@@ -25,7 +25,7 @@ def get_specials():
     """
     if request.method == 'POST':
         query = Query()
-        dbm = db_manager()
+        dbm = DB_manager()
         return json.dumps(dbm.to_json(query.get_specials()), default=date_handler)
 
 

@@ -8,12 +8,12 @@ from datetime import datetime
 
 from bs4 import BeautifulSoup
 
-from managers.db_manager import db_manager
+from managers.db_manager import DB_manager
 
 
 class Parsatore():
     def __init__(self, min_pages, max_pages):
-        self.dbm = db_manager()
+        self.dbm = DB_manager()
         # logging.config.fileConfig('logging.conf')
         # create logger
         self.logger = logging.getLogger(__name__)
@@ -38,7 +38,7 @@ class Parsatore():
             self.logger.error('URLError = ' + str(e.reason))
             # return "#"
         except httplib.HTTPException as e:
-            self.logger.error('HTTPException' + str(e.reason))
+            self.logger.error('HTTPException' + str(e))
             # return "#"
         except Exception:
             import traceback

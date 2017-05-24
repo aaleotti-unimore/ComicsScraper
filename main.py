@@ -16,6 +16,7 @@ from db_entities import Issue, Users
 from managers.api_manager import api
 from managers.calendar_manager import calendar_manager_api
 from managers.login_manager import app as user_manager_api, Anonuser
+from managers.issue_manager import show_issue_api
 from query import Query
 from show_series import show_series_api
 from user_page import user_page_api
@@ -36,7 +37,7 @@ app.register_blueprint(user_specials_api)
 app.register_blueprint(user_manager_api)
 app.register_blueprint(calendar_manager_api)
 app.register_blueprint(api)
-
+app.register_blueprint(show_issue_api)
 #####################
 ####    logger   ####
 #####################

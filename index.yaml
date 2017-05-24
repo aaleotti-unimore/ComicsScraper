@@ -25,9 +25,9 @@ indexes:
   properties:
   - name: series
   - name: date
-    direction: desc
 
 - kind: Issue
   properties:
   - name: series
   - name: date
+    direction: desc

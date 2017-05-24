@@ -14,7 +14,7 @@ from db_entities import Issue, Series
 logger = logging.getLogger(__name__)
 
 
-class db_manager:
+class DB_manager:
     """
     Manages the database
     """
