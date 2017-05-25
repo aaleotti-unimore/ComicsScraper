@@ -27,7 +27,7 @@ from views.user_specials import user_specials_api
 ####     app     ####
 #####################
 app = Flask(__name__)
-app.wsgi_app = debug.DebuggedApplication(app.wsgi_app, True)
+app.wsgi_app = debug.DebuggedApplication(app.wsgi_app, False)
 app.config.from_object(Config)
 
 app.register_blueprint(show_series_api)

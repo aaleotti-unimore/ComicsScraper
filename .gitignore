@@ -9,3 +9,4 @@
 /static/secrets/accessKeys.csv
 /static/secrets/client_secrets_prod.json
 /static/secrets/
+/static/secrets/client_secrets_dev.json
