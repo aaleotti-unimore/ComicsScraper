@@ -9,7 +9,7 @@ import logging.config
 from flask import redirect, Blueprint
 from google.appengine.ext import ndb
 
-from db_entities import Issue, Series
+from models import Issue, Series
 from page_parser import Parsatore
 
 logger = logging.getLogger(__name__)

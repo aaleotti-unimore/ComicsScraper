@@ -4,8 +4,10 @@ import logging
 
 from flask import render_template, Blueprint, redirect
 
-from db_entities import Issue
+from models import Issue
 from managers.db_manager import DB_manager
+import csv
+from pprint import pprint
 
 logger = logging.getLogger(__name__)
 from datetime import datetime
@@ -13,12 +15,15 @@ from amazon.api import AmazonAPI, SearchException, AmazonException, AmazonProduc
 
 show_issue_api = Blueprint('show_issue_api', __name__)
 
-amz = {
-    'access_key': '',
-    'secret_key': '',
-    'associate_tag': 'amazingkirbi-21',
-    'locale': 'it'
-}
+with open('static/secrets/accessKeys.csv') as csvfile:
+    accessKeys = csv.DictReader(csvfile)
+    for row in accessKeys:
+        amz = {
+            'access_key': row['Access key ID'],
+            'secret_key': row['Secret access key'],
+            'associate_tag': 'amazingkirbi-21',
+            'locale': 'it'
+        }
 
 
 # products = amazon.search_n(5, Keywords='Iron Man 2 Marvel Masterworks', SearchIndex='Books')
@@ -40,6 +45,10 @@ def issue_page(issue_id):
             # products = []
             # prAmazonProduct('B01FMPMI20', amz['associate_tag'], amazon)
             products = amazon.search_n(5, Keywords=issue_id, SearchIndex='Books')
+            if issue[0].subtitle:
+                sub_products = amazon.search_n(5, Keywords=issue[0].subtitle, SearchIndex='Books')
+                products = sub_products + products
+
             return render_template('issue_page.html', issues=issue, products=products)
         except SearchException:
             products = None

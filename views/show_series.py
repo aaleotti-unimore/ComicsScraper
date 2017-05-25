@@ -6,7 +6,7 @@ import logging
 from flask import render_template, request, Blueprint
 from google.appengine.ext import ndb
 
-from db_entities import Issue, Series
+from models import Issue, Series
 from managers.db_manager import DB_manager
 from utils import date_handler
 
@@ -29,6 +29,15 @@ def get_series():
         issues = Issue.query(Issue.series == series_id).order(-Issue.date).fetch()
         dump = dbm.to_json(issues)
         logger.debug("issues sent: " + str(len(dump)))
+        return json.dumps(dump, default=date_handler)
+
+
+@show_series_api.route('/show_series/all/', methods=['POST'])
+def get_all_series():
+    if request.method == 'POST':
+        dbm = DB_manager()
+        all = Issue.query().order(-Issue.date).fetch()
+        dump = dbm.to_json(all)
         return json.dumps(dump, default=date_handler)
 
 

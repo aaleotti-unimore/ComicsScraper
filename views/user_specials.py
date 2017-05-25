@@ -7,7 +7,7 @@ from flask import request, jsonify, Blueprint
 from flask_login import current_user
 from google.appengine.ext import ndb
 
-from db_entities import Issue
+from models import Issue
 from managers.db_manager import DB_manager
 from query import Query
 from utils import date_handler

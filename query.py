@@ -8,7 +8,7 @@ from datetime import datetime, timedelta
 from flask_login import current_user
 from google.appengine.ext import ndb
 
-from db_entities import Issue
+from models import Issue
 
 
 class Query:

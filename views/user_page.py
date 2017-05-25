@@ -7,7 +7,7 @@ from flask_login import current_user
 from google.appengine.api import users
 from google.appengine.ext import ndb
 
-from db_entities import Series, Users
+from models import Series, Users
 
 logger = logging.getLogger(__name__)
 user_page_api = Blueprint('user_page_api', __name__)

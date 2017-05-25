@@ -8,7 +8,7 @@ import logging
 
 from google.appengine.ext import ndb
 
-from db_entities import Issue, Series
+from models import Issue, Series
 
 # create logger
 logger = logging.getLogger(__name__)

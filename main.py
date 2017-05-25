@@ -12,16 +12,16 @@ from google.appengine.ext import ndb
 from werkzeug import debug
 
 from config import ProductionConfig as Config
-from db_entities import Issue, Users
 from managers.api_manager import api
 from managers.calendar_manager import calendar_manager_api
-from managers.login_manager import app as user_manager_api, Anonuser
 from managers.issue_manager import show_issue_api
+from managers.login_manager import app as user_manager_api, Anonuser
+from models import Issue, Users
 from query import Query
-from show_series import show_series_api
-from user_page import user_page_api
-from user_specials import user_specials_api
 from utils import utils_api, database_update
+from views.show_series import show_series_api
+from views.user_page import user_page_api
+from views.user_specials import user_specials_api
 
 #####################
 ####     app     ####

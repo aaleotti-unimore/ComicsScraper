@@ -13,7 +13,9 @@ templates['card'] = template({"1":function(container,depth0,helpers,partials,dat
     + alias4(((helper = (helper = helpers.subtitle || (depth0 != null ? depth0.subtitle : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"subtitle","hash":{},"data":data}) : helper)))
     + "</h6>\n            <h6 class=\"card-text text-muted\">"
     + alias4(((helper = (helper = helpers.reprint || (depth0 != null ? depth0.reprint : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"reprint","hash":{},"data":data}) : helper)))
-    + "</h6>\n            <h6 class=\"card-text text-muted\">"
+    + "</h6>\n            <h7 class=\"card-text text-muted\">"
+    + alias4(container.lambda(((stack1 = (depth0 != null ? depth0.serie : depth0)) != null ? stack1.id : stack1), depth0))
+    + "</h7>\n            <h6 class=\"card-text text-muted\">"
     + alias4(((helper = (helper = helpers.price || (depth0 != null ? depth0.price : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"price","hash":{},"data":data}) : helper)))
     + "</h6>\n        </div>\n        <ul class=\"list-group list-group-flush text-center\">\n            <li class=\"list-group-item\">\n                <div class=\"mx-auto\">\n                    <form>\n                        <button id=\"btn-sum-"
     + alias4(((helper = (helper = helpers.index || (depth0 != null ? depth0.index : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"index","hash":{},"data":data}) : helper)))

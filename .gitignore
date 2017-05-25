@@ -5,6 +5,7 @@
 /lib
 .idea/workspace.xml
 /client_secrets_dev.json
-/client_secrets.json
-/accessKeys.csv
-/client_secrets_prod.json
+/static/secrets/client_secrets.json
+/static/secrets/accessKeys.csv
+/static/secrets/client_secrets_prod.json
+/static/secrets/

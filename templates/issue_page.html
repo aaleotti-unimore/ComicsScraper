@@ -45,8 +45,8 @@
 
                                                     <a class="btn btn-sm btn-outline-primary" href="{{ item.url }}"
                                                        role="button">
-                                                        <i
-                                                                class="fa fa-shopping-cart" aria-hidden="true"></i></a>
+                                                        <i class="fa fa-shopping-cart" aria-hidden="true"></i> Shop
+                                                        Panini</a>
                                                     {% if current_user.is_authenticated %}
                                                         <span></span>
                                                         <button id="btn-add-{{ get_url_key(item.title) }}"
@@ -90,8 +90,7 @@
                                     });
                                 });
                             </script>
-                            {#                <div class="col col-lg-2">#}
-                            {#                </div>#}
+
                         </div>
                         <br>
                     {% endfor %}
@@ -105,29 +104,58 @@
                     <h1>Amazon Store</h1>
 
                     {% if products %}
-                        {% if products|length == 5 %}
+                        {% if products|length >= 5 %}
                             <div class="card-columns">
                         {% else %}
                             <div class="card-deck">
                         {% endif %}
                     {% for product in products %}
                         <div class="card">
-                            <div class="card-header">
-                                <div class="text-center">
-                                    <a href="{{ product.detail_page_url }}">
-                                        <img class="card-img-top img-fluid" src="{{ product.large_image_url }}">
-                                    </a>
+                            {% if product.large_image_url %}
+                                <div class="card-header">
+                                    <div class="text-center">
+
+                                        <a href="{{ product.detail_page_url }}" target="_blank">
+                                            <img class="card-img-top img-fluid" src="{{ product.large_image_url }}">
+                                        </a>
+                                    </div>
                                 </div>
-                            </div>
+                            {% endif %}
+
                             <div class="card-block">
 
-                                <a href="{{ product.detail_page_url }}">
-                                    <h4 class="card-title">{{ product.title }}</h4>
-                                </a>
-
+                                {#                                <a href="{{ product.detail_page_url }}" target="_blank">#}
+                                <h5 class="card-title">{{ product.title }}</h5>
+                                {#                                </a>#}
                                 {% if product.formatted_price %}
-                                    <p class="card-text">{{ product.formatted_price }}</p>
+                                    <p class="card-text">{{ product.formatted_price }}
+                                        {% if product.availability_type == 'now' %}
+                                            <span class="badge badge-success">Disponibile</span>
+                                        {% endif %}
+                                        {% if not product.availability_type %}
+                                            <span class="badge badge-warning">Disponibile</span>
+                                        {% endif %}
+                                    </p>
                                 {% endif %}
+                                {% if product.languages %}
+                                    <h7 class="card-text">
+                                        <small>Lingua:
+                                            {% for lang in product.languages %}
+                                                {{ lang }}
+                                                {% if not loop.last %}, {% endif %}
+                                            {% endfor %}
+                                        </small>
+                                    </h7>
+                                {% endif %}
+
+
+                                <div class="pull-right">
+                                    <a class="btn btn-sm btn-outline-primary text-right"
+                                       href="{{ product.detail_page_url }}"
+                                       role="button">
+                                        <i class="fa fa-shopping-cart" aria-hidden="true"></i> Amazon Shop</a>
+                                    <p></p>
+                                </div>
                             </div>
                         </div>
                     {% endfor %}

@@ -8,8 +8,8 @@ from flask import Blueprint, make_response
 from flask import jsonify
 from google.appengine.ext import ndb
 
-from db_entities import Issue, Series
-from db_entities import Users
+from models import Issue, Series
+from models import Users
 from query import Query
 
 logger = logging.getLogger(__name__)

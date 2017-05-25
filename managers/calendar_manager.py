@@ -11,7 +11,7 @@ from google.appengine.api import urlfetch
 from googleapiclient import discovery
 from oauth2client.contrib.appengine import StorageByKeyName
 
-from db_entities import Users, CredentialsModel
+from models import Users, CredentialsModel
 from query import Query
 
 logger = logging.getLogger(__name__)

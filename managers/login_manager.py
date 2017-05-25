@@ -7,7 +7,7 @@ from flask_login import login_user, AnonymousUserMixin, logout_user
 from googleapiclient.discovery import build
 from oauth2client import client
 from oauth2client.contrib.appengine import StorageByKeyName
-from db_entities import Users, CredentialsModel
+from models import Users, CredentialsModel
 
 app = Blueprint('user_manager_api', __name__)
 
@@ -42,7 +42,7 @@ def gCallback():
     OAuth2 authorization flow
     """
     flow = client.flow_from_clientsecrets(
-        'client_secrets.json',
+        'static/secrets/client_secrets.json',
         scope=['profile', 'email', 'https://www.googleapis.com/auth/calendar'],
         redirect_uri=url_for('user_manager_api.gCallback', _external=True),
     )
