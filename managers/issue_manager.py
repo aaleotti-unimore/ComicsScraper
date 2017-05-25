@@ -14,8 +14,8 @@ from amazon.api import AmazonAPI, SearchException, AmazonException, AmazonProduc
 show_issue_api = Blueprint('show_issue_api', __name__)
 
 amz = {
-    'access_key': 'AKIAIORTLS4YBKHUNKPQ',
-    'secret_key': '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',
+    'access_key': '',
+    'secret_key': '',
     'associate_tag': 'amazingkirbi-21',
     'locale': 'it'
 }
