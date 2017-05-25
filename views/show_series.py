@@ -34,6 +34,11 @@ def get_series():
 
 @show_series_api.route('/show_series/all/', methods=['POST'])
 def get_all_series():
+    """
+    shows all issues in the view
+    :return: 
+    """
+
     if request.method == 'POST':
         dbm = DB_manager()
         all = Issue.query().order(-Issue.date).fetch()

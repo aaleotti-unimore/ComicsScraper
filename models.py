@@ -32,7 +32,7 @@ class Issue(ndb.Model):
 
 class Users(ndb.Model, UserMixin):
     """
-    Modello utente
+    User model     
     """
     id = ndb.StringProperty(indexed=True)
     name = ndb.StringProperty(indexed=False)

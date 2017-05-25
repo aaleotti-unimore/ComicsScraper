@@ -8,12 +8,13 @@ class Config(object):
     DEBUG = True
     TESTING = False
     REDIRECT_URI = "https://localhost:8080/gCallback"
+    G_SECRETS = 'static/secrets/client_secrets_dev.json'
 
 
 class ProductionConfig(Config):
-    DATABASE_URI = 'mysql://user@localhost/foo'
     REDIRECT_URI = "https://amazingkirbi.appspot.com/gCallback"
-    DEBUG = False
+    G_SECRETS = 'static/secrets/client_secrets_prod.json'
+    DEBUG = True
     TESTING = False
 
 

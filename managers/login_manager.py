@@ -8,7 +8,7 @@ from googleapiclient.discovery import build
 from oauth2client import client
 from oauth2client.contrib.appengine import StorageByKeyName
 from models import Users, CredentialsModel
-
+from config import ProductionConfig as Config
 app = Blueprint('user_manager_api', __name__)
 
 logger = getLogger(__name__)
@@ -42,7 +42,7 @@ def gCallback():
     OAuth2 authorization flow
     """
     flow = client.flow_from_clientsecrets(
-        'static/secrets/client_secrets.json',
+        Config.G_SECRETS,
         scope=['profile', 'email', 'https://www.googleapis.com/auth/calendar'],
         redirect_uri=url_for('user_manager_api.gCallback', _external=True),
     )

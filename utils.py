@@ -10,7 +10,7 @@ from flask import redirect, Blueprint
 from google.appengine.ext import ndb
 
 from models import Issue, Series
-from page_parser import Parsatore
+from page_parser import Parser
 
 logger = logging.getLogger(__name__)
 utils_api = Blueprint('utils_api', __name__)
@@ -36,7 +36,7 @@ def database_update():
     """
     MIN_PAGE = 1
     MAX_PAGE = 10
-    Parsatore(MIN_PAGE, MAX_PAGE)
+    Parser(MIN_PAGE, MAX_PAGE)
     return redirect('/')
 
 
