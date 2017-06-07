@@ -1,0 +1,148 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>views.user_page &#8212; The Astonishing Kirby 1.0.0 documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '1.0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+  </head>
+  <body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">The Astonishing Kirby 1.0.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Module code</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for views.user_page</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">This module contains the logic for the &quot;user_page.html&quot; temmplate</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">unicode_literals</span><span class="p">,</span> <span class="n">print_function</span>
+
+<span class="kn">import</span> <span class="nn">logging.config</span>
+
+<span class="kn">from</span> <span class="nn">flask</span> <span class="k">import</span> <span class="n">render_template</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="n">Blueprint</span>
+<span class="kn">from</span> <span class="nn">flask_login</span> <span class="k">import</span> <span class="n">current_user</span>
+<span class="kn">from</span> <span class="nn">google.appengine.ext</span> <span class="k">import</span> <span class="n">ndb</span>
+
+<span class="kn">from</span> <span class="nn">models.models</span> <span class="k">import</span> <span class="n">Series</span>
+
+<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+<span class="n">user_page_api</span> <span class="o">=</span> <span class="n">Blueprint</span><span class="p">(</span><span class="s1">&#39;user_page_api&#39;</span><span class="p">,</span> <span class="vm">__name__</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="add_user_series"><a class="viewcode-back" href="../../views.html#views.user_page.add_user_series">[docs]</a><span class="nd">@user_page_api</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/user_page/add_series/&#39;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;POST&#39;</span><span class="p">])</span>
+<span class="k">def</span> <span class="nf">add_user_series</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Adds requested series in the user&#39;s series</span>
+<span class="sd">    </span>
+<span class="sd">    :returns: renders the user page</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">my_user</span> <span class="o">=</span> <span class="n">current_user</span>
+    <span class="n">series_id</span> <span class="o">=</span> <span class="n">ndb</span><span class="o">.</span><span class="n">Key</span><span class="p">(</span><span class="n">Series</span><span class="p">,</span> <span class="n">request</span><span class="o">.</span><span class="n">form</span><span class="p">[</span><span class="s1">&#39;series&#39;</span><span class="p">])</span>
+    <span class="k">if</span> <span class="n">series_id</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">my_user</span><span class="o">.</span><span class="n">series_list</span><span class="p">:</span>
+        <span class="n">my_user</span><span class="o">.</span><span class="n">series_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">series_id</span><span class="p">)</span>
+        <span class="n">my_user</span><span class="o">.</span><span class="n">put</span><span class="p">()</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;user id:&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">my_user</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot; added series: &quot;</span> <span class="o">+</span> <span class="n">request</span><span class="o">.</span><span class="n">form</span><span class="p">[</span><span class="s1">&#39;series&#39;</span><span class="p">])</span>
+    <span class="k">return</span> <span class="n">show_user_page</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="remove_user_series"><a class="viewcode-back" href="../../views.html#views.user_page.remove_user_series">[docs]</a><span class="nd">@user_page_api</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/user_page/remove_series/&#39;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;POST&#39;</span><span class="p">])</span>
+<span class="k">def</span> <span class="nf">remove_user_series</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    remove requested series from the user&#39;s series list</span>
+<span class="sd">    </span>
+<span class="sd">    :returns: renders user page</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">my_user</span> <span class="o">=</span> <span class="n">current_user</span>
+    <span class="n">series_id</span> <span class="o">=</span> <span class="n">ndb</span><span class="o">.</span><span class="n">Key</span><span class="p">(</span><span class="n">Series</span><span class="p">,</span> <span class="n">request</span><span class="o">.</span><span class="n">form</span><span class="p">[</span><span class="s1">&#39;series&#39;</span><span class="p">])</span>
+    <span class="k">if</span> <span class="n">series_id</span> <span class="ow">in</span> <span class="n">my_user</span><span class="o">.</span><span class="n">series_list</span><span class="p">:</span>
+        <span class="n">my_user</span><span class="o">.</span><span class="n">series_list</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">series_id</span><span class="p">)</span>
+        <span class="n">my_user</span><span class="o">.</span><span class="n">put</span><span class="p">()</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;user id:&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">my_user</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot; removed series: &quot;</span> <span class="o">+</span> <span class="n">request</span><span class="o">.</span><span class="n">form</span><span class="p">[</span><span class="s1">&#39;series&#39;</span><span class="p">])</span>
+    <span class="k">return</span> <span class="n">show_user_page</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="show_user_page"><a class="viewcode-back" href="../../views.html#views.user_page.show_user_page">[docs]</a><span class="nd">@user_page_api</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/user_page&#39;</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">show_user_page</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    renders the user page </span>
+<span class="sd">    </span>
+<span class="sd">    :returns: renders the user_page template</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">series</span> <span class="o">=</span> <span class="n">Series</span><span class="o">.</span><span class="n">query</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">render_template</span><span class="p">(</span><span class="s2">&quot;user_page.html&quot;</span><span class="p">,</span> <span class="n">series</span><span class="o">=</span><span class="n">series</span><span class="p">)</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">The Astonishing Kirby 1.0.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2017, Alessandro Aleotti.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.2.
+    </div>
+  </body>
+</html>

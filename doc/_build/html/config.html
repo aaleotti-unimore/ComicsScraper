@@ -1,0 +1,201 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>config module &#8212; The Astonishing Kirby 1.0.0 documentation</title>
+    
+    <link rel="stylesheet" href="_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '1.0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="handlers package" href="handlers.html" />
+    <link rel="prev" title="conf module" href="conf.html" /> 
+  </head>
+  <body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="handlers.html" title="handlers package"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="conf.html" title="conf module"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">The Astonishing Kirby 1.0.0 documentation</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="module-config">
+<span id="config-module"></span><h1>config module<a class="headerlink" href="#module-config" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="config.Config">
+<em class="property">class </em><code class="descclassname">config.</code><code class="descname">Config</code><a class="reference internal" href="_modules/config.html#Config"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#config.Config" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<dl class="attribute">
+<dt id="config.Config.APP_NAME">
+<code class="descname">APP_NAME</code><em class="property"> = ‘The Amazing Kirby’</em><a class="headerlink" href="#config.Config.APP_NAME" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="config.Config.DEBUG">
+<code class="descname">DEBUG</code><em class="property"> = True</em><a class="headerlink" href="#config.Config.DEBUG" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="config.Config.G_SECRETS">
+<code class="descname">G_SECRETS</code><em class="property"> = ‘static/secrets/client_secrets_dev.json’</em><a class="headerlink" href="#config.Config.G_SECRETS" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="config.Config.REDIRECT_URI">
+<code class="descname">REDIRECT_URI</code><em class="property"> = ‘https://localhost:8080/gCallback’</em><a class="headerlink" href="#config.Config.REDIRECT_URI" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="config.Config.SECRET_KEY">
+<code class="descname">SECRET_KEY</code><em class="property"> = ‘\xb8#+3r\x1d\x1a\xc2\xa7\x08\x90\xdd\xca!\xa8\x18\xfa=\xa0\x0eQ4\xcb\xcf’</em><a class="headerlink" href="#config.Config.SECRET_KEY" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="config.Config.TESTING">
+<code class="descname">TESTING</code><em class="property"> = False</em><a class="headerlink" href="#config.Config.TESTING" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="config.DevelopmentConfig">
+<em class="property">class </em><code class="descclassname">config.</code><code class="descname">DevelopmentConfig</code><a class="reference internal" href="_modules/config.html#DevelopmentConfig"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#config.DevelopmentConfig" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#config.Config" title="config.Config"><code class="xref py py-class docutils literal"><span class="pre">config.Config</span></code></a></p>
+<dl class="attribute">
+<dt id="config.DevelopmentConfig.DEBUG">
+<code class="descname">DEBUG</code><em class="property"> = True</em><a class="headerlink" href="#config.DevelopmentConfig.DEBUG" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="config.ProductionConfig">
+<em class="property">class </em><code class="descclassname">config.</code><code class="descname">ProductionConfig</code><a class="reference internal" href="_modules/config.html#ProductionConfig"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#config.ProductionConfig" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#config.Config" title="config.Config"><code class="xref py py-class docutils literal"><span class="pre">config.Config</span></code></a></p>
+<dl class="attribute">
+<dt id="config.ProductionConfig.DEBUG">
+<code class="descname">DEBUG</code><em class="property"> = True</em><a class="headerlink" href="#config.ProductionConfig.DEBUG" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="config.ProductionConfig.G_SECRETS">
+<code class="descname">G_SECRETS</code><em class="property"> = ‘static/secrets/client_secrets_prod.json’</em><a class="headerlink" href="#config.ProductionConfig.G_SECRETS" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="config.ProductionConfig.REDIRECT_URI">
+<code class="descname">REDIRECT_URI</code><em class="property"> = ‘https://amazingkirbi.appspot.com/gCallback’</em><a class="headerlink" href="#config.ProductionConfig.REDIRECT_URI" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="config.ProductionConfig.TESTING">
+<code class="descname">TESTING</code><em class="property"> = False</em><a class="headerlink" href="#config.ProductionConfig.TESTING" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="config.TestingConfig">
+<em class="property">class </em><code class="descclassname">config.</code><code class="descname">TestingConfig</code><a class="reference internal" href="_modules/config.html#TestingConfig"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#config.TestingConfig" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#config.Config" title="config.Config"><code class="xref py py-class docutils literal"><span class="pre">config.Config</span></code></a></p>
+<dl class="attribute">
+<dt id="config.TestingConfig.TESTING">
+<code class="descname">TESTING</code><em class="property"> = True</em><a class="headerlink" href="#config.TestingConfig.TESTING" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="conf.html"
+                        title="previous chapter">conf module</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="handlers.html"
+                        title="next chapter">handlers package</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/config.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="handlers.html" title="handlers package"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="conf.html" title="conf module"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">The Astonishing Kirby 1.0.0 documentation</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2017, Alessandro Aleotti.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.2.
+    </div>
+  </body>
+</html>

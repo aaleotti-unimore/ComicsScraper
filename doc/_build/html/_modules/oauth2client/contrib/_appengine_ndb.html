@@ -1,0 +1,253 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>oauth2client.contrib._appengine_ndb &#8212; The Astonishing Kirby 1.0.0 documentation</title>
+    
+    <link rel="stylesheet" href="../../../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '1.0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+  </head>
+  <body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">The Astonishing Kirby 1.0.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for oauth2client.contrib._appengine_ndb</h1><div class="highlight"><pre>
+<span></span><span class="c1"># Copyright 2016 Google Inc. All rights reserved.</span>
+<span class="c1">#</span>
+<span class="c1"># Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);</span>
+<span class="c1"># you may not use this file except in compliance with the License.</span>
+<span class="c1"># You may obtain a copy of the License at</span>
+<span class="c1">#</span>
+<span class="c1">#      http://www.apache.org/licenses/LICENSE-2.0</span>
+<span class="c1">#</span>
+<span class="c1"># Unless required by applicable law or agreed to in writing, software</span>
+<span class="c1"># distributed under the License is distributed on an &quot;AS IS&quot; BASIS,</span>
+<span class="c1"># WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.</span>
+<span class="c1"># See the License for the specific language governing permissions and</span>
+<span class="c1"># limitations under the License.</span>
+
+<span class="sd">&quot;&quot;&quot;Google App Engine utilities helper.</span>
+
+<span class="sd">Classes that directly require App Engine&#39;s ndb library. Provided</span>
+<span class="sd">as a separate module in case of failure to import ndb while</span>
+<span class="sd">other App Engine libraries are present.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">logging</span>
+
+<span class="kn">from</span> <span class="nn">google.appengine.ext</span> <span class="k">import</span> <span class="n">ndb</span>
+
+<span class="kn">from</span> <span class="nn">oauth2client</span> <span class="k">import</span> <span class="n">client</span>
+
+
+<span class="n">NDB_KEY</span> <span class="o">=</span> <span class="n">ndb</span><span class="o">.</span><span class="n">Key</span>
+<span class="sd">&quot;&quot;&quot;Key constant used by :mod:`oauth2client.contrib.appengine`.&quot;&quot;&quot;</span>
+
+<span class="n">NDB_MODEL</span> <span class="o">=</span> <span class="n">ndb</span><span class="o">.</span><span class="n">Model</span>
+<span class="sd">&quot;&quot;&quot;Model constant used by :mod:`oauth2client.contrib.appengine`.&quot;&quot;&quot;</span>
+
+<span class="n">_LOGGER</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+
+<span class="k">class</span> <span class="nc">SiteXsrfSecretKeyNDB</span><span class="p">(</span><span class="n">ndb</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;NDB Model for storage for the sites XSRF secret key.</span>
+
+<span class="sd">    Since this model uses the same kind as SiteXsrfSecretKey, it can be</span>
+<span class="sd">    used interchangeably. This simply provides an NDB model for interacting</span>
+<span class="sd">    with the same data the DB model interacts with.</span>
+
+<span class="sd">    There should only be one instance stored of this model, the one used</span>
+<span class="sd">    for the site.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">secret</span> <span class="o">=</span> <span class="n">ndb</span><span class="o">.</span><span class="n">StringProperty</span><span class="p">()</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">_get_kind</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return the kind name for this class.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="s1">&#39;SiteXsrfSecretKey&#39;</span>
+
+
+<span class="k">class</span> <span class="nc">FlowNDBProperty</span><span class="p">(</span><span class="n">ndb</span><span class="o">.</span><span class="n">PickleProperty</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;App Engine NDB datastore Property for Flow.</span>
+
+<span class="sd">    Serves the same purpose as the DB FlowProperty, but for NDB models.</span>
+<span class="sd">    Since PickleProperty inherits from BlobProperty, the underlying</span>
+<span class="sd">    representation of the data in the datastore will be the same as in the</span>
+<span class="sd">    DB case.</span>
+
+<span class="sd">    Utility property that allows easy storage and retrieval of an</span>
+<span class="sd">    oauth2client.Flow</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">_validate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Validates a value as a proper Flow object.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            value: A value to be set on the property.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            TypeError if the value is not an instance of Flow.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">_LOGGER</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;validate: Got type </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="p">(</span><span class="n">value</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">client</span><span class="o">.</span><span class="n">Flow</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+                <span class="s1">&#39;Property </span><span class="si">{0}</span><span class="s1"> must be convertible to a flow &#39;</span>
+                <span class="s1">&#39;instance; received: </span><span class="si">{1}</span><span class="s1">.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_name</span><span class="p">,</span> <span class="n">value</span><span class="p">))</span>
+
+
+<span class="k">class</span> <span class="nc">CredentialsNDBProperty</span><span class="p">(</span><span class="n">ndb</span><span class="o">.</span><span class="n">BlobProperty</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;App Engine NDB datastore Property for Credentials.</span>
+
+<span class="sd">    Serves the same purpose as the DB CredentialsProperty, but for NDB</span>
+<span class="sd">    models. Since CredentialsProperty stores data as a blob and this</span>
+<span class="sd">    inherits from BlobProperty, the data in the datastore will be the same</span>
+<span class="sd">    as in the DB case.</span>
+
+<span class="sd">    Utility property that allows easy storage and retrieval of Credentials</span>
+<span class="sd">    and subclasses.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">_validate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Validates a value as a proper credentials object.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            value: A value to be set on the property.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            TypeError if the value is not an instance of Credentials.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">_LOGGER</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;validate: Got type </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="p">(</span><span class="n">value</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">client</span><span class="o">.</span><span class="n">Credentials</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+                <span class="s1">&#39;Property </span><span class="si">{0}</span><span class="s1"> must be convertible to a credentials &#39;</span>
+                <span class="s1">&#39;instance; received: </span><span class="si">{1}</span><span class="s1">.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_name</span><span class="p">,</span> <span class="n">value</span><span class="p">))</span>
+
+    <span class="k">def</span> <span class="nf">_to_base_type</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Converts our validated value to a JSON serialized string.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            value: A value to be set in the datastore.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            A JSON serialized version of the credential, else &#39;&#39; if value</span>
+<span class="sd">            is None.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s1">&#39;&#39;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">value</span><span class="o">.</span><span class="n">to_json</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">_from_base_type</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Converts our stored JSON string back to the desired type.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            value: A value from the datastore to be converted to the</span>
+<span class="sd">                   desired type.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            A deserialized Credentials (or subclass) object, else None if</span>
+<span class="sd">            the value can&#39;t be parsed.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">value</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="c1"># Uses the from_json method of the implied class of value</span>
+            <span class="n">credentials</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">Credentials</span><span class="o">.</span><span class="n">new_from_json</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+            <span class="n">credentials</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">return</span> <span class="n">credentials</span>
+
+
+<span class="k">class</span> <span class="nc">CredentialsNDBModel</span><span class="p">(</span><span class="n">ndb</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;NDB Model for storage of OAuth 2.0 Credentials</span>
+
+<span class="sd">    Since this model uses the same kind as CredentialsModel and has a</span>
+<span class="sd">    property which can serialize and deserialize Credentials correctly, it</span>
+<span class="sd">    can be used interchangeably with a CredentialsModel to access, insert</span>
+<span class="sd">    and delete the same entities. This simply provides an NDB model for</span>
+<span class="sd">    interacting with the same data the DB model interacts with.</span>
+
+<span class="sd">    Storage of the model is keyed by the user.user_id().</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">credentials</span> <span class="o">=</span> <span class="n">CredentialsNDBProperty</span><span class="p">()</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">_get_kind</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return the kind name for this class.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="s1">&#39;CredentialsModel&#39;</span>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">The Astonishing Kirby 1.0.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2017, Alessandro Aleotti.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.2.
+    </div>
+  </body>
+</html>

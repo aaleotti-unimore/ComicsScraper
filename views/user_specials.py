@@ -1,3 +1,7 @@
+"""
+This module contains the logic for handling the user specials model in the template
+"""
+
 from __future__ import unicode_literals, print_function
 
 import json
@@ -7,10 +11,9 @@ from flask import request, jsonify, Blueprint
 from flask_login import current_user
 from google.appengine.ext import ndb
 
-from models import Issue
-from managers.db_manager import DB_manager
-from query import Query
-from utils import date_handler
+from handlers.query import Query
+from handlers.utils import date_handler, to_json
+from models.models import Issue
 
 logger = logging.getLogger(__name__)
 user_specials_api = Blueprint('user_specials_api', __name__)
@@ -21,19 +24,20 @@ user_specials_api = Blueprint('user_specials_api', __name__)
 def get_specials():
     """
     Retrieves user's special issues.
-    :return: JSON object with user's special issues
+    
+    :returns: JSON object with user's special issues object
     """
     if request.method == 'POST':
         query = Query()
-        dbm = DB_manager()
-        return json.dumps(dbm.to_json(query.get_specials()), default=date_handler)
+        return json.dumps(to_json(query.get_specials()), default=date_handler)
 
 
 @user_specials_api.route('/user/add_special_issue/', methods=['POST'])
 def add_special_issue():
     """
-    Adds requested issue to the user's specials list
-    :return: 
+    Adds requested issue via POST to the user's specials list
+    
+    :returns: JSON object with operation outcome
     """
     my_user = current_user
     issue_title = request.form['special_issue']
@@ -52,8 +56,9 @@ def add_special_issue():
 @user_specials_api.route('/user/remove_special_issue/', methods=['POST'])
 def remove_special_issue():
     """
-    Removes requested issue from the user's specials list
-    :return: 
+    Removes requested issue via POST from the user's specials list
+    
+    :returns: JSON object with operation outcome
     """
     my_user = current_user
     issue_title = request.form['special_issue']

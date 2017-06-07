@@ -1,13 +1,15 @@
+"""
+This module contains the logic for the "user_page.html" temmplate
+"""
 from __future__ import unicode_literals, print_function
 
 import logging.config
 
 from flask import render_template, request, Blueprint
 from flask_login import current_user
-from google.appengine.api import users
 from google.appengine.ext import ndb
 
-from models import Series, Users
+from models.models import Series
 
 logger = logging.getLogger(__name__)
 user_page_api = Blueprint('user_page_api', __name__)
@@ -17,7 +19,8 @@ user_page_api = Blueprint('user_page_api', __name__)
 def add_user_series():
     """
     Adds requested series in the user's series
-    :return: renders the user page
+    
+    :returns: renders the user page
     """
     my_user = current_user
     series_id = ndb.Key(Series, request.form['series'])
@@ -32,7 +35,8 @@ def add_user_series():
 def remove_user_series():
     """
     remove requested series from the user's series list
-    :return: renders user page
+    
+    :returns: renders user page
     """
     my_user = current_user
     series_id = ndb.Key(Series, request.form['series'])
@@ -47,7 +51,8 @@ def remove_user_series():
 def show_user_page():
     """
     renders the user page 
-    :return: renders the user_page template
+    
+    :returns: renders the user_page template
     """
     series = Series.query()
     return render_template("user_page.html", series=series)

@@ -1,0 +1,281 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>views package &#8212; The Astonishing Kirby 1.0.0 documentation</title>
+    
+    <link rel="stylesheet" href="_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '1.0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="models package" href="models.html" /> 
+  </head>
+  <body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="models.html" title="models package"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">The Astonishing Kirby 1.0.0 documentation</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="views-package">
+<h1>views package<a class="headerlink" href="#views-package" title="Permalink to this headline">¶</a></h1>
+<p>This Package contains all the views handlers</p>
+<div class="section" id="module-views.issue">
+<span id="views-issue-module"></span><h2>views.issue module<a class="headerlink" href="#module-views.issue" title="Permalink to this headline">¶</a></h2>
+<p>This module contains the business logic for the single Issue view</p>
+<dl class="function">
+<dt id="views.issue.issue_page">
+<code class="descclassname">views.issue.</code><code class="descname">issue_page</code><span class="sig-paren">(</span><em>issue_id</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/views/issue.html#issue_page"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#views.issue.issue_page" title="Permalink to this definition">¶</a></dt>
+<dd><p>Renders an issue page given its issue id. contains all the infos of the isse and manages the Amazon API</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>issue_id</strong> – issue id as defined in the model</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">renders the “issue_page.html” template or redirects to index with a 302 html code if the issue is not found</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="module-views.show_series">
+<span id="views-show-series-module"></span><h2>views.show_series module<a class="headerlink" href="#module-views.show_series" title="Permalink to this headline">¶</a></h2>
+<p>This modue manages the “Show Series” view.</p>
+<dl class="function">
+<dt id="views.show_series.get_all_issues">
+<code class="descclassname">views.show_series.</code><code class="descname">get_all_issues</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/views/show_series.html#get_all_issues"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#views.show_series.get_all_issues" title="Permalink to this definition">¶</a></dt>
+<dd><p>Responds to a POST request, showing all the issues in the view</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">json object with all the issues in the database ordered by date</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="views.show_series.get_series">
+<code class="descclassname">views.show_series.</code><code class="descname">get_series</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/views/show_series.html#get_series"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#views.show_series.get_series" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fetch the requested series via POST</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">returns a JSON object containing all the issues from the series; ordered by date</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="views.show_series.show_series_page">
+<code class="descclassname">views.show_series.</code><code class="descname">show_series_page</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/views/show_series.html#show_series_page"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#views.show_series.show_series_page" title="Permalink to this definition">¶</a></dt>
+<dd><p>Renders the “show series” page</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">renders the “show_series.html” template</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="module-views.user_page">
+<span id="views-user-page-module"></span><h2>views.user_page module<a class="headerlink" href="#module-views.user_page" title="Permalink to this headline">¶</a></h2>
+<p>This module contains the logic for the “user_page.html” temmplate</p>
+<dl class="function">
+<dt id="views.user_page.add_user_series">
+<code class="descclassname">views.user_page.</code><code class="descname">add_user_series</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/views/user_page.html#add_user_series"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#views.user_page.add_user_series" title="Permalink to this definition">¶</a></dt>
+<dd><p>Adds requested series in the user’s series</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">renders the user page</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="views.user_page.remove_user_series">
+<code class="descclassname">views.user_page.</code><code class="descname">remove_user_series</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/views/user_page.html#remove_user_series"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#views.user_page.remove_user_series" title="Permalink to this definition">¶</a></dt>
+<dd><p>remove requested series from the user’s series list</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">renders user page</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="views.user_page.show_user_page">
+<code class="descclassname">views.user_page.</code><code class="descname">show_user_page</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/views/user_page.html#show_user_page"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#views.user_page.show_user_page" title="Permalink to this definition">¶</a></dt>
+<dd><p>renders the user page</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">renders the user_page template</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="module-views.user_specials">
+<span id="views-user-specials-module"></span><h2>views.user_specials module<a class="headerlink" href="#module-views.user_specials" title="Permalink to this headline">¶</a></h2>
+<p>This module contains the logic for handling the user specials model in the template</p>
+<dl class="function">
+<dt id="views.user_specials.add_special_issue">
+<code class="descclassname">views.user_specials.</code><code class="descname">add_special_issue</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/views/user_specials.html#add_special_issue"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#views.user_specials.add_special_issue" title="Permalink to this definition">¶</a></dt>
+<dd><p>Adds requested issue via POST to the user’s specials list</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">JSON object with operation outcome</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="views.user_specials.get_specials">
+<code class="descclassname">views.user_specials.</code><code class="descname">get_specials</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/views/user_specials.html#get_specials"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#views.user_specials.get_specials" title="Permalink to this definition">¶</a></dt>
+<dd><p>Retrieves user’s special issues.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">JSON object with user’s special issues object</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="views.user_specials.remove_special_issue">
+<code class="descclassname">views.user_specials.</code><code class="descname">remove_special_issue</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/views/user_specials.html#remove_special_issue"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#views.user_specials.remove_special_issue" title="Permalink to this definition">¶</a></dt>
+<dd><p>Removes requested issue via POST from the user’s specials list</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">JSON object with operation outcome</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="module-views">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-views" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">views package</a><ul>
+<li><a class="reference internal" href="#module-views.issue">views.issue module</a></li>
+<li><a class="reference internal" href="#module-views.show_series">views.show_series module</a></li>
+<li><a class="reference internal" href="#module-views.user_page">views.user_page module</a></li>
+<li><a class="reference internal" href="#module-views.user_specials">views.user_specials module</a></li>
+<li><a class="reference internal" href="#module-views">Module contents</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="models.html"
+                        title="previous chapter">models package</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/views.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="models.html" title="models package"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">The Astonishing Kirby 1.0.0 documentation</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2017, Alessandro Aleotti.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.2.
+    </div>
+  </body>
+</html>

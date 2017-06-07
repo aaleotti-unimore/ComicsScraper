@@ -1,0 +1,281 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>handlers.calendar &#8212; The Astonishing Kirby 1.0.0 documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '1.0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+  </head>
+  <body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">The Astonishing Kirby 1.0.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Module code</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for handlers.calendar</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">unicode_literals</span>
+
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">import</span> <span class="nn">threading</span>
+<span class="kn">from</span> <span class="nn">datetime</span> <span class="k">import</span> <span class="n">timedelta</span>
+
+<span class="kn">import</span> <span class="nn">httplib2</span>
+<span class="kn">from</span> <span class="nn">flask</span> <span class="k">import</span> <span class="n">jsonify</span>
+<span class="kn">from</span> <span class="nn">flask</span> <span class="k">import</span> <span class="n">url_for</span><span class="p">,</span> <span class="n">Blueprint</span><span class="p">,</span> <span class="n">redirect</span>
+<span class="kn">from</span> <span class="nn">google.appengine.api</span> <span class="k">import</span> <span class="n">urlfetch</span>
+<span class="kn">from</span> <span class="nn">googleapiclient</span> <span class="k">import</span> <span class="n">discovery</span>
+<span class="kn">from</span> <span class="nn">oauth2client.contrib.appengine</span> <span class="k">import</span> <span class="n">StorageByKeyName</span>
+
+<span class="kn">from</span> <span class="nn">models.models</span> <span class="k">import</span> <span class="n">Users</span><span class="p">,</span> <span class="n">CredentialsModel</span>
+<span class="kn">from</span> <span class="nn">query</span> <span class="k">import</span> <span class="n">Query</span>
+
+<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+<span class="n">calendar_manager_api</span> <span class="o">=</span> <span class="n">Blueprint</span><span class="p">(</span><span class="s1">&#39;calendar_manager_api&#39;</span><span class="p">,</span> <span class="vm">__name__</span><span class="p">)</span>
+
+<span class="n">urlfetch</span><span class="o">.</span><span class="n">set_default_fetch_deadline</span><span class="p">(</span><span class="mi">45</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="cal_list"><a class="viewcode-back" href="../../handlers.html#handlers.calendar.cal_list">[docs]</a><span class="k">def</span> <span class="nf">cal_list</span><span class="p">(</span><span class="n">service</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    List user&#39;s calendar</span>
+<span class="sd">    </span>
+<span class="sd">    :param service: service</span>
+<span class="sd">    :returns: list of calendars</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">page_token</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+        <span class="n">calendar_list</span> <span class="o">=</span> <span class="n">service</span><span class="o">.</span><span class="n">calendarList</span><span class="p">()</span><span class="o">.</span><span class="n">list</span><span class="p">(</span><span class="n">pageToken</span><span class="o">=</span><span class="n">page_token</span><span class="p">)</span><span class="o">.</span><span class="n">execute</span><span class="p">()</span>
+        <span class="n">page_token</span> <span class="o">=</span> <span class="n">calendar_list</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;nextPageToken&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">page_token</span><span class="p">:</span>
+            <span class="k">break</span>
+    <span class="k">return</span> <span class="n">calendar_list</span></div>
+
+
+<div class="viewcode-block" id="show_list"><a class="viewcode-back" href="../../handlers.html#handlers.calendar.show_list">[docs]</a><span class="nd">@calendar_manager_api</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/cal_list/&lt;userid&gt;&#39;</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">show_list</span><span class="p">(</span><span class="n">userid</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Returns a JSON object with user&#39;s calendars</span>
+<span class="sd">    </span>
+<span class="sd">    :param userid: user id</span>
+<span class="sd">    :returns: JSON calendar list</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">service</span> <span class="o">=</span> <span class="n">create_service</span><span class="p">(</span><span class="n">userid</span><span class="p">)</span>
+    <span class="n">calendar_list</span> <span class="o">=</span> <span class="n">cal_list</span><span class="p">(</span><span class="n">service</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">jsonify</span><span class="p">(</span><span class="n">calendar_list</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="delete_cal"><a class="viewcode-back" href="../../handlers.html#handlers.calendar.delete_cal">[docs]</a><span class="nd">@calendar_manager_api</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/del_cal/&lt;userid&gt;&#39;</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">delete_cal</span><span class="p">(</span><span class="n">userid</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Delete the comics calendar</span>
+<span class="sd">    </span>
+<span class="sd">    :param userid: user id</span>
+<span class="sd">    :returns: redirects to main page</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">service</span> <span class="o">=</span> <span class="n">create_service</span><span class="p">(</span><span class="n">userid</span><span class="p">)</span>
+    <span class="n">calendar_list</span> <span class="o">=</span> <span class="n">cal_list</span><span class="p">(</span><span class="n">service</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">calendar</span> <span class="ow">in</span> <span class="n">calendar_list</span><span class="p">[</span><span class="s1">&#39;items&#39;</span><span class="p">]:</span>
+        <span class="k">if</span> <span class="n">calendar</span><span class="p">[</span><span class="s1">&#39;summary&#39;</span><span class="p">]</span> <span class="ow">in</span> <span class="s1">&#39;Uscite Fumetti&#39;</span><span class="p">:</span>
+            <span class="n">service</span><span class="o">.</span><span class="n">calendars</span><span class="p">()</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">calendarId</span><span class="o">=</span><span class="n">calendar</span><span class="p">[</span><span class="s1">&#39;id&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">execute</span><span class="p">()</span>
+
+    <span class="k">return</span> <span class="n">redirect</span><span class="p">(</span><span class="n">url_for</span><span class="p">(</span><span class="s1">&#39;main&#39;</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="get_or_insert_cal"><a class="viewcode-back" href="../../handlers.html#handlers.calendar.get_or_insert_cal">[docs]</a><span class="k">def</span> <span class="nf">get_or_insert_cal</span><span class="p">(</span><span class="n">service</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Gets the Comics calendar. if the calendar is not found, a new calendar will be created</span>
+<span class="sd">    </span>
+<span class="sd">    :param service: service</span>
+<span class="sd">    :returns: comics calendar id</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">calendar_list</span> <span class="o">=</span> <span class="n">cal_list</span><span class="p">(</span><span class="n">service</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">calendar</span> <span class="ow">in</span> <span class="n">calendar_list</span><span class="p">[</span><span class="s1">&#39;items&#39;</span><span class="p">]:</span>
+        <span class="k">if</span> <span class="n">calendar</span><span class="p">[</span><span class="s1">&#39;summary&#39;</span><span class="p">]</span> <span class="ow">in</span> <span class="s1">&#39;Uscite Fumetti&#39;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">calendar</span><span class="p">[</span><span class="s1">&#39;id&#39;</span><span class="p">]</span>
+
+    <span class="n">calendar</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s1">&#39;summary&#39;</span><span class="p">:</span> <span class="s1">&#39;Uscite Fumetti&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;timeZone&#39;</span><span class="p">:</span> <span class="s1">&#39;Europe/Rome&#39;</span><span class="p">,</span>
+    <span class="p">}</span>
+    <span class="n">created_calendar</span> <span class="o">=</span> <span class="n">service</span><span class="o">.</span><span class="n">calendars</span><span class="p">()</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">body</span><span class="o">=</span><span class="n">calendar</span><span class="p">)</span><span class="o">.</span><span class="n">execute</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">created_calendar</span><span class="p">[</span><span class="s1">&#39;id&#39;</span><span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="add_issue"><a class="viewcode-back" href="../../handlers.html#handlers.calendar.add_issue">[docs]</a><span class="k">def</span> <span class="nf">add_issue</span><span class="p">(</span><span class="n">service</span><span class="p">,</span> <span class="n">calendarID</span><span class="p">,</span> <span class="n">issue</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Adds an issue the comics calendar</span>
+<span class="sd">    </span>
+<span class="sd">    :param service: service</span>
+<span class="sd">    :param calendarID: comics calendar id</span>
+<span class="sd">    :param issue: issue</span>
+<span class="sd">    :returns: calendar event object</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">start</span> <span class="o">=</span> <span class="n">issue</span><span class="o">.</span><span class="n">date</span>
+    <span class="n">end</span> <span class="o">=</span> <span class="n">issue</span><span class="o">.</span><span class="n">date</span> <span class="o">+</span> <span class="n">timedelta</span><span class="p">(</span><span class="n">days</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">event</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s1">&#39;summary&#39;</span><span class="p">:</span> <span class="n">issue</span><span class="o">.</span><span class="n">title</span><span class="p">,</span>
+        <span class="s1">&#39;start&#39;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s1">&#39;date&#39;</span><span class="p">:</span> <span class="n">start</span><span class="o">.</span><span class="n">isoformat</span><span class="p">(),</span>
+            <span class="s1">&#39;timeZone&#39;</span><span class="p">:</span> <span class="s1">&#39;Europe/Rome&#39;</span><span class="p">,</span>
+        <span class="p">},</span>
+        <span class="s1">&#39;end&#39;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s1">&#39;date&#39;</span><span class="p">:</span> <span class="n">end</span><span class="o">.</span><span class="n">isoformat</span><span class="p">(),</span>
+            <span class="s1">&#39;timeZone&#39;</span><span class="p">:</span> <span class="s1">&#39;Europe/Rome&#39;</span><span class="p">,</span>
+        <span class="p">},</span>
+        <span class="s1">&#39;source&#39;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="n">issue</span><span class="o">.</span><span class="n">url</span><span class="p">,</span>
+            <span class="s1">&#39;title&#39;</span><span class="p">:</span> <span class="n">issue</span><span class="o">.</span><span class="n">title</span>
+        <span class="p">},</span>
+        <span class="s1">&#39;description&#39;</span><span class="p">:</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">issue</span><span class="o">.</span><span class="n">summary</span><span class="p">),</span>
+        <span class="s1">&#39;locked&#39;</span><span class="p">:</span> <span class="kc">True</span>
+    <span class="p">}</span>
+    <span class="n">event</span> <span class="o">=</span> <span class="n">service</span><span class="o">.</span><span class="n">events</span><span class="p">()</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">calendarId</span><span class="o">=</span><span class="n">calendarID</span><span class="p">,</span> <span class="n">body</span><span class="o">=</span><span class="n">event</span><span class="p">)</span><span class="o">.</span><span class="n">execute</span><span class="p">()</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Event created: </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">event</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;htmlLink&#39;</span><span class="p">)))</span>
+    <span class="k">return</span> <span class="n">event</span></div>
+
+
+<div class="viewcode-block" id="populate_user_calendar"><a class="viewcode-back" href="../../handlers.html#handlers.calendar.populate_user_calendar">[docs]</a><span class="nd">@calendar_manager_api</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/populate/&lt;userid&gt;&#39;</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">populate_user_calendar</span><span class="p">(</span><span class="n">userid</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Populates user&#39;s comics calendar</span>
+<span class="sd">    </span>
+<span class="sd">    :param userid: user id</span>
+<span class="sd">    :returns: renders main page</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">user</span> <span class="o">=</span> <span class="n">Users</span><span class="o">.</span><span class="n">get_by_id</span><span class="p">(</span><span class="n">userid</span><span class="p">)</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;populating user &quot;</span> <span class="o">+</span> <span class="n">user</span><span class="o">.</span><span class="n">name</span> <span class="o">+</span> <span class="s2">&quot; calendar&quot;</span><span class="p">)</span>
+    <span class="n">service</span> <span class="o">=</span> <span class="n">create_service</span><span class="p">(</span><span class="n">userid</span><span class="p">)</span>
+    <span class="n">cal_id</span> <span class="o">=</span> <span class="n">get_or_insert_cal</span><span class="p">(</span><span class="n">service</span><span class="p">)</span>
+    <span class="n">clear_calendar</span><span class="p">(</span><span class="n">service</span><span class="p">,</span> <span class="n">cal_id</span><span class="p">)</span>
+    <span class="n">query</span> <span class="o">=</span> <span class="n">Query</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">issue</span> <span class="ow">in</span> <span class="n">query</span><span class="o">.</span><span class="n">get_user_issues</span><span class="p">(</span><span class="n">user</span><span class="p">):</span>
+        <span class="n">add_issue</span><span class="p">(</span><span class="n">service</span><span class="p">,</span> <span class="n">cal_id</span><span class="p">,</span> <span class="n">issue</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">issue</span> <span class="ow">in</span> <span class="n">query</span><span class="o">.</span><span class="n">get_user_specials</span><span class="p">(</span><span class="n">user</span><span class="p">):</span>
+        <span class="n">add_issue</span><span class="p">(</span><span class="n">service</span><span class="p">,</span> <span class="n">cal_id</span><span class="p">,</span> <span class="n">issue</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">redirect</span><span class="p">(</span><span class="n">url_for</span><span class="p">(</span><span class="s1">&#39;main&#39;</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="populate_all_calendars"><a class="viewcode-back" href="../../handlers.html#handlers.calendar.populate_all_calendars">[docs]</a><span class="nd">@calendar_manager_api</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/populate_users_calendar/&#39;</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">populate_all_calendars</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    CRON JOB</span>
+<span class="sd">    Concurrently populates all users&#39; calendars </span>
+<span class="sd">    </span>
+<span class="sd">    :returns: renders main page when finished</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">users</span> <span class="o">=</span> <span class="n">Users</span><span class="o">.</span><span class="n">query</span><span class="p">()</span><span class="o">.</span><span class="n">fetch</span><span class="p">()</span>
+    <span class="n">threads</span> <span class="o">=</span> <span class="p">[</span><span class="n">threading</span><span class="o">.</span><span class="n">Thread</span><span class="p">(</span><span class="n">target</span><span class="o">=</span><span class="n">populate_user_calendar</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">user</span><span class="o">.</span><span class="n">id</span><span class="p">,))</span> <span class="k">for</span> <span class="n">user</span> <span class="ow">in</span> <span class="n">users</span><span class="p">]</span>
+    <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">threads</span><span class="p">:</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;start populating thread &quot;</span> <span class="o">+</span> <span class="n">t</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+        <span class="n">t</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">threads</span><span class="p">:</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;end populating thread &quot;</span> <span class="o">+</span> <span class="n">t</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+        <span class="n">t</span><span class="o">.</span><span class="n">join</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">redirect</span><span class="p">(</span><span class="n">url_for</span><span class="p">(</span><span class="s1">&#39;main&#39;</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="clear_calendar"><a class="viewcode-back" href="../../handlers.html#handlers.calendar.clear_calendar">[docs]</a><span class="k">def</span> <span class="nf">clear_calendar</span><span class="p">(</span><span class="n">service</span><span class="p">,</span> <span class="n">cal_id</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Clears a calendar from all the events</span>
+<span class="sd">    </span>
+<span class="sd">    :param service: service</span>
+<span class="sd">    :param cal_id: calendar id</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">page_token</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+        <span class="n">events</span> <span class="o">=</span> <span class="n">service</span><span class="o">.</span><span class="n">events</span><span class="p">()</span><span class="o">.</span><span class="n">list</span><span class="p">(</span><span class="n">calendarId</span><span class="o">=</span><span class="n">cal_id</span><span class="p">,</span> <span class="n">pageToken</span><span class="o">=</span><span class="n">page_token</span><span class="p">)</span><span class="o">.</span><span class="n">execute</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">event</span> <span class="ow">in</span> <span class="n">events</span><span class="p">[</span><span class="s1">&#39;items&#39;</span><span class="p">]:</span>
+            <span class="n">service</span><span class="o">.</span><span class="n">events</span><span class="p">()</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">calendarId</span><span class="o">=</span><span class="n">cal_id</span><span class="p">,</span> <span class="n">eventId</span><span class="o">=</span><span class="n">event</span><span class="p">[</span><span class="s1">&#39;id&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">execute</span><span class="p">()</span>
+        <span class="n">page_token</span> <span class="o">=</span> <span class="n">events</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;nextPageToken&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">page_token</span><span class="p">:</span>
+            <span class="k">break</span></div>
+
+
+<div class="viewcode-block" id="create_service"><a class="viewcode-back" href="../../handlers.html#handlers.calendar.create_service">[docs]</a><span class="k">def</span> <span class="nf">create_service</span><span class="p">(</span><span class="n">userid</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Google Calendar API service creation</span>
+<span class="sd">    </span>
+<span class="sd">    :param userid: user id </span>
+<span class="sd">    :returns: service</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">storage</span> <span class="o">=</span> <span class="n">StorageByKeyName</span><span class="p">(</span><span class="n">CredentialsModel</span><span class="p">,</span> <span class="n">userid</span><span class="p">,</span> <span class="s1">&#39;credentials&#39;</span><span class="p">)</span>
+    <span class="n">credentials</span> <span class="o">=</span> <span class="n">storage</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+    <span class="n">http</span> <span class="o">=</span> <span class="n">credentials</span><span class="o">.</span><span class="n">authorize</span><span class="p">(</span><span class="n">httplib2</span><span class="o">.</span><span class="n">Http</span><span class="p">())</span>
+    <span class="n">urlfetch</span><span class="o">.</span><span class="n">set_default_fetch_deadline</span><span class="p">(</span><span class="mi">45</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">discovery</span><span class="o">.</span><span class="n">build</span><span class="p">(</span><span class="s1">&#39;calendar&#39;</span><span class="p">,</span> <span class="s1">&#39;v3&#39;</span><span class="p">,</span> <span class="n">http</span><span class="o">=</span><span class="n">http</span><span class="p">)</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">The Astonishing Kirby 1.0.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2017, Alessandro Aleotti.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.2.
+    </div>
+  </body>
+</html>

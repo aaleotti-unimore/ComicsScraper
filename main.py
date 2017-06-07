@@ -12,13 +12,13 @@ from google.appengine.ext import ndb
 from werkzeug import debug
 
 from config import ProductionConfig as Config
-from managers.api_manager import api
-from managers.calendar_manager import calendar_manager_api
-from managers.issue_manager import show_issue_api
-from managers.login_manager import app as user_manager_api, Anonuser
-from models import Issue, Users
-from query import Query
-from utils import utils_api, database_update
+from handlers.api import api
+from handlers.calendar import calendar_manager_api
+from handlers.login import app as user_manager_api, Anonuser
+from handlers.query import Query
+from handlers.utils import utils_api, database_update
+from models.models import Issue, Users
+from views.issue import show_issue_api
 from views.show_series import show_series_api
 from views.user_page import user_page_api
 from views.user_specials import user_specials_api
@@ -51,7 +51,8 @@ def main():
     """
     Populates the front page with all the recent and future issues. If the user is logged in, only his issues ares shown.
     If the database is emtpy, the cronjob function populates with all the entries from the Panini Store.
-    :return: renders the main page with the query results
+    
+    :returns: renders the main page with the query results
     """
     logger.debug("current user: %s" % current_user.name)
 
@@ -78,7 +79,7 @@ login_manager.session_protection = "strong"
 def user_loader(id):
     """
     :param id: user id 
-    :return: user database object
+    :returns: user database object
     """
     return Users.get_by_id(id)
 
@@ -91,14 +92,16 @@ def user_loader(id):
 def __series_utility__():
     """
     template utilities
-    :return: functions dictionary
+    
+    :returns: functions dictionary
     """
 
     def list_generator(items):
         """
         Generates list from a collection of items
+        
         :param items: items
-        :return: list of items
+        :returns: list of items
         """
         list_ = []
         for item in items:
@@ -108,16 +111,18 @@ def __series_utility__():
     def get_url_key(title):
         """
         Generate an urlsafe string from an issue title
+        
         :param title: Issue title
-        :return: urlsafe string
+        :returns: urlsafe string
         """
         return ndb.Key(Issue, title).urlsafe()
 
     def hyphenate(title):
         """
         hypenates an Issue title
+        
         :param title: Issue title
-        :return: Hypenated issue title
+        :returns: Hypenated issue title
         """
         if title:
             return title.replace(" ", "-")

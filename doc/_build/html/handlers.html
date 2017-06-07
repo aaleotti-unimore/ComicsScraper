@@ -1,0 +1,777 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>handlers package &#8212; The Astonishing Kirby 1.0.0 documentation</title>
+    
+    <link rel="stylesheet" href="_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '1.0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="main module" href="main.html" />
+    <link rel="prev" title="Welcome to The Astonishing Kirby’s documentation!" href="index.html" /> 
+  </head>
+  <body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="main.html" title="main module"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="index.html" title="Welcome to The Astonishing Kirby’s documentation!"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">The Astonishing Kirby 1.0.0 documentation</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="handlers-package">
+<h1>handlers package<a class="headerlink" href="#handlers-package" title="Permalink to this headline">¶</a></h1>
+<p>Here is contained all the Business logic of the app</p>
+<div class="section" id="module-handlers.api">
+<span id="handlers-api-module"></span><h2>handlers.api module<a class="headerlink" href="#module-handlers.api" title="Permalink to this headline">¶</a></h2>
+<p>Public API module.</p>
+<span class="target" id="module-api"></span><dl class="function">
+<dt id="handlers.api.get_all_series">
+<code class="descclassname">handlers.api.</code><code class="descname">get_all_series</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/handlers/api.html#get_all_series"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#handlers.api.get_all_series" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a list of all the series</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">list of all the series titles</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="handlers.api.get_issues">
+<code class="descclassname">handlers.api.</code><code class="descname">get_issues</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/handlers/api.html#get_issues"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#handlers.api.get_issues" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns all the issues in the database</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">list of issues</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="handlers.api.get_serie">
+<code class="descclassname">handlers.api.</code><code class="descname">get_serie</code><span class="sig-paren">(</span><em>title</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/handlers/api.html#get_serie"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#handlers.api.get_serie" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the list of issues given a specific series title</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>title</strong> – series title</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">list of issues</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="handlers.api.get_single_issue">
+<code class="descclassname">handlers.api.</code><code class="descname">get_single_issue</code><span class="sig-paren">(</span><em>title</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/handlers/api.html#get_single_issue"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#handlers.api.get_single_issue" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns all the informations of a issue number</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>title</strong> – issue title</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">issue informations</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="handlers.api.get_user_issues">
+<code class="descclassname">handlers.api.</code><code class="descname">get_user_issues</code><span class="sig-paren">(</span><em>userid</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/handlers/api.html#get_user_issues"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#handlers.api.get_user_issues" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return all the issues of a user, given his google user id</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>userid</strong> – google user id</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">list of user issues</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="handlers.api.get_user_series">
+<code class="descclassname">handlers.api.</code><code class="descname">get_user_series</code><span class="sig-paren">(</span><em>userid</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/handlers/api.html#get_user_series"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#handlers.api.get_user_series" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the series of a user given the google userid</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>userid</strong> – google user id</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">list of user series</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="handlers.api.get_user_specials">
+<code class="descclassname">handlers.api.</code><code class="descname">get_user_specials</code><span class="sig-paren">(</span><em>userid</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/handlers/api.html#get_user_specials"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#handlers.api.get_user_specials" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns all the user specials given his google user id</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>userid</strong> – google user id</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">list of issues</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="module-handlers.calendar">
+<span id="handlers-calendar-module"></span><h2>handlers.calendar module<a class="headerlink" href="#module-handlers.calendar" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="handlers.calendar.add_issue">
+<code class="descclassname">handlers.calendar.</code><code class="descname">add_issue</code><span class="sig-paren">(</span><em>service</em>, <em>calendarID</em>, <em>issue</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/handlers/calendar.html#add_issue"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#handlers.calendar.add_issue" title="Permalink to this definition">¶</a></dt>
+<dd><p>Adds an issue the comics calendar</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>service</strong> – service</li>
+<li><strong>calendarID</strong> – comics calendar id</li>
+<li><strong>issue</strong> – issue</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">calendar event object</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="handlers.calendar.cal_list">
+<code class="descclassname">handlers.calendar.</code><code class="descname">cal_list</code><span class="sig-paren">(</span><em>service</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/handlers/calendar.html#cal_list"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#handlers.calendar.cal_list" title="Permalink to this definition">¶</a></dt>
+<dd><p>List user’s calendar</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>service</strong> – service</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">list of calendars</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="handlers.calendar.clear_calendar">
+<code class="descclassname">handlers.calendar.</code><code class="descname">clear_calendar</code><span class="sig-paren">(</span><em>service</em>, <em>cal_id</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/handlers/calendar.html#clear_calendar"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#handlers.calendar.clear_calendar" title="Permalink to this definition">¶</a></dt>
+<dd><p>Clears a calendar from all the events</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>service</strong> – service</li>
+<li><strong>cal_id</strong> – calendar id</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="handlers.calendar.create_service">
+<code class="descclassname">handlers.calendar.</code><code class="descname">create_service</code><span class="sig-paren">(</span><em>userid</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/handlers/calendar.html#create_service"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#handlers.calendar.create_service" title="Permalink to this definition">¶</a></dt>
+<dd><p>Google Calendar API service creation</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>userid</strong> – user id</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">service</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="handlers.calendar.delete_cal">
+<code class="descclassname">handlers.calendar.</code><code class="descname">delete_cal</code><span class="sig-paren">(</span><em>userid</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/handlers/calendar.html#delete_cal"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#handlers.calendar.delete_cal" title="Permalink to this definition">¶</a></dt>
+<dd><p>Delete the comics calendar</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>userid</strong> – user id</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">redirects to main page</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="handlers.calendar.get_or_insert_cal">
+<code class="descclassname">handlers.calendar.</code><code class="descname">get_or_insert_cal</code><span class="sig-paren">(</span><em>service</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/handlers/calendar.html#get_or_insert_cal"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#handlers.calendar.get_or_insert_cal" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets the Comics calendar. if the calendar is not found, a new calendar will be created</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>service</strong> – service</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">comics calendar id</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="handlers.calendar.populate_all_calendars">
+<code class="descclassname">handlers.calendar.</code><code class="descname">populate_all_calendars</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/handlers/calendar.html#populate_all_calendars"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#handlers.calendar.populate_all_calendars" title="Permalink to this definition">¶</a></dt>
+<dd><p>CRON JOB
+Concurrently populates all users’ calendars</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">renders main page when finished</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="handlers.calendar.populate_user_calendar">
+<code class="descclassname">handlers.calendar.</code><code class="descname">populate_user_calendar</code><span class="sig-paren">(</span><em>userid</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/handlers/calendar.html#populate_user_calendar"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#handlers.calendar.populate_user_calendar" title="Permalink to this definition">¶</a></dt>
+<dd><p>Populates user’s comics calendar</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>userid</strong> – user id</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">renders main page</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="handlers.calendar.show_list">
+<code class="descclassname">handlers.calendar.</code><code class="descname">show_list</code><span class="sig-paren">(</span><em>userid</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/handlers/calendar.html#show_list"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#handlers.calendar.show_list" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a JSON object with user’s calendars</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>userid</strong> – user id</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">JSON calendar list</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="module-handlers.database">
+<span id="handlers-database-module"></span><h2>handlers.database module<a class="headerlink" href="#module-handlers.database" title="Permalink to this headline">¶</a></h2>
+<p>Database module</p>
+<dl class="class">
+<dt id="handlers.database.Database">
+<em class="property">class </em><code class="descclassname">handlers.database.</code><code class="descname">Database</code><a class="reference internal" href="_modules/handlers/database.html#Database"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#handlers.database.Database" title="Permalink to this definition">¶</a></dt>
+<dd><p>Class to manage the database. Contains two functions: saving a parsed issue into the database and delete all the issues from the database</p>
+<dl class="method">
+<dt id="handlers.database.Database.del_all">
+<code class="descname">del_all</code><span class="sig-paren">(</span><em>items</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/handlers/database.html#Database.del_all"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#handlers.database.Database.del_all" title="Permalink to this definition">¶</a></dt>
+<dd><p>deletes a collection of items from the database</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>items</strong> – items to delete</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="handlers.database.Database.save_issue">
+<code class="descname">save_issue</code><span class="sig-paren">(</span><em>item</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/handlers/database.html#Database.save_issue"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#handlers.database.Database.save_issue" title="Permalink to this definition">¶</a></dt>
+<dd><p>Saves the parsed issue into the database</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>item</strong> – parsed issue</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-handlers.login">
+<span id="handlers-login-module"></span><h2>handlers.login module<a class="headerlink" href="#module-handlers.login" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="handlers.login.Anonuser">
+<em class="property">class </em><code class="descclassname">handlers.login.</code><code class="descname">Anonuser</code><a class="reference internal" href="_modules/handlers/login.html#Anonuser"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#handlers.login.Anonuser" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">flask_login.mixins.AnonymousUserMixin</span></code></p>
+<p>Placeholder class for unlogged user.</p>
+<dl class="attribute">
+<dt id="handlers.login.Anonuser.name">
+<code class="descname">name</code><em class="property"> = ‘Anon’</em><a class="headerlink" href="#handlers.login.Anonuser.name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="handlers.login.Anonuser.serie_list">
+<code class="descname">serie_list</code><em class="property"> = None</em><a class="headerlink" href="#handlers.login.Anonuser.serie_list" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="handlers.login.auth_user">
+<code class="descclassname">handlers.login.</code><code class="descname">auth_user</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/handlers/login.html#auth_user"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#handlers.login.auth_user" title="Permalink to this definition">¶</a></dt>
+<dd><p>User login procedure. if the credentials are not in session, the user is redirected to the Google login panel</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">redirects to authorization callback</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="handlers.login.gCallback">
+<code class="descclassname">handlers.login.</code><code class="descname">gCallback</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/handlers/login.html#gCallback"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#handlers.login.gCallback" title="Permalink to this definition">¶</a></dt>
+<dd><p>OAuth2 authorization flow</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="handlers.login.get_user_info">
+<code class="descclassname">handlers.login.</code><code class="descname">get_user_info</code><span class="sig-paren">(</span><em>credentials</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/handlers/login.html#get_user_info"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#handlers.login.get_user_info" title="Permalink to this definition">¶</a></dt>
+<dd><p>Send a request to the UserInfo API to retrieve the user’s information.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>credentials</strong> – oauth2client.client.OAuth2Credentials instance to authorize the request.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">User information as a dict.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="handlers.login.logout">
+<code class="descclassname">handlers.login.</code><code class="descname">logout</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/handlers/login.html#logout"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#handlers.login.logout" title="Permalink to this definition">¶</a></dt>
+<dd><p>Invalidates session and logout user</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">redirect to main page</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="handlers.login.save_user">
+<code class="descclassname">handlers.login.</code><code class="descname">save_user</code><span class="sig-paren">(</span><em>credentials</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/handlers/login.html#save_user"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#handlers.login.save_user" title="Permalink to this definition">¶</a></dt>
+<dd><p>Saving and logging user to the app</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>credentials</strong> – authorization credentials</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="module-handlers.page_parser">
+<span id="handlers-page-parser-module"></span><h2>handlers.page_parser module<a class="headerlink" href="#module-handlers.page_parser" title="Permalink to this headline">¶</a></h2>
+<p>This module contains all the logic needed to parse the comics.panini.it store</p>
+<dl class="class">
+<dt id="handlers.page_parser.Parser">
+<em class="property">class </em><code class="descclassname">handlers.page_parser.</code><code class="descname">Parser</code><span class="sig-paren">(</span><em>min_pages</em>, <em>max_pages</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/handlers/page_parser.html#Parser"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#handlers.page_parser.Parser" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parses the website page and saves to the database</p>
+<dl class="method">
+<dt id="handlers.page_parser.Parser.fetch_parallel">
+<code class="descname">fetch_parallel</code><span class="sig-paren">(</span><em>urls_to_load</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/handlers/page_parser.html#Parser.fetch_parallel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#handlers.page_parser.Parser.fetch_parallel" title="Permalink to this definition">¶</a></dt>
+<dd><p>parses url in parallel</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>urls_to_load</strong> – urls to load</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">thread queue</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="handlers.page_parser.Parser.fetch_summary_parallel">
+<code class="descname">fetch_summary_parallel</code><span class="sig-paren">(</span><em>parsed_issues</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/handlers/page_parser.html#Parser.fetch_summary_parallel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#handlers.page_parser.Parser.fetch_summary_parallel" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parallel fetch of issues synopsis</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>parsed_issues</strong> – parsed issues</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">parsing result</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="handlers.page_parser.Parser.page_parser">
+<code class="descname">page_parser</code><span class="sig-paren">(</span><em>url</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/handlers/page_parser.html#Parser.page_parser"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#handlers.page_parser.Parser.page_parser" title="Permalink to this definition">¶</a></dt>
+<dd><p>parses the single page to collect comics issues</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>url</strong> – page url</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="handlers.page_parser.Parser.parse_issue_summary">
+<code class="descname">parse_issue_summary</code><span class="sig-paren">(</span><em>issue</em>, <em>queue</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/handlers/page_parser.html#Parser.parse_issue_summary"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#handlers.page_parser.Parser.parse_issue_summary" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parses the issue summary</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>issue</strong> – issue</li>
+<li><strong>queue</strong> – thread queue</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="handlers.page_parser.Parser.read_url">
+<code class="descname">read_url</code><span class="sig-paren">(</span><em>url</em>, <em>queue</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/handlers/page_parser.html#Parser.read_url"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#handlers.page_parser.Parser.read_url" title="Permalink to this definition">¶</a></dt>
+<dd><p>read a specific url, putting the data in the queue</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>url</strong> – url to parse</li>
+<li><strong>queue</strong> – thread queue</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-handlers.query">
+<span id="handlers-query-module"></span><h2>handlers.query module<a class="headerlink" href="#module-handlers.query" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="handlers.query.Query">
+<em class="property">class </em><code class="descclassname">handlers.query.</code><code class="descname">Query</code><a class="reference internal" href="_modules/handlers/query.html#Query"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#handlers.query.Query" title="Permalink to this definition">¶</a></dt>
+<dd><p>Provides ready-to-use functions for querying the database</p>
+<dl class="method">
+<dt id="handlers.query.Query.check_if_empty">
+<code class="descname">check_if_empty</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/handlers/query.html#Query.check_if_empty"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#handlers.query.Query.check_if_empty" title="Permalink to this definition">¶</a></dt>
+<dd><p>Checks if the database is empty</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">0 or 1 if the database has at least one issue</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="handlers.query.Query.get_issues">
+<code class="descname">get_issues</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/handlers/query.html#Query.get_issues"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#handlers.query.Query.get_issues" title="Permalink to this definition">¶</a></dt>
+<dd><p>Retrieves current user’s issues from last week-onwards. 
+If the user’s is not authenticated, returns all the issues from last week-onwards</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">dictionary of issues lists for the mainpage template, plus the number of issues and the total price amount</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="handlers.query.Query.get_specials">
+<code class="descname">get_specials</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/handlers/query.html#Query.get_specials"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#handlers.query.Query.get_specials" title="Permalink to this definition">¶</a></dt>
+<dd><p>return current users’s special numbers
+If the users is not autenticated, return an empty list</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">dictionary of issues list and the summed price</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="handlers.query.Query.get_user_issues">
+<code class="descname">get_user_issues</code><span class="sig-paren">(</span><em>user</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/handlers/query.html#Query.get_user_issues"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#handlers.query.Query.get_user_issues" title="Permalink to this definition">¶</a></dt>
+<dd><p>return all the issues from the user</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>user</strong> – user</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">list of user issues</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="handlers.query.Query.get_user_specials">
+<code class="descname">get_user_specials</code><span class="sig-paren">(</span><em>user</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/handlers/query.html#Query.get_user_specials"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#handlers.query.Query.get_user_specials" title="Permalink to this definition">¶</a></dt>
+<dd><p>Retrieves user’s special issues.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>user</strong> – user</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">list of special issues</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-handlers.utils">
+<span id="handlers-utils-module"></span><h2>handlers.utils module<a class="headerlink" href="#module-handlers.utils" title="Permalink to this headline">¶</a></h2>
+<p>General utilities</p>
+<dl class="function">
+<dt id="handlers.utils.application_error">
+<code class="descclassname">handlers.utils.</code><code class="descname">application_error</code><span class="sig-paren">(</span><em>e</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/handlers/utils.html#application_error"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#handlers.utils.application_error" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a custom 500 error.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="handlers.utils.clear_db">
+<code class="descclassname">handlers.utils.</code><code class="descname">clear_db</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/handlers/utils.html#clear_db"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#handlers.utils.clear_db" title="Permalink to this definition">¶</a></dt>
+<dd><p>Deletes all the database entries</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">redirects to the index page</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="handlers.utils.database_update">
+<code class="descclassname">handlers.utils.</code><code class="descname">database_update</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/handlers/utils.html#database_update"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#handlers.utils.database_update" title="Permalink to this definition">¶</a></dt>
+<dd><p>updates the database</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">redirects to index page</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="handlers.utils.date_handler">
+<code class="descclassname">handlers.utils.</code><code class="descname">date_handler</code><span class="sig-paren">(</span><em>obj</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/handlers/utils.html#date_handler"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#handlers.utils.date_handler" title="Permalink to this definition">¶</a></dt>
+<dd><p>Formats the date from a date object</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>obj</strong> – date object</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">date</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="handlers.utils.page_not_found">
+<code class="descclassname">handlers.utils.</code><code class="descname">page_not_found</code><span class="sig-paren">(</span><em>e</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/handlers/utils.html#page_not_found"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#handlers.utils.page_not_found" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a custom 404 error.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="handlers.utils.to_json">
+<code class="descclassname">handlers.utils.</code><code class="descname">to_json</code><span class="sig-paren">(</span><em>o</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/handlers/utils.html#to_json"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#handlers.utils.to_json" title="Permalink to this definition">¶</a></dt>
+<dd><p>converts an object to a json-compatible format</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>o</strong> – generic object</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">jsonified generic object</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="module-handlers">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-handlers" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">handlers package</a><ul>
+<li><a class="reference internal" href="#module-handlers.api">handlers.api module</a></li>
+<li><a class="reference internal" href="#module-handlers.calendar">handlers.calendar module</a></li>
+<li><a class="reference internal" href="#module-handlers.database">handlers.database module</a></li>
+<li><a class="reference internal" href="#module-handlers.login">handlers.login module</a></li>
+<li><a class="reference internal" href="#module-handlers.page_parser">handlers.page_parser module</a></li>
+<li><a class="reference internal" href="#module-handlers.query">handlers.query module</a></li>
+<li><a class="reference internal" href="#module-handlers.utils">handlers.utils module</a></li>
+<li><a class="reference internal" href="#module-handlers">Module contents</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="index.html"
+                        title="previous chapter">Welcome to The Astonishing Kirby’s documentation!</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="main.html"
+                        title="next chapter">main module</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/handlers.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="main.html" title="main module"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="index.html" title="Welcome to The Astonishing Kirby’s documentation!"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">The Astonishing Kirby 1.0.0 documentation</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2017, Alessandro Aleotti.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.2.
+    </div>
+  </body>
+</html>

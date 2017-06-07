@@ -1,0 +1,301 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>models package &#8212; The Astonishing Kirby 1.0.0 documentation</title>
+    
+    <link rel="stylesheet" href="_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '1.0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="views package" href="views.html" />
+    <link rel="prev" title="main module" href="main.html" /> 
+  </head>
+  <body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="views.html" title="views package"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="main.html" title="main module"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">The Astonishing Kirby 1.0.0 documentation</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="models-package">
+<h1>models package<a class="headerlink" href="#models-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="module-models.models">
+<span id="models-models-module"></span><h2>models.models module<a class="headerlink" href="#module-models.models" title="Permalink to this headline">¶</a></h2>
+<p>Database Model definition</p>
+<dl class="class">
+<dt id="models.models.CredentialsModel">
+<em class="property">class </em><code class="descclassname">models.models.</code><code class="descname">CredentialsModel</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwds</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/models/models.html#CredentialsModel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#models.models.CredentialsModel" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">google.appengine.ext.ndb.model.Model</span></code></p>
+<dl class="attribute">
+<dt id="models.models.CredentialsModel.credentials">
+<code class="descname">credentials</code><a class="headerlink" href="#models.models.CredentialsModel.credentials" title="Permalink to this definition">¶</a></dt>
+<dd><p>App Engine NDB datastore Property for Credentials.</p>
+<p>Serves the same purpose as the DB CredentialsProperty, but for NDB
+models. Since CredentialsProperty stores data as a blob and this
+inherits from BlobProperty, the data in the datastore will be the same
+as in the DB case.</p>
+<p>Utility property that allows easy storage and retrieval of Credentials
+and subclasses.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="models.models.Issue">
+<em class="property">class </em><code class="descclassname">models.models.</code><code class="descname">Issue</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwds</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/models/models.html#Issue"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#models.models.Issue" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">google.appengine.ext.ndb.model.Model</span></code></p>
+<p>Single comic issue model</p>
+<dl class="attribute">
+<dt id="models.models.Issue.date">
+<code class="descname">date</code><a class="headerlink" href="#models.models.Issue.date" title="Permalink to this definition">¶</a></dt>
+<dd><p>A Property whose value is a date object.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="models.models.Issue.image">
+<code class="descname">image</code><a class="headerlink" href="#models.models.Issue.image" title="Permalink to this definition">¶</a></dt>
+<dd><p>An indexed Property whose value is a text string of limited length.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="models.models.Issue.price">
+<code class="descname">price</code><a class="headerlink" href="#models.models.Issue.price" title="Permalink to this definition">¶</a></dt>
+<dd><p>An indexed Property whose value is a text string of limited length.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="models.models.Issue.reprint">
+<code class="descname">reprint</code><a class="headerlink" href="#models.models.Issue.reprint" title="Permalink to this definition">¶</a></dt>
+<dd><p>An indexed Property whose value is a text string of limited length.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="models.models.Issue.series">
+<code class="descname">series</code><a class="headerlink" href="#models.models.Issue.series" title="Permalink to this definition">¶</a></dt>
+<dd><p>A Property whose value is a Key object.</p>
+<p>Optional keyword argument: kind=&lt;kind&gt;, to require that keys
+assigned to this property always have the indicated kind.  May be a
+string or a Model subclass.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="models.models.Issue.subtitle">
+<code class="descname">subtitle</code><a class="headerlink" href="#models.models.Issue.subtitle" title="Permalink to this definition">¶</a></dt>
+<dd><p>An indexed Property whose value is a text string of limited length.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="models.models.Issue.summary">
+<code class="descname">summary</code><a class="headerlink" href="#models.models.Issue.summary" title="Permalink to this definition">¶</a></dt>
+<dd><p>An indexed Property whose value is a text string of limited length.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="models.models.Issue.title">
+<code class="descname">title</code><a class="headerlink" href="#models.models.Issue.title" title="Permalink to this definition">¶</a></dt>
+<dd><p>An indexed Property whose value is a text string of limited length.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="models.models.Issue.url">
+<code class="descname">url</code><a class="headerlink" href="#models.models.Issue.url" title="Permalink to this definition">¶</a></dt>
+<dd><p>An indexed Property whose value is a text string of limited length.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="models.models.Series">
+<em class="property">class </em><code class="descclassname">models.models.</code><code class="descname">Series</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwds</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/models/models.html#Series"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#models.models.Series" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">google.appengine.ext.ndb.model.Model</span></code></p>
+<p>Comic series. identifies a group of issues</p>
+<dl class="attribute">
+<dt id="models.models.Series.title">
+<code class="descname">title</code><a class="headerlink" href="#models.models.Series.title" title="Permalink to this definition">¶</a></dt>
+<dd><p>An indexed Property whose value is a text string of limited length.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="models.models.Users">
+<em class="property">class </em><code class="descclassname">models.models.</code><code class="descname">Users</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwds</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/models/models.html#Users"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#models.models.Users" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">google.appengine.ext.ndb.model.Model</span></code>, <code class="xref py py-class docutils literal"><span class="pre">flask_login.mixins.UserMixin</span></code></p>
+<p>User model</p>
+<dl class="attribute">
+<dt id="models.models.Users.email">
+<code class="descname">email</code><a class="headerlink" href="#models.models.Users.email" title="Permalink to this definition">¶</a></dt>
+<dd><p>An indexed Property whose value is a text string of limited length.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="models.models.Users.get_id">
+<code class="descname">get_id</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/models/models.html#Users.get_id"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#models.models.Users.get_id" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the id to satisfy Flask-Login’s requirements.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="models.models.Users.id">
+<code class="descname">id</code><a class="headerlink" href="#models.models.Users.id" title="Permalink to this definition">¶</a></dt>
+<dd><p>An indexed Property whose value is a text string of limited length.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="models.models.Users.is_active">
+<code class="descname">is_active</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/models/models.html#Users.is_active"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#models.models.Users.is_active" title="Permalink to this definition">¶</a></dt>
+<dd><p>True, as all users are active.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="models.models.Users.is_anonymous">
+<code class="descname">is_anonymous</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/models/models.html#Users.is_anonymous"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#models.models.Users.is_anonymous" title="Permalink to this definition">¶</a></dt>
+<dd><p>False, as anonymous users aren’t supported.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="models.models.Users.is_authenticated">
+<code class="descname">is_authenticated</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/models/models.html#Users.is_authenticated"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#models.models.Users.is_authenticated" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return True if the user is authenticated.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="models.models.Users.name">
+<code class="descname">name</code><a class="headerlink" href="#models.models.Users.name" title="Permalink to this definition">¶</a></dt>
+<dd><p>An indexed Property whose value is a text string of limited length.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="models.models.Users.series_list">
+<code class="descname">series_list</code><a class="headerlink" href="#models.models.Users.series_list" title="Permalink to this definition">¶</a></dt>
+<dd><p>A Property whose value is a Key object.</p>
+<p>Optional keyword argument: kind=&lt;kind&gt;, to require that keys
+assigned to this property always have the indicated kind.  May be a
+string or a Model subclass.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="models.models.Users.specials_list">
+<code class="descname">specials_list</code><a class="headerlink" href="#models.models.Users.specials_list" title="Permalink to this definition">¶</a></dt>
+<dd><p>A Property whose value is a Key object.</p>
+<p>Optional keyword argument: kind=&lt;kind&gt;, to require that keys
+assigned to this property always have the indicated kind.  May be a
+string or a Model subclass.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="models.models.Users.token">
+<code class="descname">token</code><a class="headerlink" href="#models.models.Users.token" title="Permalink to this definition">¶</a></dt>
+<dd><p>An indexed Property whose value is a text string of limited length.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-models">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-models" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">models package</a><ul>
+<li><a class="reference internal" href="#module-models.models">models.models module</a></li>
+<li><a class="reference internal" href="#module-models">Module contents</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="main.html"
+                        title="previous chapter">main module</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="views.html"
+                        title="next chapter">views package</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/models.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="views.html" title="views package"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="main.html" title="main module"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">The Astonishing Kirby 1.0.0 documentation</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2017, Alessandro Aleotti.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.2.
+    </div>
+  </body>
+</html>
