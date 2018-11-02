@@ -1,0 +1,26 @@
+[
+  {
+    "labels": {
+      "category": "remote_repo",
+      "remote_name": "origin"
+    },
+    "context": {
+      "git": {
+        "url": "https://github.com/GoogleCloudPlatform/appengine-flask-skeleton.git",
+        "revisionId": "b003bc040647f6f8054d380e075743563ef77ae9"
+      }
+    }
+  },
+  {
+    "labels": {
+      "category": "remote_repo",
+      "remote_name": "github"
+    },
+    "context": {
+      "git": {
+        "url": "https://github.com/aaleotti-unimore/ComicsScraper.git",
+        "revisionId": "b003bc040647f6f8054d380e075743563ef77ae9"
+      }
+    }
+  }
+]

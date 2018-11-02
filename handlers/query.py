@@ -83,11 +83,17 @@ class Query:
 
             for issue in self.past_issues:
                 # SUM WEEKLY PRICES
-                self.past_issues_sum += float(re.sub(",", ".", issue.price[2:]))
+                try:
+                    self.past_issues_sum += float(re.sub(",", ".", issue.price[2:]))
+                except TypeError:
+                    self.past_issues_sum += 0
 
             for issue in self.week_issues:
                 # SUM WEEKLY PRICES
-                self.week_issues_sum += float(re.sub(",", ".", issue.price[2:]))
+                try:
+                    self.week_issues_sum += float(re.sub(",", ".", issue.price[2:]))
+                except TypeError:
+                    self.week_issues_sum += 0
 
         # END QUERY
 
