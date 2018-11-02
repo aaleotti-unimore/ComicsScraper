@@ -6,7 +6,7 @@ class Config(object):
     APP_NAME = "The Amazing Kirby"
     SECRET_KEY = os.urandom(24)
     DEBUG = True
-    TESTING = False
+    TESTING = True
     REDIRECT_URI = "https://localhost:8080/gCallback"
     G_SECRETS = 'static/secrets/client_secrets_dev.json'
 

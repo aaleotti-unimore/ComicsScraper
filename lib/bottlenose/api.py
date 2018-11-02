@@ -1,4 +1,4 @@
-# Copyright 2012 Lionheart Software LLC
+# Copyright 2012-2017 Lionheart Software LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -65,16 +65,16 @@ except ImportError:
     pass
 
 SERVICE_DOMAINS = {
-    'CA': ('webservices.amazon.ca', 'xml-ca.amznxslt.com'),
-    'CN': ('webservices.amazon.cn', 'xml-cn.amznxslt.com'),
-    'DE': ('webservices.amazon.de', 'xml-de.amznxslt.com'),
-    'ES': ('webservices.amazon.es', 'xml-es.amznxslt.com'),
-    'FR': ('webservices.amazon.fr', 'xml-fr.amznxslt.com'),
-    'IN': ('webservices.amazon.in', 'xml-in.amznxslt.com'),
-    'IT': ('webservices.amazon.it', 'xml-it.amznxslt.com'),
-    'JP': ('webservices.amazon.co.jp', 'xml-jp.amznxslt.com'),
-    'UK': ('webservices.amazon.co.uk', 'xml-uk.amznxslt.com'),
-    'US': ('webservices.amazon.com', 'xml-us.amznxslt.com'),
+    'CA': ('webservices.amazon.ca',     'xml-ca.amznxslt.com'),
+    'CN': ('webservices.amazon.cn',     'xml-cn.amznxslt.com'),
+    'DE': ('webservices.amazon.de',     'xml-de.amznxslt.com'),
+    'ES': ('webservices.amazon.es',     'xml-es.amznxslt.com'),
+    'FR': ('webservices.amazon.fr',     'xml-fr.amznxslt.com'),
+    'IN': ('webservices.amazon.in',     'xml-in.amznxslt.com'),
+    'IT': ('webservices.amazon.it',     'xml-it.amznxslt.com'),
+    'JP': ('webservices.amazon.co.jp',  'xml-jp.amznxslt.com'),
+    'UK': ('webservices.amazon.co.uk',  'xml-uk.amznxslt.com'),
+    'US': ('webservices.amazon.com',    'xml-us.amznxslt.com'),
     'BR': ('webservices.amazon.com.br', 'xml-br.amznxslt.com'),
     'MX': ('webservices.amazon.com.mx', 'xml-mx.amznxslt.com')
 }
@@ -105,10 +105,19 @@ class AmazonCall(object):
 
         self.AWSAccessKeyId = (AWSAccessKeyId or
                                os.environ.get('AWS_ACCESS_KEY_ID'))
+        if self.AWSAccessKeyId is None:
+            raise TypeError("AWSAccessKeyId is not defined.")
+
         self.AWSSecretAccessKey = (AWSSecretAccessKey or
                                    os.environ.get('AWS_SECRET_ACCESS_KEY'))
+        if self.AWSSecretAccessKey is None:
+            raise TypeError("AWSSecretAccessKey is not defined.")
+
         self.AssociateTag = (AssociateTag or
                              os.environ.get('AWS_ASSOCIATE_TAG'))
+        if self.AssociateTag is None:
+            raise TypeError("AssociateTag is not defined.")
+
         self.CacheReader = CacheReader
         self.CacheWriter = CacheWriter
         self.ErrorHandler = ErrorHandler

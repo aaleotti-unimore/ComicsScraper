@@ -1,4 +1,4 @@
-# Copyright 2012 Lionheart Software LLC
+# Copyright 2012-2017 Lionheart Software LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -12,9 +12,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-__version__ = "1.1.2"
+__version__ = "1.1.8"
 __author__ = "Dan Loewenherz"
-__copyright__ = "Copyright 2012 Lionheart Software LLC"
+__copyright__ = "Copyright 2012-2017 Lionheart Software LLC"
 __maintainer__ = "Dan Loewenherz"
 __email__ = "dan@lionheartsw.com"
 __license__ = "Apache 2.0"

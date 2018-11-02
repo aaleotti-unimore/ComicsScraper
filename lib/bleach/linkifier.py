@@ -1,14 +1,10 @@
 from __future__ import unicode_literals
 import re
-
-import html5lib
-from html5lib.filters.base import Filter
-from html5lib.filters.sanitizer import allowed_protocols
-from html5lib.serializer import HTMLSerializer
+import six
 
 from bleach import callbacks as linkify_callbacks
-from bleach.encoding import force_unicode
-from bleach.utils import alphabetize_attributes
+from bleach import html5lib_shim
+from bleach.utils import alphabetize_attributes, force_unicode
 
 
 #: List of default callbacks
@@ -33,7 +29,7 @@ TLDS = """ac ad ae aero af ag ai al am an ao aq ar arpa as asia at au aw ax az
 TLDS.reverse()
 
 
-def build_url_re(tlds=TLDS, protocols=allowed_protocols):
+def build_url_re(tlds=TLDS, protocols=html5lib_shim.allowed_protocols):
     """Builds the url regex used by linkifier
 
    If you want a different set of tlds or allowed protocols, pass those in
@@ -114,9 +110,16 @@ class Linker(object):
         self.url_re = url_re
         self.email_re = email_re
 
-        self.parser = html5lib.HTMLParser(namespaceHTMLElements=False)
-        self.walker = html5lib.getTreeWalker('etree')
-        self.serializer = HTMLSerializer(
+        # Create a parser/tokenizer that allows all HTML tags and escapes
+        # anything not in that list.
+        self.parser = html5lib_shim.BleachHTMLParser(
+            tags=html5lib_shim.HTML_TAGS,
+            strip=False,
+            consume_entities=True,
+            namespaceHTMLElements=False,
+        )
+        self.walker = html5lib_shim.getTreeWalker('etree')
+        self.serializer = html5lib_shim.BleachHTMLSerializer(
             quote_attr_values='always',
             omit_optional_tags=False,
 
@@ -134,7 +137,12 @@ class Linker(object):
 
         :returns: linkified text as unicode
 
+        :raises TypeError: if ``text`` is not a text type
+
         """
+        if not isinstance(text, six.string_types):
+            raise TypeError('argument must be of text type')
+
         text = force_unicode(text)
 
         if not text:
@@ -152,7 +160,7 @@ class Linker(object):
         return self.serializer.render(filtered)
 
 
-class LinkifyFilter(Filter):
+class LinkifyFilter(html5lib_shim.Filter):
     """html5lib filter that linkifies text
 
     This will do the following:
@@ -344,7 +352,17 @@ class LinkifyFilter(Filter):
 
     def handle_links(self, src_iter):
         """Handle links in character tokens"""
+        in_a = False  # happens, if parse_email=True and if a mail was found
         for token in src_iter:
+            if in_a:
+                if token['type'] == 'EndTag' and token['name'] == 'a':
+                    in_a = False
+                yield token
+                continue
+            elif token['type'] == 'StartTag' and token['name'] == 'a':
+                in_a = True
+                yield token
+                continue
             if token['type'] == 'Characters':
                 text = token['data']
                 new_tokens = []
@@ -481,13 +499,11 @@ class LinkifyFilter(Filter):
                     # the tokens we're going to yield
                     in_a = False
                     token_buffer = []
-                    continue
-
                 else:
                     token_buffer.append(token)
-                    continue
+                continue
 
-            elif token['type'] in ['StartTag', 'EmptyTag']:
+            if token['type'] in ['StartTag', 'EmptyTag']:
                 if token['name'] in self.skip_tags:
                     # Skip tags start a "special mode" where we don't linkify
                     # anything until the end tag.
